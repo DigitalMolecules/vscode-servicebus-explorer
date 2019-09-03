@@ -37,9 +37,16 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		}
 		else if(element instanceof NameSpace){
 			return Promise.resolve([
-				new QueueList('Queues', vscode.TreeItemCollapsibleState.Collapsed),
-				new TopicList('Topics', vscode.TreeItemCollapsibleState.Collapsed),
+				new QueueList(element, 'Queues', vscode.TreeItemCollapsibleState.Collapsed),
+				new TopicList(element, 'Topics', vscode.TreeItemCollapsibleState.Collapsed),
 			]);
+		}
+		else if(element instanceof TopicList){
+			var tl = element as TopicList;
+			if(tl.namespace.data.clientInstance){
+				return tl.namespace.data.clientInstance.getTopics()
+				.then(x=> x.map(y=>new Topic(tl, y.name, vscode.TreeItemCollapsibleState.Collapsed)) );					
+			}
 		}
 		return Promise.resolve([]);
 	}
@@ -116,7 +123,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 export class NameSpace extends ExplorerItemBase {
 
 	constructor(
-		private data: NameSpaceData,
+		public data: NameSpaceData,
 		collapsibleState: vscode.TreeItemCollapsibleState,
 		command?: vscode.Command
 	) {
@@ -143,6 +150,35 @@ export class NameSpace extends ExplorerItemBase {
 export class TopicList extends ExplorerItemBase {
 
 	constructor(
+		public namespace: NameSpace,
+		label: string,
+		collapsibleState: vscode.TreeItemCollapsibleState,
+		command?: vscode.Command
+	) {
+		super(label, collapsibleState, command);
+	}
+
+	get tooltip(): string {
+		return `${this.label}`;
+	}
+
+	get description(): string {
+		return '(0)';
+	}
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
+	};
+
+	contextValue = 'topiclist';
+
+}
+
+export class Topic extends ExplorerItemBase {
+
+	constructor(
+		public parentList: TopicList,
 		label: string,
 		collapsibleState: vscode.TreeItemCollapsibleState,
 		command?: vscode.Command
@@ -170,6 +206,7 @@ export class TopicList extends ExplorerItemBase {
 export class QueueList extends ExplorerItemBase {
 
 	constructor(
+		public namespace: NameSpace,
 		label: string,
 		collapsibleState: vscode.TreeItemCollapsibleState,
 		command?: vscode.Command

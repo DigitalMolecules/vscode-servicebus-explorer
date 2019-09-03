@@ -25,7 +25,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             throw new Error("Invalid connection string");
         }
 
-        var auth = getAuthHeader(Endpoint, SharedAccessKeyName, SharedAccessKey)
+        var auth = getAuthHeader(Endpoint, SharedAccessKeyName, SharedAccessKey);
         var result = await fetch(Endpoint.replace('sb', 'https'), {
             method: 'POST',
             headers: { 'Authorization': auth },
@@ -34,8 +34,32 @@ export default class ServiceBusClient implements IServiceBusClient {
         
     }
 
-    public getTopics(): [] {
-        return [];
+    public async getTopics(): Promise<[any]> {
+        const values: Map<string, string> = this.connectionString.split(';')
+        .map(x=> x.split('='))
+        // .reduce(x=> {x[0]: x[1]}, [])
+         .reduce(function(a, b){
+            return a.set(b[0], b[1]);
+         }, new Map<string, string>())
+        ;
+        
+
+        const Endpoint = values.get('Endpoint') ;
+        const SharedAccessKeyName = values.get('SharedAccessKeyName');
+        const SharedAccessKey = values.get('SharedAccessKey') + '=';
+
+        if(!Endpoint || !SharedAccessKeyName || !SharedAccessKey){
+            throw new Error("Invalid connection string");
+        }
+
+        var auth = getAuthHeader(Endpoint, SharedAccessKeyName, SharedAccessKey);
+        var result = await fetch(Endpoint.replace('sb', 'https') + '', {
+            method: 'POST',
+            headers: { 'Authorization': auth },
+        });
+        var body = await result.text();
+        //TODO: PARSE BODY AND GET THE TOPICS
+        return Promise.resolve([{name: 'topic #1'}]);
     }
 } 
 
