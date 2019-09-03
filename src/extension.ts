@@ -2,6 +2,7 @@
 
 import * as vscode from 'vscode';
 import { ServiceBusProvider, NameSpace } from './serviceBusProvider';
+import { multiStepInput } from './multiStepInput';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
@@ -16,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.addEntry', () => {
-			vscode.window.showInformationMessage('Add not implemented!');
+			multiStepInput(context);
 		})
 	);
 
