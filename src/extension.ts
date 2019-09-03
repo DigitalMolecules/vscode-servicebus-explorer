@@ -2,22 +2,24 @@
 
 import * as vscode from 'vscode';
 import { ServiceBusProvider, NameSpace } from './serviceBusProvider';
-import { multiStepInput } from './multiStepInput';
+import { addNamespace } from './addNamespace';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
 
-	vscode.window.registerTreeDataProvider('servicebus-namespaces', new ServiceBusProvider(context));
+	const serviceBusProvider = new ServiceBusProvider(context);
+	vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshEntry', () => {
-			vscode.window.showInformationMessage('Refresh not implemented!');
+			serviceBusProvider.refresh();
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('serviceBusExplorer.addEntry', () => {
-			multiStepInput(context);
+		vscode.commands.registerCommand('serviceBusExplorer.addEntry', async () => {
+			var state = await addNamespace(context);
+			serviceBusProvider.addNamespace( { name: state.name, connection: state.connectionString } );
 		})
 	);
 

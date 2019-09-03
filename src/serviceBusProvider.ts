@@ -2,9 +2,12 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+const NAMESPACE_CONNECTIONS  = 'dm.sbe.connections';
 export class ServiceBusProvider implements vscode.TreeDataProvider<NameSpace> {
+	
+	private _onDidChangeTreeData: vscode.EventEmitter<NameSpace | undefined> = new vscode.EventEmitter<NameSpace | undefined>();
+	readonly onDidChangeTreeData: vscode.Event<NameSpace | undefined> = this._onDidChangeTreeData.event;
 
-	onDidChangeTreeData?: vscode.Event<any>;    
 	state: vscode.Memento;
 
 	constructor(context: vscode.ExtensionContext){
@@ -16,16 +19,32 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<NameSpace> {
 	}
 
     getChildren(element?: NameSpace): Thenable<NameSpace[]> {
-		if(element == null){
-			var connections = this.state.get('dm.sbe.connections', []);
+		if(!element){
+			var connections = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 			return Promise.resolve(
 				[
-					... connections.map(c=> new NameSpace("Label1", "1", vscode.TreeItemCollapsibleState.Collapsed))
+					... connections.map(c=> new NameSpace(c.name, "1", vscode.TreeItemCollapsibleState.Collapsed))
 				]
 			);
 		}
 		return Promise.resolve([]);
 	}
+
+	refresh(): void {
+		
+	}
+
+	addNamespace(item: NameSpaceData){
+		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
+		items.push(item);
+		this.state.update(NAMESPACE_CONNECTIONS, items );
+		this._onDidChangeTreeData.fire();
+	}
+}
+
+interface NameSpaceData{
+	name: string;
+	connection: string;
 }
 
 export class NameSpace extends vscode.TreeItem {

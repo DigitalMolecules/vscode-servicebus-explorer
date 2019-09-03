@@ -126,16 +126,16 @@ export async function multiStepInput(context: ExtensionContext) {
 // -------------------------------------------------------
 // Helper code that wraps the API for the multi-step case.
 // -------------------------------------------------------
-class InputFlowAction {
+export class InputFlowAction {
 	private constructor() { }
 	static back = new InputFlowAction();
 	static cancel = new InputFlowAction();
 	static resume = new InputFlowAction();
 }
 
-type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
+export type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
-interface QuickPickParameters<T extends QuickPickItem> {
+export interface QuickPickParameters<T extends QuickPickItem> {
 	title: string;
 	step: number;
 	totalSteps: number;
@@ -146,7 +146,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
 	shouldResume: () => Thenable<boolean>;
 }
 
-interface InputBoxParameters {
+export interface InputBoxParameters {
 	title: string;
 	step: number;
 	totalSteps: number;
@@ -157,7 +157,7 @@ interface InputBoxParameters {
 	shouldResume: () => Thenable<boolean>;
 }
 
-class MultiStepInput {
+export class MultiStepInput {
 
 	static async run<T>(start: InputStep) {
 		const input = new MultiStepInput();
