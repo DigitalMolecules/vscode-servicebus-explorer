@@ -1,4 +1,4 @@
 interface IServiceBusClient {
     getTopics(): [];
-    validateAndThrow():void;
+    validateAndThrow():Promise<void>;
 }

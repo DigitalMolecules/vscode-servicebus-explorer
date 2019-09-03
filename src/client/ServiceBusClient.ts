@@ -1,4 +1,5 @@
 import * as CryptoJS from 'crypto-js';
+import fetch from 'node-fetch';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -6,7 +7,7 @@ export default class ServiceBusClient implements IServiceBusClient {
 
     }
 
-    public validateAndThrow() : void{
+    public async validateAndThrow() : Promise<void> {
 
         const values: Map<string, string> = this.connectionString.split(';')
                 .map(x=> x.split('='))
@@ -25,7 +26,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
 
         var auth = getAuthHeader(Endpoint, SharedAccessKeyName, SharedAccessKey)
-        
+        var result = await fetch(Endpoint.replace('sb', 'https'), {
+            method: 'POST',
+            headers: { 'Authorization': auth },
+        });
+        var body = await result.text();
         
     }
 
