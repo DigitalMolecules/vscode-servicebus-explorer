@@ -2,6 +2,12 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Sdk for JS does not have the management api yet
+// https://github.com/Azure/azure-sdk-for-js/issues/3116
+//import * as ServiceBus from '@azure/service-bus';
+
+import ServiceBusClient from './client/ServiceBusClient';
+
 const NAMESPACE_CONNECTIONS  = 'dm.sbe.connections';
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 	
@@ -25,7 +31,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			var connections = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 			return Promise.resolve(
 				[
-					... connections.map(c=> new NameSpace(c.name, vscode.TreeItemCollapsibleState.Expanded))
+					... connections.map(c=> new NameSpace(c, vscode.TreeItemCollapsibleState.Expanded))
 				]
 			);
 		}
@@ -41,7 +47,21 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	refresh(): void {
 		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items.forEach(element => {
-			///TODO Refresh
+			
+			try{
+				element.error = null;
+				//if(!element.clientInstance){
+				element.clientInstance = new ServiceBusClient(element.connection);
+				//}
+				
+				element.clientInstance.validateAndThrow();
+				
+
+			}
+			catch(ex){
+				element.error = ex;
+			}
+			
 		});
 		this.state.update(NAMESPACE_CONNECTIONS, items );
 		this._onDidChangeTreeData.fire();
@@ -58,8 +78,9 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 interface NameSpaceData{
 	name: string;
 	connection: string;
+	error?: any;
+	clientInstance?: IServiceBusClient;
 }
-
 
 
 
@@ -93,11 +114,11 @@ export class ExplorerItemBase extends vscode.TreeItem {
 export class NameSpace extends ExplorerItemBase {
 
 	constructor(
-		label: string,
+		private data: NameSpaceData,
 		collapsibleState: vscode.TreeItemCollapsibleState,
 		command?: vscode.Command
 	) {
-		super(label, collapsibleState, command);
+		super(data.name, collapsibleState, command);
 	}
 
 	get tooltip(): string {
@@ -105,7 +126,7 @@ export class NameSpace extends ExplorerItemBase {
 	}
 
 	get description(): string {
-		return '(0)';
+		return this.data.error ? 'ERROR' : '(0)';
 	}
 
 	iconPath = {
