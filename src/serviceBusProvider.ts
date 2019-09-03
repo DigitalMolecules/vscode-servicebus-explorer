@@ -5,17 +5,26 @@ import * as path from 'path';
 export class ServiceBusProvider implements vscode.TreeDataProvider<NameSpace> {
 
 	onDidChangeTreeData?: vscode.Event<any>;    
+	state: vscode.Memento;
+
+	constructor(context: vscode.ExtensionContext){
+		this.state = context.workspaceState;
+	}
 	
 	getTreeItem(element: NameSpace): vscode.TreeItem {
 		return element;
 	}
 
     getChildren(element?: NameSpace): Thenable<NameSpace[]> {
-		return Promise.resolve(
-			[
-				new NameSpace("Label1", "1", vscode.TreeItemCollapsibleState.Collapsed)
-			]
-		)
+		if(element == null){
+			var connections = this.state.get('dm.sbe.connections', []);
+			return Promise.resolve(
+				[
+					... connections.map(c=> new NameSpace("Label1", "1", vscode.TreeItemCollapsibleState.Collapsed))
+				]
+			);
+		}
+		return Promise.resolve([]);
 	}
 }
 

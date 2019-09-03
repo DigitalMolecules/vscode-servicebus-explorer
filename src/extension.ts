@@ -6,7 +6,7 @@ import { ServiceBusProvider, NameSpace } from './serviceBusProvider';
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
 
-	vscode.window.registerTreeDataProvider('servicebus-namespaces', new ServiceBusProvider());
+	vscode.window.registerTreeDataProvider('servicebus-namespaces', new ServiceBusProvider(context));
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshEntry', () => {
