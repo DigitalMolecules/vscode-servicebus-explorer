@@ -85,6 +85,19 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		this._onDidChangeTreeData.fire();
 	}
 
+	editNamespace(node: NameSpace, item: NameSpaceData) {
+		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
+		items.forEach((p) => {
+			if (p.name === node.data.name)
+			{
+				p.name = item.name;
+				p.connection = item.connection;
+			}
+		});
+		this.state.update(NAMESPACE_CONNECTIONS, items);
+		this._onDidChangeTreeData.fire();
+	}
+
 	deleteNamespace(node: NameSpace) {
 		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items = items.filter(p => p.name !== node.data.name);
