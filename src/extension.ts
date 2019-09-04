@@ -1,9 +1,12 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { ServiceBusProvider, NameSpace, TopicList, QueueList } from './serviceBusProvider';
-import { addNamespace } from './addNamespace';
-import { editNamespace } from './editNamespace';
+import { ServiceBusProvider } from './providers/serviceBusProvider';
+import { addNamespace } from './namespace/addNamespace';
+import { editNamespace } from './namespace/editNamespace';
+import { NameSpace } from './namespace/namespace';
+import { TopicList } from './topic/topicList';
+import { QueueList } from './queue/queueList';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');

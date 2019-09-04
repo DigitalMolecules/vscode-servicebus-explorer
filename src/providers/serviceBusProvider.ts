@@ -6,10 +6,13 @@ import * as path from 'path';
 // https://github.com/Azure/azure-sdk-for-js/issues/3116
 //import * as ServiceBus from '@azure/service-bus';
 
-import ServiceBusClient from './client/ServiceBusClient';
-
-export const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';
-
+import ServiceBusClient from '../client/ServiceBusClient';
+import { ExplorerItemBase } from '../common/explorerItemBase';
+import { NameSpace, NameSpaceData } from '../namespace/namespace';
+import { NAMESPACE_CONNECTIONS } from '../common/global';
+import { TopicList } from '../topic/topicList';
+import { QueueList } from '../queue/queueList';
+import { Topic } from '../topic/topic';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -104,149 +107,4 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();
 	}
-}
-
-
-export interface NameSpaceData {
-	name: string;
-	connection: string;
-	error?: any;
-	clientInstance?: IServiceBusClient;
-}
-
-export class ExplorerItemBase extends vscode.TreeItem {
-
-	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		public readonly command?: vscode.Command
-	) {
-		super(label, collapsibleState);
-	}
-
-	get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	get description(): string {
-		return 'description';
-	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-	};
-
-	contextValue = 'base';
-
-}
-
-export class NameSpace extends ExplorerItemBase {
-
-	constructor(
-		public data: NameSpaceData,
-		collapsibleState: vscode.TreeItemCollapsibleState,
-		command?: vscode.Command
-	) {
-		super(data.name, collapsibleState, command);
-	}
-
-	get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	get description(): string {
-		return this.data.error ? 'ERROR' : '(0)';
-	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-	};
-
-	contextValue = 'namespace';
-}
-
-export class TopicList extends ExplorerItemBase {
-
-	constructor(
-		public namespace: NameSpace,
-		label: string,
-		collapsibleState: vscode.TreeItemCollapsibleState,
-		command?: vscode.Command
-	) {
-		super(label, collapsibleState, command);
-	}
-
-	get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	get description(): string {
-		return '(0)';
-	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-	};
-
-	contextValue = 'topiclist';
-
-}
-
-export class Topic extends ExplorerItemBase {
-
-	constructor(
-		public parentList: TopicList,
-		label: string,
-		collapsibleState: vscode.TreeItemCollapsibleState,
-		command?: vscode.Command
-	) {
-		super(label, collapsibleState, command);
-	}
-
-	get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	get description(): string {
-		return '(0)';
-	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-	};
-
-	contextValue = 'topic';
-
-}
-
-export class QueueList extends ExplorerItemBase {
-
-	constructor(
-		public namespace: NameSpace,
-		label: string,
-		collapsibleState: vscode.TreeItemCollapsibleState,
-		command?: vscode.Command
-	) {
-		super(label, collapsibleState, command);
-	}
-
-	get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	get description(): string {
-		return '(0)';
-	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-	};
-
-	contextValue = 'queuelist';
-
 }

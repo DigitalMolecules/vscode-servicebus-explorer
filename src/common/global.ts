@@ -1,0 +1,1 @@
+export const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';

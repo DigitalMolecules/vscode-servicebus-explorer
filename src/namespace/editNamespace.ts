@@ -1,19 +1,10 @@
-import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
-import { MultiStepInput } from './multiStepInput';
-import { NameSpace, NameSpaceData, NAMESPACE_CONNECTIONS } from './serviceBusProvider';
+import { window, ExtensionContext } from 'vscode';
+import { MultiStepInput } from '../multiStepInput';
+import { State, NameSpace, NameSpaceData } from './namespace';
+import { NAMESPACE_CONNECTIONS } from '../common/global';
 
-interface State {
-	title: string;
-	step: number;
-	totalSteps: number;
-	//connectionString: QuickPickItem | string;
-	connectionString: string;
-	name: string;
-	runtime: QuickPickItem;
-}
-
-export async function addNamespace(context: ExtensionContext): Promise<State> {
-	const title = 'Add Namespace';
+export async function editNamespace(node: NameSpace, context: ExtensionContext): Promise<State> {
+	const title = 'Edit Namespace';
 
 	async function pickConnnectionString(input: MultiStepInput, state: Partial<State>) {
 		
@@ -21,7 +12,7 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
 			title,
 			step: 1,
 			totalSteps: 2,
-			value: typeof state.connectionString === 'string' ? state.connectionString : '',
+			value: typeof state.connectionString === 'string' ? state.connectionString : node.data.connection,
 			prompt: 'Paste the connection string to the namespace',
 			validate: validateConnectionString,
 			shouldResume: shouldResume
@@ -36,7 +27,7 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
 			title,
 			step: 2,
 			totalSteps: 2,
-			value: state.name || '',
+			value: state.name || node.data.name,
 			prompt: 'Choose a name for the namespace',
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
@@ -51,7 +42,7 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
 
 	const state = await collectInputs();
 
-	window.showInformationMessage(`Adding Namespace  '${state.name}'`);
+	window.showInformationMessage(`Editing Namespace  '${state.name}'`);
 
 	return state;
 
