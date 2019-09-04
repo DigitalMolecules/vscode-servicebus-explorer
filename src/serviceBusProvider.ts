@@ -10,6 +10,7 @@ import ServiceBusClient from './client/ServiceBusClient';
 
 export const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';
 
+
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<ExplorerItemBase | undefined> = new vscode.EventEmitter<ExplorerItemBase | undefined>();
@@ -19,6 +20,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 	constructor(context: vscode.ExtensionContext) {
 		this.state = context.workspaceState;
+		this.reBuildTree();
 	}
 
 	getTreeItem(element: ExplorerItemBase): vscode.TreeItem {
@@ -52,7 +54,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		return Promise.resolve([]);
 	}
 
-	refresh(): void {
+	reBuildTree(): void {
 		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		var tasks = items.map(async element => {
 
@@ -60,7 +62,6 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				element.error = null;
 				element.clientInstance = new ServiceBusClient(element.connection);
 				await element.clientInstance.validateAndThrow();
-
 			}
 			catch (ex) {
 				element.error = ex;
@@ -92,13 +93,13 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	}
 }
 
+
 export interface NameSpaceData {
 	name: string;
 	connection: string;
 	error?: any;
 	clientInstance?: IServiceBusClient;
 }
-
 
 export class ExplorerItemBase extends vscode.TreeItem {
 
@@ -205,9 +206,10 @@ export class Topic extends ExplorerItemBase {
 		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
 	};
 
-	contextValue = 'topiclist';
+	contextValue = 'topic';
 
 }
+
 
 export class QueueList extends ExplorerItemBase {
 

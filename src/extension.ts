@@ -9,13 +9,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const serviceBusProvider = new ServiceBusProvider(context);
 	
-
 	vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider);
-	serviceBusProvider.refresh(); //async refresh
 	
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshEntry', () => {
-			serviceBusProvider.refresh();
+			serviceBusProvider.reBuildTree();
 		})
 	);
 
