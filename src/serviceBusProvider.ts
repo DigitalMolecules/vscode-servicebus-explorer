@@ -45,7 +45,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			var tl = element as TopicList;
 			if(tl.namespace.data.clientInstance){
 				return tl.namespace.data.clientInstance.getTopics()
-				.then(x=> x.map(y=>new Topic(tl, y.name, vscode.TreeItemCollapsibleState.Collapsed)) );					
+					.then(x=> x.map(y=>new Topic(tl, y.title, vscode.TreeItemCollapsibleState.Collapsed)) );					
 			}
 		}
 		return Promise.resolve([]);

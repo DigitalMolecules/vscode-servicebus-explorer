@@ -1,5 +1,6 @@
 import * as CryptoJS from 'crypto-js';
 import fetch from 'node-fetch';
+import parser from 'fast-xml-parser';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -10,7 +11,7 @@ export default class ServiceBusClient implements IServiceBusClient {
     public async validateAndThrow() : Promise<void> {
         var auth = this.getAuthHeader();
         var result = await fetch(auth.endpoint.replace('sb', 'https'), {
-            method: 'POST',
+            method: 'GET',
             headers: { 'Authorization': auth.auth },
         });
         var body = await result.text();
@@ -20,7 +21,7 @@ export default class ServiceBusClient implements IServiceBusClient {
     public async getTopics(): Promise<[any]> {
         var auth = this.getAuthHeader();
         var result = await fetch(auth.endpoint.replace('sb', 'https') + '', {
-            method: 'POST',
+            method: 'GET',
             headers: { 'Authorization': auth.auth },
         });
         
@@ -28,9 +29,12 @@ export default class ServiceBusClient implements IServiceBusClient {
             return Promise.reject();
         }
         var body = await result.text();
-        
-        //TODO: PARSE BODY AND GET THE TOPICS
-        return Promise.resolve([{name: 'topic #1'}]);
+        var xmlData = parser.parse(body);
+        var topics = xmlData.feed.entry;
+        if(!Array.isArray(topics)){
+            topics = [topics];
+        }
+        return Promise.resolve(topics);
     }
 
 
