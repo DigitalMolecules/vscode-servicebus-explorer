@@ -34,7 +34,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpace) => {
-			vscode.window.showInformationMessage('Delete not implemented!');
+			//vscode.window.showInformationMessage('Delete not implemented!');
+			serviceBusProvider.deleteNamespace(node);
 		})
 	);
 
