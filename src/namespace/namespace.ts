@@ -92,7 +92,7 @@ export class NameSpace {
         else {
             var items = this.context.workspaceState.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
             
-            if (items.find(p => p.name === name.trim())) {
+            if ((this.node === null || this.node.data.name !== name.trim())  && items.find(p => p.name === name.trim()) ) {
                 return 'Name not unique';
             }
         }
