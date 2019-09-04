@@ -2,17 +2,17 @@
 
 import * as vscode from 'vscode';
 import { ServiceBusProvider } from './providers/serviceBusProvider';
-import { addNamespace } from './namespace/addNamespace';
-import { editNamespace } from './namespace/editNamespace';
-import { NameSpace } from './namespace/namespace';
+import { NameSpaceItem } from './namespace/namespaceItem';
 import { TopicList } from './topic/topicList';
 import { QueueList } from './queue/queueList';
+import { NameSpace } from './namespace/namespace';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
 
 	const serviceBusProvider = new ServiceBusProvider(context);
-	
+	const nameSpace = new NameSpace(context);
+
 	vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider);
 	
 	context.subscriptions.push(
@@ -23,20 +23,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.addEntry', async () => {
-			var state = await addNamespace(context);
+			var state = await nameSpace.addNamespace();
 			serviceBusProvider.addNamespace( { name: state.name, connection: state.connectionString } );
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpace) => {
-			var state = await editNamespace(node, context);
+		vscode.commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
+			var state = await nameSpace.editNamespace(node);
 			serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString } );
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpace) => {
+		vscode.commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpaceItem) => {
 			serviceBusProvider.deleteNamespace(node);
 		})
 	);

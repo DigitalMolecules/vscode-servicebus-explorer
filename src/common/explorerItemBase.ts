@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 
+
 export class ExplorerItemBase extends vscode.TreeItem {
 
 	constructor(
@@ -13,7 +14,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 	get tooltip(): string {
 		return `${this.label}`;
 	}
-
+	
 	get description(): string {
 		return 'description';
 	}

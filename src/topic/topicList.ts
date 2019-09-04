@@ -1,11 +1,11 @@
 import { ExplorerItemBase } from "../common/explorerItemBase";
-import { NameSpace } from "../namespace/namespace";
+import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TreeItemCollapsibleState, Command } from "vscode";
 
 export class TopicList extends ExplorerItemBase {
 
 	constructor(
-		public namespace: NameSpace,
+		public namespaceItem: NameSpaceItem,
 		label: string,
 		collapsibleState: TreeItemCollapsibleState,
 		command?: Command

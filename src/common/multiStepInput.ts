@@ -9,7 +9,7 @@ export class InputFlowAction {
 
 export type InputStep = (input: MultiStepInput) => Thenable<InputStep | void>;
 
-export interface QuickPickParameters<T extends QuickPickItem> {
+export interface IQuickPickParameters<T extends QuickPickItem> {
 	title: string;
 	step: number;
 	totalSteps: number;
@@ -20,7 +20,8 @@ export interface QuickPickParameters<T extends QuickPickItem> {
 	shouldResume: () => Thenable<boolean>;
 }
 
-export interface InputBoxParameters {
+
+export interface IInputBoxParameters {
 	title: string;
 	step: number;
 	totalSteps: number;
@@ -43,12 +44,15 @@ export class MultiStepInput {
 
 	private async stepThrough<T>(start: InputStep) {
 		let step: InputStep | void = start;
+
 		while (step) {
 			this.steps.push(step);
+
 			if (this.current) {
 				this.current.enabled = false;
 				this.current.busy = true;
 			}
+
 			try {
 				step = await step(this);
 			} catch (err) {
@@ -64,12 +68,13 @@ export class MultiStepInput {
 				}
 			}
 		}
+
 		if (this.current) {
 			this.current.dispose();
 		}
 	}
 
-	async showQuickPick<T extends QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, shouldResume }: P) {
+	async showQuickPick<T extends QuickPickItem, P extends IQuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, shouldResume }: P) {
 		const disposables: Disposable[] = [];
 		try {
 			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
@@ -113,7 +118,7 @@ export class MultiStepInput {
 		}
 	}
 
-	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, shouldResume }: P) {
+	async showInputBox<P extends IInputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, shouldResume }: P) {
 		const disposables: Disposable[] = [];
 		try {
 			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
