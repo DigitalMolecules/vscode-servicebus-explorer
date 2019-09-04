@@ -23,7 +23,7 @@ export class NameSpace {
 
     }
     
-    public async addNamespace(): Promise<IState> {
+    public addNamespace = async (): Promise<IState>  => {
         this.title = 'Add Namespace';
         this.node = null;
 
@@ -33,7 +33,7 @@ export class NameSpace {
         return state;
     }
 
-    public async editNamespace(node: NameSpaceItem): Promise<IState> {
+    public editNamespace = async (node: NameSpaceItem): Promise<IState> => {
         this.title = 'Edit Namespace';
         this.node = node;
 
@@ -50,14 +50,14 @@ export class NameSpace {
 		});
     }
 
-    private async validateConnectionString(name: string): Promise<string | undefined> {
+    private validateConnectionString = async (name: string): Promise<string | undefined>  => {
         // ...validate...
         if (name.trim() === '') {
             return 'Connection string must be filled in';
         }
     }
 
-    private async inputConnnectionString(input: MultiStepInput, state: Partial<IState>) {
+    private inputConnnectionString = async (input: MultiStepInput, state: Partial<IState>) => {
         state.connectionString = await input.showInputBox({
             title: this.title,
             step: 1,
@@ -71,7 +71,7 @@ export class NameSpace {
         return (input: MultiStepInput) => this.inputName(input, state);
     }
     
-    private async inputName(input: MultiStepInput, state: Partial<IState>) {
+    private inputName = async (input: MultiStepInput, state: Partial<IState>) => {
         // TODO: Remember current value when navigating back.
         state.name = await input.showInputBox({
             title: this.title,
@@ -84,7 +84,7 @@ export class NameSpace {
         });
     }
 
-    private async validateNameIsUnique(name: string) {
+    private validateNameIsUnique = async (name: string) => {
         if (name.trim() === '') {
             return 'Name must be filled in';
     

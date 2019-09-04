@@ -1,6 +1,7 @@
 import * as CryptoJS from 'crypto-js';
 import fetch from 'node-fetch';
 import parser from 'fast-xml-parser';
+import { IServiceBusClient } from './IServiceBusClient';
 
 export default class ServiceBusClient implements IServiceBusClient {
 

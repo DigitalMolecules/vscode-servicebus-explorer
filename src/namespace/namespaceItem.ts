@@ -1,5 +1,6 @@
 import { QuickPickItem, TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase } from "../common/explorerItemBase";
+import { IServiceBusClient } from "../client/IServiceBusClient";
 
 export interface INameSpaceData {
 	name: string;
