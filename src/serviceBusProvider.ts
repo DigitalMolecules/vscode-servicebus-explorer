@@ -8,7 +8,8 @@ import * as path from 'path';
 
 import ServiceBusClient from './client/ServiceBusClient';
 
-const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';
+export const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';
+
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<ExplorerItemBase | undefined> = new vscode.EventEmitter<ExplorerItemBase | undefined>();
@@ -85,12 +86,13 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	}
 }
 
-interface NameSpaceData {
+export interface NameSpaceData {
 	name: string;
 	connection: string;
 	error?: any;
 	clientInstance?: IServiceBusClient;
 }
+
 
 export class ExplorerItemBase extends vscode.TreeItem {
 
