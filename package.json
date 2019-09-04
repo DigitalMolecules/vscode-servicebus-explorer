@@ -42,6 +42,22 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.refreshTopicList",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.refreshQueueList",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.addEntry",
 				"title": "Add"
 			},
@@ -79,6 +95,16 @@
 				{
 					"command": "serviceBusExplorer.deleteEntry",
 					"when": "view == servicebus-namespaces && viewItem == namespace"
+				},
+				{
+					"command": "serviceBusExplorer.refreshTopicList",
+					"when": "view == servicebus-namespaces && viewItem == topiclist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.refreshQueueList",
+					"when": "view == servicebus-namespaces && viewItem == queuelist",
+					"group": "inline"
 				}
 			]
 		}

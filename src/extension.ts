@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { ServiceBusProvider, NameSpace } from './serviceBusProvider';
+import { ServiceBusProvider, NameSpace, TopicList, QueueList } from './serviceBusProvider';
 import { addNamespace } from './addNamespace';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -35,6 +35,18 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpace) => {
 			vscode.window.showInformationMessage('Delete not implemented!');
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('serviceBusExplorer.refreshTopicList', (node: TopicList) => {
+			vscode.window.showInformationMessage('Refresh Topic List not implemented!');
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => {
+			vscode.window.showInformationMessage('Refresh Queue List not implemented!');
 		})
 	);
 }

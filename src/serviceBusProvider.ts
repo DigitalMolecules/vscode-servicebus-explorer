@@ -8,83 +8,84 @@ import * as path from 'path';
 
 import ServiceBusClient from './client/ServiceBusClient';
 
-const NAMESPACE_CONNECTIONS  = 'dm.sbe.connections';
+const NAMESPACE_CONNECTIONS = 'dm.sbe.connections';
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
-	
+
 	private _onDidChangeTreeData: vscode.EventEmitter<ExplorerItemBase | undefined> = new vscode.EventEmitter<ExplorerItemBase | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<ExplorerItemBase | undefined> = this._onDidChangeTreeData.event;
 
 	state: vscode.Memento;
 
-	constructor(context: vscode.ExtensionContext){
+	constructor(context: vscode.ExtensionContext) {
 		this.state = context.workspaceState;
 	}
-	
+
 	getTreeItem(element: ExplorerItemBase): vscode.TreeItem {
 		return element;
 	}
 
-    getChildren(element?: ExplorerItemBase): Thenable<ExplorerItemBase[]> {
-		
+	getChildren(element?: ExplorerItemBase): Thenable<ExplorerItemBase[]> {
 		//On undefined we get the namespaces
-		if(!element){ 
+		if (!element) {
 			var connections = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 			return Promise.resolve(
 				[
-					... connections.map(c=> new NameSpace(c, vscode.TreeItemCollapsibleState.Expanded))
+					...connections.map(c => new NameSpace(c, vscode.TreeItemCollapsibleState.Expanded))
 				]
 			);
 		}
-		else if(element instanceof NameSpace){
+		else if (element instanceof NameSpace) {
 			return Promise.resolve([
 				new QueueList(element, 'Queues', vscode.TreeItemCollapsibleState.Collapsed),
 				new TopicList(element, 'Topics', vscode.TreeItemCollapsibleState.Collapsed),
 			]);
 		}
-		else if(element instanceof TopicList){
+		else if (element instanceof TopicList) {
 			var tl = element as TopicList;
-			if(tl.namespace.data.clientInstance){
+			if (tl.namespace.data.clientInstance) {
 				return tl.namespace.data.clientInstance.getTopics()
-					.then(x=> x.map(y=>new Topic(tl, y.title, vscode.TreeItemCollapsibleState.Collapsed)) );					
+					.then(x => x.map(y => new Topic(tl, y.title, vscode.TreeItemCollapsibleState.Collapsed)));
 			}
 		}
+
 		return Promise.resolve([]);
 	}
 
 	refresh(): void {
 		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		var tasks = items.map(async element => {
-			
-			try{
+
+			try {
 				element.error = null;
 				element.clientInstance = new ServiceBusClient(element.connection);
 				await element.clientInstance.validateAndThrow();
 
 			}
-			catch(ex){
+			catch (ex) {
 				element.error = ex;
 			}
-			
+
 		});
-		Promise.all(tasks).then(x=>{
-			this.state.update(NAMESPACE_CONNECTIONS, items );
+
+		Promise.all(tasks).then(x => {
+			this.state.update(NAMESPACE_CONNECTIONS, items);
 			this._onDidChangeTreeData.fire();
 		});
 
-		this.state.update(NAMESPACE_CONNECTIONS, items );
+		this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();
-		
+
 	}
 
-	addNamespace(item: NameSpaceData){
+	addNamespace(item: NameSpaceData) {
 		var items = this.state.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items.push(item);
-		this.state.update(NAMESPACE_CONNECTIONS, items );
+		this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();
 	}
 }
 
-interface NameSpaceData{
+interface NameSpaceData {
 	name: string;
 	connection: string;
 	error?: any;
@@ -142,7 +143,6 @@ export class NameSpace extends ExplorerItemBase {
 	};
 
 	contextValue = 'namespace';
-
 }
 
 export class TopicList extends ExplorerItemBase {
