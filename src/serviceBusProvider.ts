@@ -210,7 +210,6 @@ export class Topic extends ExplorerItemBase {
 
 }
 
-
 export class QueueList extends ExplorerItemBase {
 
 	constructor(
