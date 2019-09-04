@@ -85,9 +85,7 @@ export class NameSpace {
     }
 
     private async validateNameIsUnique(name: string) {
-        // ...validate...
         if (name.trim() === '') {
-            //return {isValid: false, message: 'Name must be filled in'};
             return 'Name must be filled in';
     
         }
@@ -95,7 +93,6 @@ export class NameSpace {
             var items = this.context.workspaceState.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
             
             if (items.find(p => p.name === name.trim())) {
-                //await new Promise(resolve => setTimeout(resolve, 1000));
                 return 'Name not unique';
             }
         }

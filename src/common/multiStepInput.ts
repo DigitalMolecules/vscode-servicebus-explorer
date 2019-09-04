@@ -2,6 +2,7 @@ import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, QuickI
 
 export class InputFlowAction {
 	private constructor() { }
+
 	static back = new InputFlowAction();
 	static cancel = new InputFlowAction();
 	static resume = new InputFlowAction();
@@ -19,7 +20,6 @@ export interface IQuickPickParameters<T extends QuickPickItem> {
 	buttons?: QuickInputButton[];
 	shouldResume: () => Thenable<boolean>;
 }
-
 
 export interface IInputBoxParameters {
 	title: string;
