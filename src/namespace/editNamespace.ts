@@ -1,5 +1,5 @@
 import { window, ExtensionContext } from 'vscode';
-import { MultiStepInput } from '../multiStepInput';
+import { MultiStepInput } from '../common/multiStepInput';
 import { State, NameSpace, NameSpaceData } from './namespace';
 import { NAMESPACE_CONNECTIONS } from '../common/global';
 

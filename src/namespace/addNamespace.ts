@@ -1,10 +1,15 @@
 import { window, ExtensionContext } from 'vscode';
-import { MultiStepInput } from '../multiStepInput';
+import { MultiStepInput } from '../common/multiStepInput';
 import { State, NameSpaceData } from './namespace';
 import { NAMESPACE_CONNECTIONS } from '../common/global';
 
 export async function addNamespace(context: ExtensionContext): Promise<State> {
 	const title = 'Add Namespace';
+	const state = await collectInputs();
+
+	window.showInformationMessage(`Adding Namespace  '${state.name}'`);
+
+	return state;
 
 	async function pickConnnectionString(input: MultiStepInput, state: Partial<State>) {
 		
@@ -39,13 +44,7 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
 		await MultiStepInput.run(input => pickConnnectionString(input, state));
 		return state as State;
 	}
-
-	const state = await collectInputs();
-
-	window.showInformationMessage(`Adding Namespace  '${state.name}'`);
-
-	return state;
-
+	
 	async function validateConnectionString(name: string): Promise<string | undefined> {
 		// ...validate...
 		if (name.trim() === '') {
