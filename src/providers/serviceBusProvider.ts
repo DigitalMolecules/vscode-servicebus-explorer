@@ -26,11 +26,11 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		this.reBuildTree();
 	}
 
-	getTreeItem(element: ExplorerItemBase): vscode.TreeItem {
+	public getTreeItem(element: ExplorerItemBase): vscode.TreeItem {
 		return element;
 	}
 
-	getChildren(element?: ExplorerItemBase): Thenable<ExplorerItemBase[]> {
+	public getChildren(element?: ExplorerItemBase): Thenable<ExplorerItemBase[]> {
 		//On undefined we get the namespaces
 		if (!element) {
 			var connections = this.state.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
@@ -57,7 +57,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		return Promise.resolve([]);
 	}
 
-	reBuildTree(): void {
+	public reBuildTree(): void {
 		var items = this.state.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		var tasks = items.map(async element => {
 
@@ -81,14 +81,14 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		this._onDidChangeTreeData.fire();
 	}
 
-	addNamespace(item: INameSpaceData) {
+	public addNamespace(item: INameSpaceData) {
 		var items = this.state.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items.push(item);
 		this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();
 	}
 
-	editNamespace(node: NameSpaceItem, item: INameSpaceData) {
+	public editNamespace(node: NameSpaceItem, item: INameSpaceData) {
 		var items = this.state.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items.forEach((p) => {
 			if (p.name === node.data.name)
@@ -101,7 +101,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		this._onDidChangeTreeData.fire();
 	}
 
-	deleteNamespace(node: NameSpaceItem) {
+	public deleteNamespace(node: NameSpaceItem) {
 		var items = this.state.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
 		items = items.filter(p => p.name !== node.data.name);
 		this.state.update(NAMESPACE_CONNECTIONS, items);
