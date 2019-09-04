@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { ServiceBusProvider, NameSpace, TopicList, QueueList } from './serviceBusProvider';
 import { addNamespace } from './addNamespace';
+import { editNamespace } from './editNamespace';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
@@ -27,14 +28,14 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('serviceBusExplorer.editEntry', (node: NameSpace) => {
-			vscode.window.showInformationMessage('Edit not implemented!');
+		vscode.commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpace) => {
+			var state = await editNamespace(node, context);
+			serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString } );
 		})
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpace) => {
-			//vscode.window.showInformationMessage('Delete not implemented!');
 			serviceBusProvider.deleteNamespace(node);
 		})
 	);
