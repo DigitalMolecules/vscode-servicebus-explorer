@@ -73,12 +73,12 @@
 			"view/item/context": [
 				{
 					"command": "serviceBusExplorer.editEntry",
-					"when": "view == servicebus-namespaces && viewItem == NameSpace",
+					"when": "view == servicebus-namespaces && viewItem == namespace",
 					"group": "inline"
 				},
 				{
 					"command": "serviceBusExplorer.deleteEntry",
-					"when": "view == servicebus-namespaces && viewItem == NameSpace"
+					"when": "view == servicebus-namespaces && viewItem == namespace"
 				}
 			]
 		}

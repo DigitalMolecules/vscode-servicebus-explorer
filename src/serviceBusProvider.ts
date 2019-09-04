@@ -91,8 +91,6 @@ interface NameSpaceData{
 	clientInstance?: IServiceBusClient;
 }
 
-
-
 export class ExplorerItemBase extends vscode.TreeItem {
 
 	constructor(
