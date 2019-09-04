@@ -14,12 +14,13 @@ export class QueueList extends ExplorerItemBase {
 		super(label, collapsibleState, command);
 	}
 
-	get tooltip(): string {
+	public get tooltip(): string {
 		return `${this.label}`;
 	}
 
-	get description(): string {
+	public get description(): string {
 		return '(0)';
 	}
+
 	contextValue = 'queuelist';
 }
