@@ -1,5 +1,8 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
 import {  MultiStepInput }  from './multiStepInput';
+import { NameSpace } from './serviceBusProvider';
+
+const NAMESPACE_CONNECTIONS  = 'dm.sbe.connections';
 
 interface State {
     title: string;
@@ -56,16 +59,31 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
     
     return  state;
     
-    async function validateConnectionString(name: string) {
+    async function validateConnectionString(name: string) : Promise<string | undefined> {
 		// ...validate...
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		return name === 'vscode' ? 'Name not unique' : undefined;
+		if (name.trim() === '')
+		{
+			return 'Connection string must be filled in';
+		}
     }
 
     async function validateNameIsUnique(name: string) {
 		// ...validate...
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		return name === 'vscode' ? 'Name not unique' : undefined;
+		if (name.trim() === '')
+		{
+			//return {isValid: false, message: 'Name must be filled in'};
+			return 'Name must be filled in';
+
+		}
+		else
+		{
+			var items = context.workspaceState.get<NameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
+			if (items.find(p => p.name === name.trim()))
+			{
+			//await new Promise(resolve => setTimeout(resolve, 1000));
+				return 'Name not unique';
+			}	
+		}
     }
     
     function shouldResume() {
@@ -73,5 +91,12 @@ export async function addNamespace(context: ExtensionContext): Promise<State> {
 		return new Promise<boolean>((resolve, reject) => {
 
 		});
+	}
+
+	interface NameSpaceData{
+		name: string;
+		connection: string;
+		error?: any;
+		clientInstance?: IServiceBusClient;
 	}
 }
