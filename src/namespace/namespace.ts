@@ -1,9 +1,10 @@
 import { ExtensionContext, window, QuickPickItem } from "vscode";
-import { INameSpaceData, NameSpaceItem } from "./namespaceItem";
 import { MultiStepInput } from "../common/multiStepInput";
 import { NAMESPACE_CONNECTIONS } from "../common/global";
 import ServiceBusClient from "../client/ServiceBusClient";
 import { IServiceBusClient } from "../client/IServiceBusClient";
+import { NameSpaceItem } from "./namespaceItem";
+import { IItemData } from "../common/explorerItemBase";
 
 interface IState {
     title: string;
@@ -104,7 +105,7 @@ export class NameSpace {
             return 'Name must be filled in';
         }
         else {
-            var items = this.context.workspaceState.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);
+            var items = this.context.workspaceState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 
             if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
                 return 'Name not unique';

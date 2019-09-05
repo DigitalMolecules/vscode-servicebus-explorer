@@ -86,7 +86,6 @@ export default class ServiceBusClient implements IServiceBusClient {
 
         return hostName;
     }
-
 }
 
 //postman.setEnvironmentVariable('azure-authorization', getAuthHeader(request['url'], "RootManageSharedAccessKey", "fmmVl6GYSXS23qMfkCpUqp6GeWDNy3czEEA0UhjeI+A="));

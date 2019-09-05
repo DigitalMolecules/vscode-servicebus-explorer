@@ -1,14 +1,21 @@
 import * as vscode from 'vscode';
+import { IServiceBusClient } from '../client/IServiceBusClient';
 
+export interface IItemData {
+	name: string;
+	connection: string;
+	error?: any;
+	clientInstance?: IServiceBusClient;
+}
 
 export class ExplorerItemBase extends vscode.TreeItem {
 
 	constructor(
-		public readonly label: string,
+		public readonly itemData: IItemData,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
-		super(label, collapsibleState);
+		super(itemData.name, collapsibleState);
 	}
 
 	public get tooltip(): string {
@@ -16,9 +23,8 @@ export class ExplorerItemBase extends vscode.TreeItem {
 	}
 	
 	public get description(): string {
-		return 'description';
+		return this.itemData.error ? 'ERROR' : '(0)';
 	}
 
 	contextValue = 'base';
-
 }
