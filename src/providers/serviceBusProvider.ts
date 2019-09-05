@@ -55,6 +55,10 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				]
 			);
 		}
+		else if (element instanceof Topic) {
+			// Return Messages Here
+			return Promise.resolve([]);
+		}
 		else if (element instanceof TopicList) {
 			var tl = element as TopicList;
 			if (tl.itemData.clientInstance) {
