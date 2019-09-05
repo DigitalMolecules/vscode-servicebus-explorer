@@ -23,7 +23,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 	}
 	
 	public get description(): string {
-		return this.itemData.error ? 'ERROR' : '(0)';
+		return this.itemData.error ? 'ERROR' : '';
 	}
 
 	contextValue = 'base';
