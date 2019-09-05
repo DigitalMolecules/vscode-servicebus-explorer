@@ -68,8 +68,8 @@ export class NameSpace {
             title: this.title,
             step: 1,
             totalSteps: 2,
-            value: typeof state.connectionString === 'string' ? state.connectionString : this.node === null ? '' : this.node.data.connection,
-            prompt: 'Paste the connection string to the namespace',
+            value: state.connectionString || this.node === null ? '' : this.node.data.connection,
+            prompt: 'Enter the connection string to the namespace',
             validate: this.validateConnectionString,
             shouldResume: this.shouldResume
         });
