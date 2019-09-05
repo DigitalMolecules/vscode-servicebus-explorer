@@ -39,16 +39,29 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			);
 		}
 		else if (element instanceof NameSpaceItem) {
+
+			if (element.data.clientInstance) {
+				var topics = element.data.clientInstance.getTopics();
+				var queues = element.data.clientInstance.getTopics();				
+
+				return Promise.all([queues,topics])
+					.then(x => [
+						new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
+						new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length)
+					]);
+			}
+
 			return Promise.resolve([
 				new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
 				new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
 			]);
 		}
 		else if (element instanceof TopicList) {
-			if (element.itemData.clientInstance) {
-				return element.itemData.clientInstance.getTopics()
+			var tl = element as TopicList;
+			if (tl.itemData.clientInstance) {
+				return tl.itemData.clientInstance.getTopics()
 					.then(x => x.map(y =>
-						new Topic(element.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+						new Topic(tl.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
 					));
 			}
 		}
