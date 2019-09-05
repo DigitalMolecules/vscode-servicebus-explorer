@@ -40,21 +40,20 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		}
 		else if (element instanceof NameSpaceItem) {
 
-			if (element.data.clientInstance) {
-				var topics = element.data.clientInstance.getTopics();
-				var queues = element.data.clientInstance.getTopics();				
+			var topics: any = [];
+			var queues: any = [];
 
-				return Promise.all([queues,topics])
-					.then(x => [
-						new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
-						new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length)
-					]);
+			if (element.data.clientInstance) {
+				topics = element.data.clientInstance.getTopics();
+				queues = element.data.clientInstance.getTopics();
 			}
 
-			return Promise.resolve([
-				new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
-				new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed),
-			]);
+			return Promise.all([queues, topics])
+				.then(x => [
+					new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[0].length),
+					new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length)
+				]
+			);
 		}
 		else if (element instanceof TopicList) {
 			var tl = element as TopicList;
@@ -118,7 +117,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	public deleteNamespace(node: NameSpaceItem) {
 		var items = this.state.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 		items = items.filter(p => p.name !== node.data.name);
-		
+
 		this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();
 	}

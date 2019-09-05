@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 	}
 	
 	public get description(): string {
-		return `(${this.itemCount})`;
+		return `(${this.itemCount.toLocaleString()})`;
 	}
 
 	contextValue = 'topiclist';
