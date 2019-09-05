@@ -2,6 +2,8 @@ import * as CryptoJS from 'crypto-js';
 import fetch from 'node-fetch';
 import parser from 'fast-xml-parser';
 import { IServiceBusClient } from './IServiceBusClient';
+import { URL } from 'url';
+
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -42,17 +44,13 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(topics);
     }
 
-
-    public getAuthHeader(): any {
-
+    private getAuthHeader(): any {
         const values: Map<string, string> = this.connectionString.split(';')
             .map(x => x.split('='))
             // .reduce(x=> {x[0]: x[1]}, [])
             .reduce(function (a, b) {
                 return a.set(b[0], b[1]);
-            }, new Map<string, string>())
-            ;
-
+            }, new Map<string, string>());
 
         const Endpoint = values.get('Endpoint');
         const SharedAccessKeyName = values.get('SharedAccessKeyName');
@@ -77,10 +75,19 @@ export default class ServiceBusClient implements IServiceBusClient {
         return { auth: sasToken, endpoint: Endpoint };
     }
 
+    public getHostName(): string {
+        let hostName = '';
+
+        try {
+            var auth = this.getAuthHeader();
+            var loc = new URL(auth.endpoint);
+            hostName = loc.hostname.split(".", 1)[0];
+        } catch { }
+
+        return hostName;
+    }
+
 }
-
-
-
 
 //postman.setEnvironmentVariable('azure-authorization', getAuthHeader(request['url'], "RootManageSharedAccessKey", "fmmVl6GYSXS23qMfkCpUqp6GeWDNy3czEEA0UhjeI+A="));
 //postman.setEnvironmentVariable('current-date',new Date().toUTCString());

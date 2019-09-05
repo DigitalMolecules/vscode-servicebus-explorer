@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
 
 // Sdk for JS does not have the management api yet
 // https://github.com/Azure/azure-sdk-for-js/issues/3116
