@@ -11,11 +11,11 @@ export class ExplorerItemBase extends vscode.TreeItem {
 		super(label, collapsibleState);
 	}
 
-	get tooltip(): string {
+	public get tooltip(): string {
 		return `${this.label}`;
 	}
 	
-	get description(): string {
+	public get description(): string {
 		return 'description';
 	}
 

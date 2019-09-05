@@ -86,8 +86,7 @@ export class NameSpace {
 
     private validateNameIsUnique = async (name: string) => {
         if (name.trim() === '') {
-            return 'Name must be filled in';
-    
+            return 'Name must be filled in';   
         }
         else {
             var items = this.context.workspaceState.get<INameSpaceData[]>(NAMESPACE_CONNECTIONS, []);

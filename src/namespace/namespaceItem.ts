@@ -19,7 +19,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 		super(data.name, collapsibleState, command);
 	}
 
-	get description(): string {
+	public get description(): string {
 		return this.data.error ? 'ERROR' : '(0)';
 	}
 
