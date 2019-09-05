@@ -19,11 +19,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         });
 
         var body = await result.text();
-
     }
 
     public async getTopics(): Promise<[any]> {
         var auth = this.getAuthHeader();
+        
         var result = await fetch(auth.endpoint.replace('sb', 'https') + '', {
             method: 'GET',
             headers: { 'Authorization': auth.auth },
@@ -57,7 +57,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         const SharedAccessKey = values.get('SharedAccessKey') + '=';
 
         if (!Endpoint || !SharedAccessKeyName || !SharedAccessKey) {
-            throw new Error("Invalid connection string");
+            throw new Error(`Invalid connection string ${this.connectionString}`);
         }
 
         var d = new Date();
