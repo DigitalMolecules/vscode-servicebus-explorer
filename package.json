@@ -72,6 +72,14 @@
 			{
 				"command": "serviceBusExplorer.deleteEntry",
 				"title": "Delete"
+			},
+			{
+				"command": "serviceBusExplorer.getSubscriptionMessages",
+				"title": "View",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
 			}
 		],
 		"menus": {
@@ -104,6 +112,11 @@
 				{
 					"command": "serviceBusExplorer.refreshQueueList",
 					"when": "view == servicebus-namespaces && viewItem == queuelist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.getSubscriptionMessages",
+					"when": "view == servicebus-namespaces && viewItem == subscription",
 					"group": "inline"
 				}
 			]

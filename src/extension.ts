@@ -6,15 +6,24 @@ import { NameSpaceItem } from './namespace/namespaceItem';
 import { TopicList } from './topic/topicList';
 import { QueueList } from './queue/queueList';
 import { NameSpace } from './namespace/namespace';
+import { MessageProvider } from './providers/messageProvider';
+import { Subscription } from './topic/subscription';
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "service-bus-explorer" is now active!');
+	
+	const stuffToDispose = context.subscriptions;
 
 	const serviceBusProvider = new ServiceBusProvider(context);
 	const nameSpace = new NameSpace(context);
-
-	vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider);
+	const messageProvider = new MessageProvider();
 	
+	
+	stuffToDispose.push(vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
+	stuffToDispose.push(vscode.workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));
+
+
+	//TODO: move this to a command file
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshEntry', () => {
 			serviceBusProvider.reBuildTree();
@@ -50,6 +59,15 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => {
 			vscode.window.showInformationMessage('Refresh Queue List not implemented!');
+		})
+	);
+
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
+			let uri = vscode.Uri.parse('servicebusmessage:message01');
+			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
 		})
 	);
 }
