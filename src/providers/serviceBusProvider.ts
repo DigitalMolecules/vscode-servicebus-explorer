@@ -57,19 +57,22 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				);
 		}
 		else if (element instanceof TopicList) {
-			var tl = element as TopicList;
-			if (tl.itemData.clientInstance) {
-				return tl.itemData.clientInstance.getTopics()
+			if (element.itemData.clientInstance) {
+				return element.itemData.clientInstance.getTopics()
 					.then(x => x.map(y =>
-						new Topic(tl.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+						new Topic(element.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
 					));
 			}
 		}
 		else if (element instanceof Topic) {
-			// Return Messages Here
-			return Promise.resolve([new Subscription(element.itemData, "Sub1",  vscode.TreeItemCollapsibleState.None)]);
+			//TODO: Someone implement this please
+			if (element.itemData.clientInstance) {
+				return element.itemData.clientInstance.getSubscriptions()
+					.then(x => x.map(y =>
+						new Subscription(element.itemData, y.title, vscode.TreeItemCollapsibleState.None)
+					));
+			}
 		}
-
 		return Promise.resolve([]);
 	}
 
