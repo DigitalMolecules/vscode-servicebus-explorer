@@ -1,24 +1,17 @@
-import { TopicList } from "./topicList";
 import { TreeItemCollapsibleState, Command } from "vscode";
-import { ExplorerItemBase } from "../common/explorerItemBase";
+import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
+import { TopicList } from "./topicList";
 
-export class Topic extends ExplorerItemBase {
+export class Topic extends TopicList {
 
 	constructor(
-		public parentList: TopicList,
-		label: string,
+		public itemData: IItemData,
+		title: string,
 		collapsibleState: TreeItemCollapsibleState,
 		command?: Command
 	) {
-		super(label, collapsibleState, command);
-	}
-
-	public get tooltip(): string {
-		return `${this.label}`;
-	}
-
-	public get description(): string {
-		return '(0)';
+		super(itemData, collapsibleState, 0, command);
+		this.label = title;
 	}
 
 	contextValue = 'topic';

@@ -1,4 +1,4 @@
-import { ExplorerItemBase } from "../common/explorerItemBase";
+import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TreeItemCollapsibleState, Command } from "vscode";
 
@@ -6,20 +6,17 @@ import { TreeItemCollapsibleState, Command } from "vscode";
 export class QueueList extends ExplorerItemBase {
 
 	constructor(
-		public namespaceItem: NameSpaceItem,
-		label: string,
+		public itemData: IItemData,
 		collapsibleState: TreeItemCollapsibleState,
+		public itemCount: number = 0,
 		command?: Command
 	) {
-		super(label, collapsibleState, command);
-	}
-
-	public get tooltip(): string {
-		return `${this.label}`;
+		super(itemData, collapsibleState, command);
+		this.label = 'Queues';
 	}
 
 	public get description(): string {
-		return '(0)';
+		return `(${this.itemCount.toLocaleString()})`;
 	}
 
 	contextValue = 'queuelist';

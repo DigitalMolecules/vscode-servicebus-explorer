@@ -1,27 +1,16 @@
 import { QuickPickItem, TreeItemCollapsibleState, Command } from "vscode";
-import { ExplorerItemBase } from "../common/explorerItemBase";
+import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { IServiceBusClient } from "../client/IServiceBusClient";
-
-export interface INameSpaceData {
-	name: string;
-	connection: string;
-	error?: any;
-	clientInstance?: IServiceBusClient;
-}
 
 export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
-		public data: INameSpaceData,
+		public data: IItemData,
 		collapsibleState: TreeItemCollapsibleState,
 		command?: Command
 	) {
-		super(data.name, collapsibleState, command);
+		super(data, collapsibleState, command);
 	}
-
-	get description(): string {
-		return this.data.error ? 'ERROR' : '(0)';
-	}
-
+	
 	contextValue = 'namespace';
 }

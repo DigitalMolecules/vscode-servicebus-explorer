@@ -2,6 +2,8 @@ import * as CryptoJS from 'crypto-js';
 import fetch from 'node-fetch';
 import parser from 'fast-xml-parser';
 import { IServiceBusClient } from './IServiceBusClient';
+import { URL } from 'url';
+
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -17,12 +19,23 @@ export default class ServiceBusClient implements IServiceBusClient {
         });
 
         var body = await result.text();
-
     }
 
     public async getTopics(): Promise<[any]> {
+               
+        return Promise.resolve(this.getEntities("topics"));
+    }
+
+    public async getQueues(): Promise<[any]> {
+               
+        return Promise.resolve(this.getEntities("queues"));
+    }
+
+    public async getEntities(entityName : string): Promise<[any]> {
+        //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
-        var result = await fetch(auth.endpoint.replace('sb', 'https') + '', {
+
+        var result = await fetch(auth.endpoint.replace('sb', 'https') + '/$resources/' + entityName, {
             method: 'GET',
             headers: { 'Authorization': auth.auth },
         });
@@ -33,13 +46,13 @@ export default class ServiceBusClient implements IServiceBusClient {
 
         var body = await result.text();
         var xmlData = parser.parse(body);
-        var topics = xmlData.feed.entry;
+        var entries = xmlData.feed.entry;
 
-        if (!Array.isArray(topics)) {
-            topics = [topics];
+        if (!Array.isArray(entries)) {
+            entries = [entries];
         }
-
-        return Promise.resolve(topics);
+        
+        return Promise.resolve(entries);
     }
 
     public getSubscriptions = async (): Promise<any> => {
@@ -54,16 +67,14 @@ export default class ServiceBusClient implements IServiceBusClient {
             // .reduce(x=> {x[0]: x[1]}, [])
             .reduce(function (a, b) {
                 return a.set(b[0], b[1]);
-            }, new Map<string, string>())
-            ;
-
+            }, new Map<string, string>());
 
         const Endpoint = values.get('Endpoint');
         const SharedAccessKeyName = values.get('SharedAccessKeyName');
         const SharedAccessKey = values.get('SharedAccessKey') + '=';
 
         if (!Endpoint || !SharedAccessKeyName || !SharedAccessKey) {
-            throw new Error("Invalid connection string");
+            throw new Error(`Invalid connection string ${this.connectionString}`);
         }
 
         var d = new Date();
@@ -81,10 +92,18 @@ export default class ServiceBusClient implements IServiceBusClient {
         return { auth: sasToken, endpoint: Endpoint };
     }
 
+    public getHostName(): string {
+        let hostName = '';
+
+        try {
+            var auth = this.getAuthHeader();
+            var loc = new URL(auth.endpoint);
+            hostName = loc.hostname.split(".", 1)[0];
+        } catch { }
+
+        return hostName;
+    }
 }
-
-
-
 
 //postman.setEnvironmentVariable('azure-authorization', getAuthHeader(request['url'], "RootManageSharedAccessKey", "fmmVl6GYSXS23qMfkCpUqp6GeWDNy3czEEA0UhjeI+A="));
 //postman.setEnvironmentVariable('current-date',new Date().toUTCString());
