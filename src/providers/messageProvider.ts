@@ -8,6 +8,17 @@ export class MessageProvider implements vscode.TextDocumentContentProvider {
 
     provideTextDocumentContent(uri: vscode.Uri): string {
         
-        return "POTATOES!!";
+        return `
+{
+    "lets":"pretend",
+    "this": {
+        "is": [
+            "a", 
+            "fancy",
+            "message"
+        ]
+    }
+}
+        `;
     }
 }

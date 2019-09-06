@@ -66,27 +66,27 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
 
-			
+
 			const panel = vscode.window.createWebviewPanel(
 				'messagelist', // Identifies the type of the webview. Used internally
 				`Messages (${node.label})`, // Title of the panel displayed to the user
 				vscode.ViewColumn.One, // Editor column to show the new webview panel in.
 				{
 					enableScripts: true
-				} 
+				}
 			);
 
 			panel.webview.onDidReceiveMessage(
 				message => {
-				  switch (message.command) {
-					case 'serviceBusExplorer.showMessage':
-					  vscode.window.showErrorMessage(message.text);
-					  return;
-				  }
+					switch (message.command) {
+						case 'serviceBusExplorer.showMessage':
+							vscode.commands.executeCommand('serviceBusExplorer.showMessage');
+							return;
+					}
 				},
 				undefined,
 				context.subscriptions
-			  );
+			);
 
 			panel.webview.html = `
 		<!DOCTYPE html>
@@ -121,18 +121,22 @@ export function activate(context: vscode.ExtensionContext) {
 			
 			`;
 
-			panel.onDidDispose(()=>{
+			panel.onDidDispose(() => {
 
-			}, null, stuffToDispose );
+			}, null, stuffToDispose);
 
 		})
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (node: Subscription) => {
-			let uri = vscode.Uri.parse('servicebusmessage:message01');
+			let uri = vscode.Uri.parse('servicebusmessage:message02.json');
 			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
-			await vscode.window.showTextDocument(doc, { preview: false });
+			await vscode.window.showTextDocument(doc,
+				{
+					preview: false,
+				}
+			);
 		})
 	);
 
