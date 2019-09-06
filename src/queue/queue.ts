@@ -7,10 +7,9 @@ export class Queue extends QueueList {
 	constructor(
 		public itemData: IItemData,
 		title: string,
-		collapsibleState: TreeItemCollapsibleState,
 		command?: Command
 	) {
-		super(itemData, collapsibleState, 0, command);
+		super(itemData, 0, 0, command);
 		this.label = title;
 	}
 
