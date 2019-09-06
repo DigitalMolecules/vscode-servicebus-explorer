@@ -11,6 +11,7 @@ import { NAMESPACE_CONNECTIONS } from '../common/global';
 import { TopicList } from '../topic/topicList';
 import { QueueList } from '../queue/queueList';
 import { Topic } from '../topic/topic';
+import { Queue } from '../queue/queue';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -65,6 +66,15 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				return tl.itemData.clientInstance.getTopics()
 					.then(x => x.map(y =>
 						new Topic(tl.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+					));
+			}
+		}
+		else if (element instanceof QueueList) {
+			var ql = element as QueueList;
+			if (ql.itemData.clientInstance) {
+				return ql.itemData.clientInstance.getQueues()
+					.then(x => x.map(y =>
+						new Queue(ql.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
 					));
 			}
 		}
