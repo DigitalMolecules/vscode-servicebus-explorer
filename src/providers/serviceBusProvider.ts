@@ -11,6 +11,7 @@ import { NAMESPACE_CONNECTIONS } from '../common/global';
 import { TopicList } from '../topic/topicList';
 import { QueueList } from '../queue/queueList';
 import { Topic } from '../topic/topic';
+import { Subscription } from '../topic/subscription';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -53,11 +54,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 					new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[0].length || 0),
 					new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length || 0)
 				]
-			);
-		}
-		else if (element instanceof Topic) {
-			// Return Messages Here
-			return Promise.resolve([]);
+				);
 		}
 		else if (element instanceof TopicList) {
 			var tl = element as TopicList;
@@ -67,6 +64,10 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 						new Topic(tl.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
 					));
 			}
+		}
+		else if (element instanceof Topic) {
+			// Return Messages Here
+			return Promise.resolve([new Subscription(element.itemData, "Sub1",  vscode.TreeItemCollapsibleState.None)]);
 		}
 
 		return Promise.resolve([]);

@@ -1,8 +1,7 @@
 import { TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { TopicList } from "./topicList";
 
-export class Topic extends TopicList {
+export class Topic extends ExplorerItemBase {
 
 	constructor(
 		public itemData: IItemData,
@@ -10,7 +9,7 @@ export class Topic extends TopicList {
 		collapsibleState: TreeItemCollapsibleState,
 		command?: Command
 	) {
-		super(itemData, collapsibleState, 0, command);
+		super(itemData, collapsibleState, command);
 		this.label = title;
 	}
 
