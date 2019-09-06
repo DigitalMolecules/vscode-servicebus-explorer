@@ -65,11 +65,27 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
+			const panel = vscode.window.createWebviewPanel(
+				'messagelist', // Identifies the type of the webview. Used internally
+				`Messages (${node.label})`, // Title of the panel displayed to the user
+				vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+				{} // Webview options. More on these later.
+			  );
+			
+			  panel.webview.html = `<h1>Messages (${node.label})</h1>`;
+			  
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (node: Subscription) => {
 			let uri = vscode.Uri.parse('servicebusmessage:message01');
 			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		})
 	);
+
+	
 }
 
 export function deactivate() { }
