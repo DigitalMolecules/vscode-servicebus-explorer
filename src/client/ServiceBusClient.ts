@@ -23,19 +23,20 @@ export default class ServiceBusClient implements IServiceBusClient {
 
     public async getTopics(): Promise<[any]> {
                
-        return Promise.resolve(this.getEntities("topics"));
+        return Promise.resolve(this.getEntities('/$resources/topics'));
     }
 
     public async getQueues(): Promise<[any]> {
                
-        return Promise.resolve(this.getEntities("queues"));
+        return Promise.resolve(this.getEntities('/$resources/queues'));
     }
 
-    public async getEntities(entityName : string): Promise<[any]> {
+    //TODO: Instead of returning a promsie of [any], we should type this, at least with an interface
+    public async getEntities(path : string): Promise<[any]> {
         //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
 
-        var result = await fetch(auth.endpoint.replace('sb', 'https') + '/$resources/' + entityName, {
+        var result = await fetch(auth.endpoint.replace('sb', 'https') + path, {
             method: 'GET',
             headers: { 'Authorization': auth.auth },
         });
@@ -55,8 +56,8 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(entries);
     }
 
-    public getSubscriptions = async (): Promise<any> => {
-
+    public getSubscriptions = async (topicName: string): Promise<any> => {
+        return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
     }
 
 
