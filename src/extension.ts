@@ -10,14 +10,14 @@ import { MessageProvider } from './providers/messageProvider';
 import { Subscription } from './topic/subscription';
 
 export function activate(context: vscode.ExtensionContext) {
-	
+
 	const stuffToDispose = context.subscriptions;
 
 	const serviceBusProvider = new ServiceBusProvider(context);
 	const nameSpace = new NameSpace(context);
 	const messageProvider = new MessageProvider();
-	
-	
+
+
 	stuffToDispose.push(vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
 	stuffToDispose.push(vscode.workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));
 
@@ -33,14 +33,14 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-			serviceBusProvider.addNamespace( { name: state.name, connection: state.connectionString } );
+			serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
 		})
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
 			var state = await nameSpace.editNamespace(node);
-			serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString } );
+			serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString });
 		})
 	);
 
@@ -65,15 +65,66 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
+
+			
 			const panel = vscode.window.createWebviewPanel(
 				'messagelist', // Identifies the type of the webview. Used internally
 				`Messages (${node.label})`, // Title of the panel displayed to the user
 				vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-				{} // Webview options. More on these later.
+				{
+					enableScripts: true
+				} 
+			);
+
+			panel.webview.onDidReceiveMessage(
+				message => {
+				  switch (message.command) {
+					case 'serviceBusExplorer.showMessage':
+					  vscode.window.showErrorMessage(message.text);
+					  return;
+				  }
+				},
+				undefined,
+				context.subscriptions
 			  );
+
+			panel.webview.html = `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Cat Coding</title>
+		</head>
+		<body>
+						<h1>Messages (${node.label})</h1>
+						<script >
+							const vscode = acquireVsCodeApi();
+							function showMessage(){
+								vscode.postMessage({
+									command: 'serviceBusExplorer.showMessage',
+									text: 'Potatoes'
+								})
+							}
+						</script>
+						<table>
+							<tr>
+								<td>
+									Message 1
+								</td>
+								<td>
+									<button onclick="showMessage()">Get Messages</button>
+								</td>
+							</tr>
+						</table>
+			</body>
 			
-			  panel.webview.html = `<h1>Messages (${node.label})</h1>`;
-			  
+			`;
+
+			panel.onDidDispose(()=>{
+
+			}, null, stuffToDispose );
+
 		})
 	);
 
@@ -85,7 +136,7 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
-	
+
 }
 
 export function deactivate() { }
