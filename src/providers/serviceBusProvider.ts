@@ -12,6 +12,7 @@ import { TopicList } from '../topic/topicList';
 import { QueueList } from '../queue/queueList';
 import { Topic } from '../topic/topic';
 import { Queue } from '../queue/queue';
+import { Subscription } from '../topic/subscription';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -54,18 +55,23 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 					new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[0].length || 0),
 					new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length || 0)
 				]
-			);
-		}
-		else if (element instanceof Topic) {
-			// Return Messages Here
-			return Promise.resolve([]);
+				);
 		}
 		else if (element instanceof TopicList) {
-			var tl = element as TopicList;
-			if (tl.itemData.clientInstance) {
-				return tl.itemData.clientInstance.getTopics()
+			if (element.itemData.clientInstance) {
+				return element.itemData.clientInstance.getTopics()
 					.then(x => x.map(y =>
-						new Topic(tl.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+						new Topic(element.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+					));
+			}
+		}
+		else if (element instanceof Topic) {
+			//TODO: Someone implement this please
+			if (element.itemData.clientInstance) {
+				//TODO: Label should not be nullable, or else we should have an entity id: element.label
+				return element.itemData.clientInstance.getSubscriptions(element.label || '')
+					.then(x => x.map((y: { title: string; }) =>
+						new Subscription(element.itemData, y.title, vscode.TreeItemCollapsibleState.None)
 					));
 			}
 		}
