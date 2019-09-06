@@ -42,6 +42,10 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(topics);
     }
 
+    public getSubscriptions = async (): Promise<any> => {
+
+    }
+
 
     public getAuthHeader(): any {
 
