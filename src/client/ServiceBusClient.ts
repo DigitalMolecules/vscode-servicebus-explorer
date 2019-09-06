@@ -22,9 +22,20 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     public async getTopics(): Promise<[any]> {
+               
+        return Promise.resolve(this.getEntities("topics"));
+    }
+
+    public async getQueues(): Promise<[any]> {
+               
+        return Promise.resolve(this.getEntities("queues"));
+    }
+
+    public async getEntities(entityName : string): Promise<[any]> {
+        //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
-        
-        var result = await fetch(auth.endpoint.replace('sb', 'https') + '', {
+
+        var result = await fetch(auth.endpoint.replace('sb', 'https') + '/$resources/' + entityName, {
             method: 'GET',
             headers: { 'Authorization': auth.auth },
         });
@@ -35,13 +46,13 @@ export default class ServiceBusClient implements IServiceBusClient {
 
         var body = await result.text();
         var xmlData = parser.parse(body);
-        var topics = xmlData.feed.entry;
+        var entries = xmlData.feed.entry;
 
-        if (!Array.isArray(topics)) {
-            topics = [topics];
+        if (!Array.isArray(entries)) {
+            entries = [entries];
         }
-
-        return Promise.resolve(topics);
+        
+        return Promise.resolve(entries);
     }
 
     private getAuthHeader(): any {

@@ -45,7 +45,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 			if (element.data.clientInstance && !element.data.error) {
 				topics = element.data.clientInstance.getTopics();
-				queues = element.data.clientInstance.getTopics();
+				queues = element.data.clientInstance.getQueues();
 			}
 
 			return Promise.all([queues, topics])
