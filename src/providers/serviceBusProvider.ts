@@ -68,11 +68,21 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		else if (element instanceof Topic) {
 			//TODO: Someone implement this please
 			if (element.itemData.clientInstance) {
+				const mapToSubscription = async (subs : any[]) : Promise<Subscription[]>=>{
+					
+					subs = subs.map(async (y: { title: string; }) => {
+						if(element.itemData.clientInstance){
+							const subDetails = await element.itemData.clientInstance.getSubscriptionDetails(element.label || '', y.title);
+							return new Subscription(element.itemData, subDetails, y.title);
+						}
+						return null;
+					});
+
+					return subs;
+				};
 				//TODO: Label should not be nullable, or else we should have an entity id: element.label
 				return element.itemData.clientInstance.getSubscriptions(element.label || '')
-					.then(x => x.map((y: { title: string; }) =>
-						new Subscription(element.itemData, y.title, element.label || '')
-					));
+					.then(mapToSubscription);
 			}
 		}
 		else if (element instanceof QueueList) {

@@ -1,8 +1,9 @@
 import * as CryptoJS from 'crypto-js';
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import parser from 'fast-xml-parser';
 import { IServiceBusClient } from './IServiceBusClient';
 import { URL } from 'url';
+import { ISubscription } from './models/ISubscriptionDetails';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -21,29 +22,49 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     public getTopics(): Promise<any[]> {
-        return this.getEntities('GET','/$resources/topics');
+        return this.getEntities('GET', '/$resources/topics');
     }
 
     public getQueues(): Promise<any[]> {
-        return this.getEntities('GET','/$resources/queues');
+        return this.getEntities('GET', '/$resources/queues');
     }
 
-    public getSubscriptions = (topicName: string): Promise<any[]> => {
-        return this.getEntities('GET',`${topicName}/subscriptions`);
+    public getSubscriptions = (topicName: string): Promise<ISubscription[]> => {
+        return this.getEntities('GET', `${topicName}/subscriptions`);
+    }
+
+    public getSubscriptionDetails = (topic: string, subscription: string): Promise<ISubscription> => {
+        return this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
     }
 
     public getMessages = (topic: string, subscription: string): Promise<any[]> => {
-        return this.getEntities('POST',`${topic}/subscriptions/${subscription}/messages/head`);
+        return this.getEntities('POST', `${topic}/subscriptions/${subscription}/messages/head`);
     }
-    //TODO: Instead of returning a promsie of [any], we should type this, at least with an interface
-    private async getEntities(method:string, path: string): Promise<any[]> {
+
+    private async getEntity<T>(method: string, path: string): Promise<T> {
+        const result = await this.sendRequest(method, path);
+        return result.entry;
+    }
+
+    private async getEntities<T>(method: string, path: string): Promise<T[]> {
+        const result = await this.sendRequest(method, path);
+        if(result.feed.entry){
+            if(Array.isArray(result.feed.entry)){
+                return result.feed.entry;
+            }
+            return [result.feed.entry];
+        }
+        return [];
+    }
+
+    private async sendRequest(method: string, path: string): Promise<any> {
         //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
 
         var result = await fetch(auth.endpoint.replace('sb', 'https') + path, {
             method: method || 'GET',
             headers: {
-                'Authorization': auth.auth, 
+                'Authorization': auth.auth,
                 'api-version': '2015-01'
             },
         });
@@ -53,23 +74,51 @@ export default class ServiceBusClient implements IServiceBusClient {
             return Promise.reject(error);
         }
 
-        if (result.status  === 204) { //NoResult Stats code
-            return Promise.resolve([]);
+        if (result.status === 204) { //NoResult Stats code
+            return null;
         }
 
-        var body = await result.text();
-        var xmlData = parser.parse(body);
-        var entries = xmlData.feed.entry;
+        const body = await result.text();
+        const contentType = result.headers.get('content-type');
 
-        if (!entries) {
-            return Promise.resolve([]);
+        if (contentType && contentType.includes('json')) {
+            return JSON.parse(body);
+        }
+        else if (contentType && contentType.includes('xml')) {
+            return parser.parse(body);
+        }
+        else {
+            return body;
         }
 
-        if (!Array.isArray(entries)) {
-            entries = [entries];
-        }
-
-        return Promise.resolve(entries);
+        // if (xmlData) {
+        //     const feed = xmlData.feed;
+        //     if (feed) {
+        //         if (feed.entry) {
+        //             const entry = feed.entry;
+        //             if (!Array.isArray(entry)) {
+        //                 return Promise.resolve([entry]);
+        //             }
+        //             else {
+        //                 return Promise.resolve(entry);
+        //             }
+        //         }
+        //         else {
+        //             return Promise.resolve(feed);
+        //         }
+        //     }
+        //     else {
+        //         if (xmlData.entry) {
+        //             return Promise.resolve(xmlData.entry);
+        //         }
+        //         else {
+        //             throw new Error("Not implemented");
+        //         }
+        //     }
+        // }
+        // else {
+        //     return Promise.resolve([]);
+        // }
     }
 
 
