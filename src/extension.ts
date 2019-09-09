@@ -63,7 +63,6 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
-
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
 			if(!node.itemData.clientInstance){

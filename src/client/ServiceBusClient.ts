@@ -85,7 +85,17 @@ export default class ServiceBusClient implements IServiceBusClient {
             return JSON.parse(body);
         }
         else if (contentType && contentType.includes('xml')) {
-            return parser.parse(body);
+            //WTF: some responses are actually JSON but content type comes as xml
+            try{
+                return parser.parse(body);
+            }catch{
+                try{
+                    return JSON.parse(body);
+                }
+                catch (ex){
+                    throw ex;
+                }
+            }
         }
         else {
             return body;
