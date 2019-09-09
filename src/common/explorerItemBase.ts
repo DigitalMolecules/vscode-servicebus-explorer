@@ -18,10 +18,6 @@ export class ExplorerItemBase extends vscode.TreeItem {
 		super(itemData.name, collapsibleState);
 	}
 
-	public get tooltip(): string {
-		return `${this.label}`;
-	}
-	
 	public get description(): string {
 		return this.itemData.error ? this.itemData.error.message : '';
 	}
