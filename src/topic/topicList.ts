@@ -6,7 +6,7 @@ export class TopicList extends ExplorerItemBase {
 	constructor(
 		public itemData: IItemData,
 		collapsibleState: TreeItemCollapsibleState,
-		public itemCount: number = 0,
+		public topicCount: number = 0,
 		command?: Command
 	) {
 		super(itemData, collapsibleState, command);
@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 	}
 	
 	public get description(): string {
-		return `(${this.itemCount.toLocaleString()})`;
+		return `(${this.topicCount.toLocaleString()})`;
 	}
 
 	contextValue = 'topiclist';

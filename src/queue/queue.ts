@@ -7,7 +7,7 @@ export class Queue extends ExplorerItemBase {
 	constructor(
 		public itemData: IItemData,
 		title: string,
-		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		command?: Command
 	) {
 		super(itemData, collapsibleState, command);
