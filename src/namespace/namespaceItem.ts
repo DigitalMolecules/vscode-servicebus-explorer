@@ -6,7 +6,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
 		public data: IItemData,
-		collapsibleState: TreeItemCollapsibleState,
+		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Expanded,
 		command?: Command
 	) {
 		super(data, collapsibleState, command);
