@@ -23,11 +23,15 @@ export default class ServiceBusClient implements IServiceBusClient {
     public async getTopics(): Promise<any[]> {
         return Promise.resolve(this.getEntities('/$resources/topics'));
     }
-
+    
     public async getQueues(): Promise<any[]> {
         return Promise.resolve(this.getEntities('/$resources/queues'));
     }
-
+    
+    public getSubscriptions = async (topicName: string): Promise<any[]> => {
+        return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
+    }
+    
     public getMessages = async (topic:string, subscription: string) : Promise<any[]> => {
         return Promise.resolve(this.getEntities(`${topic}/subscriptions/${subscription}/messages/head`));
     }
@@ -61,9 +65,6 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(entries);
     }
 
-    public getSubscriptions = async (topicName: string): Promise<any[]> => {
-        return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
-    }
 
     private getAuthHeader(): any {
 
