@@ -76,11 +76,10 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			}
 		}
 		else if (element instanceof QueueList) {
-			var ql = element as QueueList;
-			if (ql.itemData.clientInstance) {
-				return ql.itemData.clientInstance.getQueues()
+			if (element.itemData.clientInstance) {
+				return element.itemData.clientInstance.getQueues()
 					.then(x => x.map(y =>
-						new Queue(ql.itemData, y.title)
+						new Queue(element.itemData, y.title)
 					));
 			}
 		}
