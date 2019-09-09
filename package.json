@@ -77,8 +77,8 @@
 				"command": "serviceBusExplorer.getSubscriptionMessages",
 				"title": "View",
 				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
 				}
 			}
 		],
