@@ -19,6 +19,7 @@ export class Subscription extends ExplorerItemBase {
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = subscription.title;
+		this.messageCount = subscription.content.SubscriptionDescription.MessageCount;
 	}
 
 	public get description(): string {
