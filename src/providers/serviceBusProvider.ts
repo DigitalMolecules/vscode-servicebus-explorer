@@ -61,7 +61,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			if (element.itemData.clientInstance) {
 				return element.itemData.clientInstance.getTopics()
 					.then(x => x.map(y =>
-						new Topic(element.itemData, y.title, vscode.TreeItemCollapsibleState.Collapsed)
+						new Topic(element.itemData, y.title)
 					));
 			}
 		}
@@ -71,7 +71,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				//TODO: Label should not be nullable, or else we should have an entity id: element.label
 				return element.itemData.clientInstance.getSubscriptions(element.label || '')
 					.then(x => x.map((y: { title: string; }) =>
-						new Subscription(element.itemData, y.title, vscode.TreeItemCollapsibleState.None)
+						new Subscription(element.itemData, y.title)
 					));
 			}
 		}
