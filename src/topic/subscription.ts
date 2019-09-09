@@ -9,17 +9,14 @@ export class Subscription extends ExplorerItemBase {
 		public itemData: IItemData,
 		public label: string,
 		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public itemCount: number = 0,
 		command?: Command
 	) {
 		super(itemData, collapsibleState, command);
 	}
 
-	public get tooltip(): string {
-		return `${this.label}`;
-	}
-
 	public get description(): string {
-		return '(0)';
+		return `(${this.itemCount.toLocaleString()})`;
 	}
 
 	contextValue = 'subscription';
