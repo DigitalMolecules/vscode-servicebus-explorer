@@ -71,7 +71,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				//TODO: Label should not be nullable, or else we should have an entity id: element.label
 				return element.itemData.clientInstance.getSubscriptions(element.label || '')
 					.then(x => x.map((y: { title: string; }) =>
-						new Subscription(element.itemData, y.title)
+						new Subscription(element.itemData, y.title, element.label || '')
 					));
 			}
 		}

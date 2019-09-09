@@ -4,25 +4,25 @@ import { IServiceBusClient } from '../client/IServiceBusClient';
 
 export class MessageWebView {
 
-    constructor(private client: IServiceBusClient ){
+    constructor(private client: IServiceBusClient) {
 
     }
 
     panel: vscode.WebviewPanel | undefined;
 
-    async getMessages(topic:string, subscription: string): Promise<any[]> {
+    async getMessages(topic: string, subscription: string): Promise<any[]> {
         return await this.client.getMessages(topic, subscription);
     }
 
-    async renderMessages(title: string, messages: any[] ): Promise<void> {
-        if(!this.panel){
+    async renderMessages(title: string, messages: any[]): Promise<void> {
+        if (!this.panel) {
             return;
         }
 
-        const messageTable: string = 
-        
-            messages.map(x=>
-                `
+        const messageTable: string =
+            messages.length > 0 ?
+                messages.map(x =>
+                    `
                     <tr>
                         <td>
                             Message 1
@@ -32,8 +32,19 @@ export class MessageWebView {
                         </td>
                     </tr>
                 `
-            )
-            .reduce( (p, c)=> p+=c , '');
+                )
+                    .reduce((p, c) => p += c, '')
+                :
+                `
+                <tr>
+                    <td>
+                        No messages found
+                    </td>
+                </tr>
+                `
+            ;
+
+
 
         this.panel.webview.html = `
             <!DOCTYPE html>
@@ -63,11 +74,11 @@ export class MessageWebView {
 
     }
 
-    async open(context: vscode.ExtensionContext, node: Subscription) : Promise<void> {
+    async open(context: vscode.ExtensionContext, node: Subscription): Promise<void> {
 
         this.panel = vscode.window.createWebviewPanel(
             'messagelist', // Identifies the type of the webview. Used internally
-            `Messages (${node.label})`, // Title of the panel displayed to the user
+            `${node.topicName} - (${node.label})`, // Title of the panel displayed to the user
             vscode.ViewColumn.One, // Editor column to show the new webview panel in.
             {
                 enableScripts: true
@@ -86,7 +97,7 @@ export class MessageWebView {
             context.subscriptions
         );
 
-        const messages = await this.getMessages(node.itemData.name, node.label);
+        const messages = await this.getMessages(node.topicName, node.label);
 
         await this.renderMessages(node.label, messages);
 

@@ -20,34 +20,41 @@ export default class ServiceBusClient implements IServiceBusClient {
         var body = await result.text();
     }
 
-    public async getTopics(): Promise<any[]> {
-        return Promise.resolve(this.getEntities('/$resources/topics'));
-    }
-    
-    public async getQueues(): Promise<any[]> {
-        return Promise.resolve(this.getEntities('/$resources/queues'));
-    }
-    
-    public getSubscriptions = async (topicName: string): Promise<any[]> => {
-        return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
-    }
-    
-    public getMessages = async (topic:string, subscription: string) : Promise<any[]> => {
-        return Promise.resolve(this.getEntities(`${topic}/subscriptions/${subscription}/messages/head`));
+    public getTopics(): Promise<any[]> {
+        return this.getEntities('GET','/$resources/topics');
     }
 
+    public getQueues(): Promise<any[]> {
+        return this.getEntities('GET','/$resources/queues');
+    }
+
+    public getSubscriptions = (topicName: string): Promise<any[]> => {
+        return this.getEntities('GET',`${topicName}/subscriptions`);
+    }
+
+    public getMessages = (topic: string, subscription: string): Promise<any[]> => {
+        return this.getEntities('POST',`${topic}/subscriptions/${subscription}/messages/head`);
+    }
     //TODO: Instead of returning a promsie of [any], we should type this, at least with an interface
-    private async getEntities(path : string): Promise<any[]> {
+    private async getEntities(method:string, path: string): Promise<any[]> {
         //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
 
         var result = await fetch(auth.endpoint.replace('sb', 'https') + path, {
-            method: 'GET',
-            headers: { 'Authorization': auth.auth },
+            method: method || 'GET',
+            headers: {
+                'Authorization': auth.auth, 
+                'api-version': '2015-01'
+            },
         });
 
-        if (result.status === 404) {
-            return Promise.reject();
+        if (!result.ok) {
+            var error = await result.text();
+            return Promise.reject(error);
+        }
+
+        if (result.status  === 204) { //NoResult Stats code
+            return Promise.resolve([]);
         }
 
         var body = await result.text();
@@ -61,7 +68,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         if (!Array.isArray(entries)) {
             entries = [entries];
         }
-        
+
         return Promise.resolve(entries);
     }
 

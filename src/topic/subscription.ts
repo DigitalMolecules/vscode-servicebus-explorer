@@ -8,6 +8,7 @@ export class Subscription extends ExplorerItemBase {
 	constructor(
 		public itemData: IItemData,
 		public label: string,
+		public topicName: string,
 		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		command?: Command
 	) {
