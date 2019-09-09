@@ -21,18 +21,21 @@ export default class ServiceBusClient implements IServiceBusClient {
         var body = await result.text();
     }
 
-    public async getTopics(): Promise<[any]> {
-               
+    public async getTopics(): Promise<any[]> {
         return Promise.resolve(this.getEntities('/$resources/topics'));
     }
 
-    public async getQueues(): Promise<[any]> {
-               
+    public async getQueues(): Promise<any[]> {
         return Promise.resolve(this.getEntities('/$resources/queues'));
     }
 
+    public getMessages = async (topic:string, subscription: string) : Promise<any[]> => {
+        return Promise.resolve(this.getEntities(`${topic}/subscriptions/${subscription}/messages/head`));
+    }
+
+
     //TODO: Instead of returning a promsie of [any], we should type this, at least with an interface
-    private async getEntities(path : string): Promise<[any]> {
+    private async getEntities(path : string): Promise<any[]> {
         //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
 
@@ -56,7 +59,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(entries);
     }
 
-    public getSubscriptions = async (topicName: string): Promise<any> => {
+    public getSubscriptions = async (topicName: string): Promise<any[]> => {
         return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
     }
 
@@ -103,6 +106,8 @@ export default class ServiceBusClient implements IServiceBusClient {
 
         return hostName;
     }
+
+    
 }
 
 //postman.setEnvironmentVariable('azure-authorization', getAuthHeader(request['url'], "RootManageSharedAccessKey", "fmmVl6GYSXS23qMfkCpUqp6GeWDNy3czEEA0UhjeI+A="));

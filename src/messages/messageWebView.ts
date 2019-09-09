@@ -1,15 +1,17 @@
 import vscode from 'vscode';
 import { Subscription } from '../topic/subscription';
+import { IServiceBusClient } from '../client/IServiceBusClient';
 
 export class MessageWebView {
 
+    constructor(private client: IServiceBusClient ){
+
+    }
+
     panel: vscode.WebviewPanel | undefined;
 
-    async getMessages(): Promise<any[]> {
-        return [
-            1,
-            2
-        ];
+    async getMessages(topic:string, subscription: string): Promise<any[]> {
+        return await this.client.getMessages(topic, subscription);
     }
 
     async renderMessages(title: string, messages: any[] ): Promise<void> {
@@ -34,30 +36,30 @@ export class MessageWebView {
             .reduce( (p, c)=> p+=c , '');
 
         this.panel.webview.html = `
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Cat Coding</title>
-		</head>
-		<body>
-                <h1>Messages (${title})</h1>
-                <script >
-                    const vscode = acquireVsCodeApi();
-                    function showMessage(){
-                        vscode.postMessage({
-                            command: 'serviceBusExplorer.showMessage',
-                            text: 'Potatoes'
-                        })
-                    }
-                </script>
-                <table>
-                    ${messageTable}
-                </table>
-			</body>
-			
-			`;
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Cat Coding</title>
+            </head>
+            <body>
+                    <h1>Messages (${title})</h1>
+                    <script >
+                        const vscode = acquireVsCodeApi();
+                        function showMessage(){
+                            vscode.postMessage({
+                                command: 'serviceBusExplorer.showMessage',
+                                text: 'Potatoes'
+                            })
+                        }
+                    </script>
+                    <table>
+                        ${messageTable}
+                    </table>
+                </body>
+                
+        `;
 
     }
 
@@ -84,7 +86,7 @@ export class MessageWebView {
             context.subscriptions
         );
 
-        const messages = await this.getMessages();
+        const messages = await this.getMessages(node.itemData.name, node.label);
 
         await this.renderMessages(node.label, messages);
 

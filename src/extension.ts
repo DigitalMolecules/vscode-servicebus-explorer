@@ -66,7 +66,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
-			new MessageWebView().open(context, node);
+			if(!node.itemData.clientInstance){
+				throw new Error("Node without client??!>!!!?!?!?!");
+			}
+			new MessageWebView(node.itemData.clientInstance).open(context, node);
 		})
 	);
 

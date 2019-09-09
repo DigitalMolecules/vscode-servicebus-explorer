@@ -1,12 +1,14 @@
 export interface IServiceBusClient {
     
-    getTopics(): Promise<[any]>;
+    getTopics(): Promise<any[]>;
     
-    getSubscriptions(topicName: string): Promise<any>;
+    getSubscriptions(topicName: string): Promise<any[]>;
     
-    getQueues(): Promise<[any]>;
+    getQueues(): Promise<any[]>;
     
     validateAndThrow():Promise<void>;
 
     getHostName(): string;
+
+    getMessages(topic:string, subscription: string) : Promise<any[]>;
 }
