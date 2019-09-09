@@ -32,7 +32,7 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     //TODO: Instead of returning a promsie of [any], we should type this, at least with an interface
-    public async getEntities(path : string): Promise<[any]> {
+    private async getEntities(path : string): Promise<[any]> {
         //https://docs.microsoft.com/en-us/rest/api/servicebus/entities-discovery
         var auth = this.getAuthHeader();
 
@@ -60,8 +60,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         return Promise.resolve(this.getEntities(`${topicName}/subscriptions`));
     }
 
-
-    public getAuthHeader(): any {
+    private getAuthHeader(): any {
 
         const values: Map<string, string> = this.connectionString.split(';')
             .map(x => x.split('='))
