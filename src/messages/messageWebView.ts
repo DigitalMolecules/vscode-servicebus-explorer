@@ -24,10 +24,13 @@ export class MessageWebView {
                     `
                     <tr>
                         <td>
-                            Message 1
+                            ${x.messageId}
                         </td>
                         <td>
-                            <button onclick="showMessage()">Get Messages</button>
+                            ${x.contentType}
+                        </td>
+                        <td>
+                            <button onclick="showMessage()">Open</button>
                         </td>
                     </tr>
                 `

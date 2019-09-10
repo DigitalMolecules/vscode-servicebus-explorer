@@ -4,6 +4,7 @@ import parser from 'fast-xml-parser';
 import { IServiceBusClient } from './IServiceBusClient';
 import { URL } from 'url';
 import { ISubscription } from './models/ISubscriptionDetails';
+import * as SBC from '@azure/service-bus';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -33,12 +34,32 @@ export default class ServiceBusClient implements IServiceBusClient {
         return this.getEntities('GET', `${topicName}/subscriptions`);
     }
 
-    public getSubscriptionDetails = (topic: string, subscription: string): Promise<ISubscription> => {
-        return this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
+    public getSubscriptionDetails = async (topic: string, subscription: string): Promise<ISubscription> => {
+        const sd = await  this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
+        return sd;
     }
 
-    public getMessages = (topic: string, subscription: string): Promise<any[]> => {
-        return this.getEntities('POST', `${topic}/subscriptions/${subscription}/messages/head`);
+    public getMessages = async (topic: string, subscription: string): Promise<any[]> => {
+        
+        let messageReceiver;
+        let client;
+        try {
+            client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+            const subscriptionClient = client.createSubscriptionClient(topic, subscription);
+            messageReceiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
+            const messages = await messageReceiver.receiveMessages(10);
+            await Promise.all(messages.map(x => x.abandon()));
+            return messages;
+        } catch{
+            if(messageReceiver){
+                await messageReceiver.close();
+            }
+            if(client){
+                await client.close();
+            }
+            return [];
+        }
+        //return this.getEntities('POST', `${topic}/subscriptions/${subscription}/messages/head`);
     }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {
@@ -56,11 +77,11 @@ export default class ServiceBusClient implements IServiceBusClient {
                     }
                     return [result.feed.entry];
                 }
-                else{
+                else {
                     return result.feed;
                 }
             }
-            else{
+            else {
                 return result;
             }
         }
