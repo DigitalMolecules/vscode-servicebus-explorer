@@ -1,8 +1,8 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { NameSpaceItem } from "../namespace/namespaceItem";
-import { TreeItemCollapsibleState, Command } from "vscode";
-import { Topic } from "./topic";
+import { TreeItemCollapsibleState, Command, window, ExtensionContext } from "vscode";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
+import * as path from 'path';
+import { MessageWebView } from "../messages/messageWebView";
 
 export class Subscription extends ExplorerItemBase {
 
@@ -11,11 +11,11 @@ export class Subscription extends ExplorerItemBase {
 	public deadLettetCount: number = 0;
 
 	constructor(
-		public itemData: IItemData,
-		public subscription: ISubscription,
-		public topicName: string,
-		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
-		command?: Command
+		public readonly itemData: IItemData,
+		public readonly subscription: ISubscription,
+		public readonly topicName: string,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
+		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = subscription.title;
@@ -26,5 +26,12 @@ export class Subscription extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLettetCount.toLocaleString()})`;
 	}
 
+	public getSubscriptionMessages(context: ExtensionContext) {
+		if(!this.itemData.clientInstance){
+			throw new Error("Node without client??!>!!!?!?!?!");
+		}
+		new MessageWebView(this.itemData.clientInstance).open(context, this);
+	}
+	
 	contextValue = 'subscription';
 }
