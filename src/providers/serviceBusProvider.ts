@@ -13,6 +13,7 @@ import { QueueList } from '../queue/queueList';
 import { Topic } from '../topic/topic';
 import { Queue } from '../queue/queue';
 import { Subscription } from '../topic/subscription';
+import { ISubscription } from '../client/models/ISubscriptionDetails';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -68,11 +69,11 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		else if (element instanceof Topic) {
 			//TODO: Someone implement this please
 			if (element.itemData.clientInstance) {
-				const mapToSubscription = async (subs : any[]) : Promise<Subscription[]>=>{
-					
+				const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
+
 					subs = subs.map(async (y: { title: string; }) => {
-						if(element.itemData.clientInstance){
-							const subDetails = await element.itemData.clientInstance.getSubscriptionDetails(element.label || '', y.title);
+						if (element.itemData.clientInstance) {
+							const subDetails: ISubscription = await element.itemData.clientInstance.getSubscriptionDetails(element.label || '', y.title);
 							return new Subscription(element.itemData, subDetails, element.label || '');
 						}
 						return null;

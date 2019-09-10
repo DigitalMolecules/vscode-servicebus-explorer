@@ -5,9 +5,9 @@ import { IServiceBusClient } from "../client/IServiceBusClient";
 export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
-		public data: IItemData,
-		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Expanded,
-		command?: Command
+		public readonly data: IItemData,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Expanded,
+		public readonly command?: Command
 	) {
 		super(data, collapsibleState, command);
 	}

@@ -5,7 +5,6 @@ import { IServiceBusClient } from '../client/IServiceBusClient';
 export class MessageWebView {
 
     constructor(private client: IServiceBusClient) {
-
     }
 
     panel: vscode.WebviewPanel | undefined;

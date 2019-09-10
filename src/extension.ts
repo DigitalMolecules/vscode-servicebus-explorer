@@ -22,9 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 	stuffToDispose.push(vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
 	stuffToDispose.push(vscode.workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));
 
-
 	//TODO: move this to a command file
-
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.refreshEntry', () => {
 			serviceBusProvider.reBuildTree();
@@ -65,10 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => {
-			if(!node.itemData.clientInstance){
-				throw new Error("Node without client??!>!!!?!?!?!");
-			}
-			await new MessageWebView(node.itemData.clientInstance).open(context, node);
+			await node.getSubscriptionMessages(context);
 		})
 	);
 

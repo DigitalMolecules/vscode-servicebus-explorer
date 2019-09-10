@@ -4,11 +4,11 @@ import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 export class Topic extends ExplorerItemBase {
 
 	constructor(
-		public itemData: IItemData,
-		title: string,
-		collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
-		public subscriptionCount: number = 0,
-		command?: Command
+		public readonly itemData: IItemData,
+		public readonly title: string,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public readonly subscriptionCount: number = 0,
+		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = title;

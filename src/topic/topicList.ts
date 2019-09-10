@@ -4,10 +4,10 @@ import { TreeItemCollapsibleState, Command } from "vscode";
 export class TopicList extends ExplorerItemBase {
 
 	constructor(
-		public itemData: IItemData,
-		collapsibleState: TreeItemCollapsibleState,
-		public topicCount: number = 0,
-		command?: Command
+		public readonly itemData: IItemData,
+		public readonly collapsibleState: TreeItemCollapsibleState,
+		public readonly topicCount: number = 0,
+		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = 'Topics';
