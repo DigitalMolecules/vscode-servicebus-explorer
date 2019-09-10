@@ -8,6 +8,8 @@ import * as SBC from '@azure/service-bus';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
+    cachedMessages: any[] = [];
+
     constructor(private connectionString: string) {
     }
 
@@ -35,12 +37,12 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     public getSubscriptionDetails = async (topic: string, subscription: string): Promise<ISubscription> => {
-        const sd = await  this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
+        const sd = await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
         return sd;
     }
 
     public getMessages = async (topic: string, subscription: string): Promise<any[]> => {
-        
+
         let messageReceiver;
         let client;
         try {
@@ -51,15 +53,23 @@ export default class ServiceBusClient implements IServiceBusClient {
             await Promise.all(messages.map(x => x.abandon()));
             return messages;
         } catch{
-            if(messageReceiver){
+            if (messageReceiver) {
                 await messageReceiver.close();
             }
-            if(client){
+            if (client) {
                 await client.close();
             }
             return [];
         }
         //return this.getEntities('POST', `${topic}/subscriptions/${subscription}/messages/head`);
+    }
+
+    public getMessage = (messageId: string): any => {
+        var cached = this.cachedMessages.filter(x => x.messageId === messageId);
+        if (cached && cached.length === 0) {
+            return cached[0];
+        }
+        return null;
     }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {

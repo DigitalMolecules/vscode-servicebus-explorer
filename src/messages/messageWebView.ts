@@ -13,7 +13,7 @@ export class MessageWebView {
         return await this.client.getMessages(topic, subscription);
     }
 
-    async renderMessages(title: string, messages: any[]): Promise<void> {
+    async renderMessages(topic: string, subscription: string, messages: any[]): Promise<void> {
         if (!this.panel) {
             return;
         }
@@ -30,7 +30,7 @@ export class MessageWebView {
                             ${x.contentType}
                         </td>
                         <td>
-                            <button onclick="showMessage()">Open</button>
+                            <button onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
                 `
@@ -57,13 +57,15 @@ export class MessageWebView {
                 <title>Cat Coding</title>
             </head>
             <body>
-                    <h1>Messages (${title})</h1>
+                    <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
-                        function showMessage(){
+                        function showMessage(topic, subscription, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
-                                text: 'Potatoes'
+                                topic: topic,
+                                subscription: subscription,
+                                messageId: messageId
                             })
                         }
                     </script>
@@ -101,7 +103,7 @@ export class MessageWebView {
 
         const messages = await this.getMessages(node.topicName, node.label);
 
-        await this.renderMessages(node.label, messages);
+        await this.renderMessages(node.topicName, node.label, messages);
 
         this.panel.onDidDispose(() => {
 

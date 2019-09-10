@@ -68,8 +68,8 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (node: Subscription) => {
-			let uri = vscode.Uri.parse('servicebusmessage:message02.json');
+		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string,messageId: string) => {
+			let uri = vscode.Uri.parse(`servicebusmessage:message_${messageId}.json?topic=${topic}`);
 			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false } );
 		})
