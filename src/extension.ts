@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if(!node.itemData.clientInstance){
 				throw new Error("Node without client??!>!!!?!?!?!");
 			}
-			new MessageWebView(node.itemData.clientInstance).open(context, node);
+			await new MessageWebView(node.itemData.clientInstance).open(context, node);
 		})
 	);
 
@@ -76,15 +76,9 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (node: Subscription) => {
 			let uri = vscode.Uri.parse('servicebusmessage:message02.json');
 			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
-			await vscode.window.showTextDocument(doc,
-				{
-					preview: false,
-				}
-			);
+			await vscode.window.showTextDocument(doc, { preview: false } );
 		})
 	);
-
-
 }
 
 export function deactivate() { }

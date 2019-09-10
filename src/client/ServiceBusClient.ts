@@ -48,11 +48,21 @@ export default class ServiceBusClient implements IServiceBusClient {
 
     private async getEntities<T>(method: string, path: string): Promise<T[]> {
         const result = await this.sendRequest(method, path);
-        if(result.feed.entry){
-            if(Array.isArray(result.feed.entry)){
-                return result.feed.entry;
+        if (result) {
+            if (result.feed) {
+                if (result.feed.entry) {
+                    if (Array.isArray(result.feed.entry)) {
+                        return result.feed.entry;
+                    }
+                    return [result.feed.entry];
+                }
+                else{
+                    return result.feed;
+                }
             }
-            return [result.feed.entry];
+            else{
+                return result;
+            }
         }
         return [];
     }
@@ -86,16 +96,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
         else if (contentType && contentType.includes('xml')) {
             //WTF: some responses are actually JSON but content type comes as xml
-            try{
-                return parser.parse(body);
-            }catch{
-                try{
-                    return JSON.parse(body);
-                }
-                catch (ex){
-                    throw ex;
-                }
+            const xmlData = parser.parse(body);
+            if (xmlData === "") {
+                return JSON.parse(body);
             }
+            return xmlData;
         }
         else {
             return body;

@@ -135,7 +135,7 @@
 		"@types/node": "^12.7.4",
 		"@types/vscode": "^1.38.0",
 		"@types/crypto-js": "^3.1.43",
-		"@types/node-fetch": "^2.5.0",		
+		"@types/node-fetch": "^2.5.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.2.0",
 		"tslint": "^5.12.1",
