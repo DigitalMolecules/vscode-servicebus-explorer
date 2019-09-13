@@ -5,6 +5,7 @@ import { IServiceBusClient } from './IServiceBusClient';
 import { URL } from 'url';
 import { ISubscription } from './models/ISubscriptionDetails';
 import * as SBC from '@azure/service-bus';
+import { ITopic } from '../topic/itopicDetails';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -24,7 +25,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         var body = await result.text();
     }
 
-    public getTopics(): Promise<any[]> {
+    public getTopics(): Promise<ITopic[]> {
         return this.getEntities('GET', '/$resources/topics');
     }
 
