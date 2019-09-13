@@ -80,6 +80,8 @@ export class MessageWebView {
 
     async open(context: vscode.ExtensionContext, node: Subscription): Promise<void> {
 
+        const messages = await this.getMessages(node.topicName, node.label);
+
         this.panel = vscode.window.createWebviewPanel(
             'messagelist', // Identifies the type of the webview. Used internally
             `${node.topicName} - (${node.label})`, // Title of the panel displayed to the user
@@ -93,15 +95,13 @@ export class MessageWebView {
             message => {
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.showMessage');
+                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.messageId);
                         return;
                 }
             },
             undefined,
             context.subscriptions
-        );
-
-        const messages = await this.getMessages(node.topicName, node.label);
+        );    
 
         await this.renderMessages(node.topicName, node.label, messages);
 

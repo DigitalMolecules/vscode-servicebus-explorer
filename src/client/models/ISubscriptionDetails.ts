@@ -19,5 +19,6 @@ export interface ISubscriptionDescription {
     LockDuration:string;
     MaxDeliveryCount:number;
     MessageCount:number;
+    MessageCountDetails: any;
     RequiresSession:boolean;
 }

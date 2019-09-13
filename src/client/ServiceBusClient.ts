@@ -106,7 +106,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             method: method || 'GET',
             headers: {
                 'Authorization': auth.auth,
-                'api-version': '2015-01'
+                // 'api-version': '2015-01'
             },
         });
 
