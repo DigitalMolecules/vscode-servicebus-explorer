@@ -8,6 +8,7 @@ export class MessageProvider implements vscode.TextDocumentContentProvider {
 
     provideTextDocumentContent(uri: vscode.Uri): string {
        // var message  = this.client.getMessage('', '', uri.path);
-        return '';
+       
+        return uri.toString();
     }
 }

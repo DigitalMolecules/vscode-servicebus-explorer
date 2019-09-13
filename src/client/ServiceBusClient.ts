@@ -49,7 +49,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
             const subscriptionClient = client.createSubscriptionClient(topic, subscription);
             messageReceiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
-            const messages = await messageReceiver.receiveMessages(10);
+            const messages = await messageReceiver.receiveMessages(10, 10);
             await Promise.all(messages.map(x => x.abandon()));
             return messages;
         } catch{
