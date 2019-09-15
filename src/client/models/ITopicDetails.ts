@@ -12,10 +12,10 @@ export interface ITopicContent{
 }
 
 export interface ITopicDescription {
-    defaultmessagetimetolive:string;
-    maxsizeinmegabyte:number;
-    requiresduplicatedetection:boolean;
-    duplicatedetectionhistorytimewindow:string;
-    enablebatchedoperations:boolean;
-    sizeinbytes:number;
+    DefaultMessageTimeToLive:string;
+    MaxSizeInMegabytes:number;
+    RequiresDuplicateDetection:boolean;
+    DuplicateDetectionHistoryTimeWindow:string;
+    EnableBatchedOperations:boolean;
+    SizeInBytes:number;
 }

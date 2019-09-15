@@ -5,7 +5,8 @@ import { IServiceBusClient } from './IServiceBusClient';
 import { URL } from 'url';
 import { ISubscription } from './models/ISubscriptionDetails';
 import * as SBC from '@azure/service-bus';
-import { ITopic } from '../topic/itopicDetails';
+import { ITopic } from './models/ITopicDetails';
+import { IQueue } from './models/IQueueDetails';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -29,7 +30,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         return this.getEntities('GET', '/$resources/topics');
     }
 
-    public getQueues(): Promise<any[]> {
+    public getQueues(): Promise<IQueue[]> {
         return this.getEntities('GET', '/$resources/queues');
     }
 
