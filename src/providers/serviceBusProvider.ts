@@ -14,6 +14,8 @@ import { Topic } from '../topic/topic';
 import { Queue } from '../queue/queue';
 import { Subscription } from '../topic/subscription';
 import { ISubscription } from '../client/models/ISubscriptionDetails';
+import { ITopic } from '../client/models/ITopicDetails';
+import { IQueue } from '../client/models/IQueueDetails';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 

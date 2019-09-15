@@ -1,12 +1,14 @@
 import { ISubscription } from "./models/ISubscriptionDetails";
+import { IQueue } from "./models/IQueueDetails";
+import { ITopic } from "./models/ITopicDetails";
 
 export interface IServiceBusClient {
     
-    getTopics(): Promise<any[]>;
+    getTopics(): Promise<ITopic[]>;
     
     getSubscriptions(topicName: string): Promise<ISubscription[]>;
     
-    getQueues(): Promise<any[]>;
+    getQueues(): Promise<IQueue[]>;
     
     validateAndThrow():Promise<void>;
 
