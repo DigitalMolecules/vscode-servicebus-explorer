@@ -45,8 +45,8 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		}
 		else if (element instanceof NameSpaceItem) {
 
-			var topics: Promise<ITopic[]> = Promise.resolve([]);
-			var queues: Promise<IQueue[]> = Promise.resolve([]);
+			var topics = Promise.resolve<ITopic[]>([]);
+			var queues = Promise.resolve<IQueue[]>([]);
 
 			if (element.data.clientInstance && !element.data.error) {
 				topics = element.data.clientInstance.getTopics();

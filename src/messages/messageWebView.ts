@@ -38,7 +38,7 @@ export class MessageWebView {
                             <button onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
-                `
+                `;
                 })
                     .reduce((p, c) => p += c, '')
                 :
