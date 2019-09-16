@@ -100,7 +100,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		return Promise.resolve([]);
 	}
 
-	public reBuildTree(): void {
+	public reBuildTree(node?: ExplorerItemBase | undefined): void {
 		var items = this.state.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 		var tasks = items.map(async element => {
 
@@ -117,11 +117,11 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 		Promise.all(tasks).then(x => {
 			this.state.update(NAMESPACE_CONNECTIONS, items);
-			this._onDidChangeTreeData.fire();
+			this._onDidChangeTreeData.fire(node);
 		});
 
 		this.state.update(NAMESPACE_CONNECTIONS, items);
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(node);
 	}
 
 	public addNamespace(item: IItemData) {
