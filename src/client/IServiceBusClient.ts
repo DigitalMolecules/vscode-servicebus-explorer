@@ -18,6 +18,6 @@ export interface IServiceBusClient {
 
     getMessages(topic:string, subscription: string) : Promise<any[]>;
     
-    getMessage(topic:string, subscription: string, messageId: string) : any;
+   // getMessage(topic:string, subscription: string, messageId: string) : any;
     
 }

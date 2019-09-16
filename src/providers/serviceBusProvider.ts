@@ -16,6 +16,7 @@ import { Subscription } from '../topic/subscription';
 import { ISubscription } from '../client/models/ISubscriptionDetails';
 import { ITopic } from '../client/models/ITopicDetails';
 import { IQueue } from '../client/models/IQueueDetails';
+import { IMessageStore } from '../messages/IMessageStore';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -24,7 +25,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 	state: vscode.Memento;
 
-	constructor(context: vscode.ExtensionContext) {
+	constructor(context: vscode.ExtensionContext, private readonly messageStore: IMessageStore) {
 		this.state = context.workspaceState;
 		this.reBuildTree();
 	}
@@ -76,7 +77,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 					subs = subs.map(async (y: { title: string; }) => {
 						if (element.itemData.clientInstance) {
 							const subDetails: ISubscription = await element.itemData.clientInstance.getSubscriptionDetails(element.label || '', y.title);
-							return new Subscription(element.itemData, subDetails, element.label || '');
+							return new Subscription(this.messageStore, element.itemData, subDetails, element.label || '');
 						}
 						return null;
 					});

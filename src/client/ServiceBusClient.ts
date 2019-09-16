@@ -8,9 +8,9 @@ import * as SBC from '@azure/service-bus';
 import { ITopic } from './models/ITopicDetails';
 import { IQueue } from './models/IQueueDetails';
 
-export default class ServiceBusClient implements IServiceBusClient {
+import vscode from 'vscode';
 
-    cachedMessages: any[] = [];
+export default class ServiceBusClient implements IServiceBusClient {
 
     constructor(private connectionString: string) {
     }
@@ -66,13 +66,13 @@ export default class ServiceBusClient implements IServiceBusClient {
         //return this.getEntities('POST', `${topic}/subscriptions/${subscription}/messages/head`);
     }
 
-    public getMessage = (messageId: string): any => {
-        var cached = this.cachedMessages.filter(x => x.messageId === messageId);
-        if (cached && cached.length === 0) {
-            return cached[0];
-        }
-        return null;
-    }
+    // public getMessage = (messageId: string): any => {
+    //     var cached = this.cachedMessages.filter(x => x.messageId === messageId);
+    //     if (cached && cached.length === 0) {
+    //         return cached[0];
+    //     }
+    //     return null;
+    // }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {
         const result = await this.sendRequest(method, path);
@@ -213,7 +213,5 @@ export default class ServiceBusClient implements IServiceBusClient {
 
         return hostName;
     }
-}
 
-//postman.setEnvironmentVariable('azure-authorization', getAuthHeader(request['url'], "RootManageSharedAccessKey", "fmmVl6GYSXS23qMfkCpUqp6GeWDNy3czEEA0UhjeI+A="));
-//postman.setEnvironmentVariable('current-date',new Date().toUTCString());
+}

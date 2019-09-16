@@ -9,14 +9,16 @@ import { NameSpace } from './namespace/namespace';
 import { MessageProvider } from './providers/messageProvider';
 import { Subscription } from './topic/subscription';
 import { MessageWebView } from './messages/messageWebView';
+import { MessageStore } from './messages/MessageStore';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	const stuffToDispose = context.subscriptions;
 
-	const serviceBusProvider = new ServiceBusProvider(context);
+	const messageStore = new MessageStore();
+	const serviceBusProvider = new ServiceBusProvider(context, messageStore);
 	const nameSpace = new NameSpace(context);
-	const messageProvider = new MessageProvider();
+	const messageProvider = new MessageProvider(messageStore);
 
 
 	stuffToDispose.push(vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
@@ -69,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string, subscription: string, message: any) => {
-			let uri = vscode.Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}`);
+			let uri = vscode.Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
 			let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false } );
 		})

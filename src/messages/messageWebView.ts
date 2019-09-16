@@ -2,15 +2,14 @@ import vscode from 'vscode';
 import { Subscription } from '../topic/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import { parse, stringify } from 'flatted';
+import { IMessageStore } from './IMessageStore';
 
 export class MessageWebView {
 
-    constructor(private client: IServiceBusClient) {
+    constructor(private client: IServiceBusClient, private messageStore: IMessageStore) {
     }
 
     panel: vscode.WebviewPanel | undefined;
-
-    private messages: any[] = [];
 
     async getMessages(topic: string, subscription: string): Promise<any[]> {
         return await this.client.getMessages(topic, subscription);
@@ -25,7 +24,7 @@ export class MessageWebView {
             messages.length > 0 ?
                 messages.map(x => {
                     const messageData = stringify(x);
-                    messages[x.messageId] = messageData;
+                    this.messageStore.setMessage(x.messageId, x);
                     return `
                     <tr>
                         <td>
@@ -98,7 +97,7 @@ export class MessageWebView {
 
         this.panel.webview.onDidReceiveMessage(
             message => {
-                var msg = parse(messages[message.messageId]);
+                var msg = messages.find(x=>x.messageId === message.messageId);
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
