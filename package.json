@@ -59,7 +59,11 @@
 			},
 			{
 				"command": "serviceBusExplorer.addEntry",
-				"title": "Add"
+				"title": "Add",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
 			},
 			{
 				"command": "serviceBusExplorer.editEntry",
@@ -91,7 +95,8 @@
 				},
 				{
 					"command": "serviceBusExplorer.addEntry",
-					"when": "view == servicebus-namespaces"
+					"when": "view == servicebus-namespaces",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
