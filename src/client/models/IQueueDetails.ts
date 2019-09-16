@@ -21,6 +21,6 @@ export interface IQueueDescription {
     DuplicateDetectionHistoryTimeWindow: string;
     MaxDeliveryCount: string;
     EnableBatchedOperations: string;
-    SizeInBytes: string;
-    MessageCount: string;
+    SizeInBytes: number;
+    MessageCount: number;
 }
