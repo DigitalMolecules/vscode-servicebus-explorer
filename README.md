@@ -1,5 +1,7 @@
 # service-bus-explorer README
 
+[![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Build/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
+
 This is the README for your extension "service-bus-explorer". After writing up a brief description, we recommend including the following sections.
 
 ## Features
