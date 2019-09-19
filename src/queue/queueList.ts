@@ -1,6 +1,6 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TreeItemCollapsibleState, Command } from "vscode";
+import { Queue } from "./queue";
 
 
 export class QueueList extends ExplorerItemBase {
@@ -17,6 +17,17 @@ export class QueueList extends ExplorerItemBase {
 
 	public get description(): string {
 		return `(${this.itemCount.toLocaleString()})`;
+	}
+
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		if (this.itemData.clientInstance) {
+			return (await this.itemData.clientInstance.getQueues())
+				.map(y =>
+					new Queue(this.itemData, y.title)
+				);
+		}
+
+		return Promise.resolve([]);
 	}
 
 	contextValue = 'queuelist';

@@ -1,5 +1,6 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { TreeItemCollapsibleState, Command } from "vscode";
+import { Topic } from "./topic";
 
 export class TopicList extends ExplorerItemBase {
 
@@ -15,6 +16,17 @@ export class TopicList extends ExplorerItemBase {
 	
 	public get description(): string {
 		return `(${this.topicCount.toLocaleString()})`;
+	}
+
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		if (this.itemData.clientInstance) {
+			return (await this.itemData.clientInstance.getTopics())
+				.map(y =>
+					new Topic(this.itemData, y.title)
+				);
+		} else {
+			return [];
+		}
 	}
 
 	contextValue = 'topiclist';

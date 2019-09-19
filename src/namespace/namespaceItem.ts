@@ -1,6 +1,9 @@
-import { QuickPickItem, TreeItemCollapsibleState, Command } from "vscode";
+import { TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { IServiceBusClient } from "../client/IServiceBusClient";
+import { ITopic } from "../client/models/ITopicDetails";
+import { IQueue } from "../client/models/IQueueDetails";
+import { QueueList } from "../queue/queueList";
+import { TopicList } from "../topic/topicList";
 
 export class NameSpaceItem extends ExplorerItemBase {
 
@@ -12,5 +15,23 @@ export class NameSpaceItem extends ExplorerItemBase {
 		super(data, collapsibleState, command);
 	}
 	
+	public getChildren(): Promise<ExplorerItemBase[]> {
+
+		var topics = Promise.resolve<ITopic[]>([]);
+		var queues = Promise.resolve<IQueue[]>([]);
+
+		if (this.data.clientInstance && !this.data.error) {
+			topics = this.data.clientInstance.getTopics();
+			queues = this.data.clientInstance.getQueues();
+		}
+
+		return Promise.all([queues, topics])
+			.then(x => [
+				new QueueList(this.data, TreeItemCollapsibleState.Collapsed, x[0].length || 0),
+				new TopicList(this.data, TreeItemCollapsibleState.Collapsed, x[1].length || 0)
+			]
+		);
+	}
+
 	contextValue = 'namespace';
 }

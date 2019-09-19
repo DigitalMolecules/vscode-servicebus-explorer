@@ -20,7 +20,7 @@ export default class ServiceBusAuth {
                 return a.set(b[0], b[1]);
             }, new Map<string, string>());
 
-        const endPoint = values.get('Endpont');
+        const endPoint = values.get('Endpoint');
         const sharedAccessKeyName = values.get('SharedAccessKeyName');
         const sharedAccessKey = values.get('SharedAccessKey');
 

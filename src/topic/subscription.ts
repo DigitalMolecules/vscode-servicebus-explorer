@@ -1,9 +1,7 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { TreeItemCollapsibleState, Command, window, ExtensionContext } from "vscode";
+import { TreeItemCollapsibleState, Command,  ExtensionContext } from "vscode";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
-import * as path from 'path';
 import { MessageWebView } from "../messages/messageWebView";
-import { IMessageStore } from "../messages/IMessageStore";
 
 export class Subscription extends ExplorerItemBase {
 
@@ -12,7 +10,6 @@ export class Subscription extends ExplorerItemBase {
 	public deadLettetCount: number = 0;
 
 	constructor(
-		private readonly messageStore: IMessageStore,
 		public readonly itemData: IItemData,
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
@@ -34,7 +31,7 @@ export class Subscription extends ExplorerItemBase {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance, this.messageStore).open(context, this);
+		await new MessageWebView(this.itemData.clientInstance).open(context, this);
 	}
 	
 	contextValue = 'subscription';

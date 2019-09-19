@@ -8,18 +8,13 @@ import { QueueList } from './queue/queueList';
 import { NameSpace } from './namespace/namespace';
 import { MessageProvider } from './providers/messageProvider';
 import { Subscription } from './topic/subscription';
-import { MessageWebView } from './messages/messageWebView';
-import { MessageStore } from './messages/MessageStore';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	const stuffToDispose = context.subscriptions;
-
-	const messageStore = new MessageStore();
-	const serviceBusProvider = new ServiceBusProvider(context, messageStore);
+	const serviceBusProvider = new ServiceBusProvider(context);
 	const nameSpace = new NameSpace(context);
-	const messageProvider = new MessageProvider(messageStore);
-
+	const messageProvider = new MessageProvider();
 
 	stuffToDispose.push(vscode.window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
 	stuffToDispose.push(vscode.workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));

@@ -25,7 +25,9 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 	state: vscode.Memento;
 
-	constructor(context: vscode.ExtensionContext, private readonly messageStore: IMessageStore) {
+	constructor(
+		private context: vscode.ExtensionContext) {
+
 		this.state = context.workspaceState;
 		this.reBuildTree();
 	}
@@ -35,7 +37,6 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	}
 
 	public getChildren(element?: ExplorerItemBase): Thenable<ExplorerItemBase[]> {
-		//On undefined we get the namespaces
 		if (!element) {
 			var connections = this.state.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 			return Promise.resolve(
@@ -44,61 +45,9 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 				]
 			);
 		}
-		else if (element instanceof NameSpaceItem) {
-
-			var topics = Promise.resolve<ITopic[]>([]);
-			var queues = Promise.resolve<IQueue[]>([]);
-
-			if (element.data.clientInstance && !element.data.error) {
-				topics = element.data.clientInstance.getTopics();
-				queues = element.data.clientInstance.getQueues();
-			}
-
-			return Promise.all([queues, topics])
-				.then(x => [
-					new QueueList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[0].length || 0),
-					new TopicList(element.data, vscode.TreeItemCollapsibleState.Collapsed, x[1].length || 0)
-				]
-				);
+		else {
+			return element.getChildren();
 		}
-		else if (element instanceof TopicList) {
-			if (element.itemData.clientInstance) {
-				return element.itemData.clientInstance.getTopics()
-					.then(x => x.map(y =>
-						new Topic(element.itemData, y.title)
-					));
-			}
-		}
-		else if (element instanceof Topic) {
-			//TODO: Someone implement this please
-			if (element.itemData.clientInstance) {
-				const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
-
-					subs = subs.map(async (y: { title: string; }) => {
-						if (element.itemData.clientInstance) {
-							const subDetails: ISubscription = await element.itemData.clientInstance.getSubscriptionDetails(element.label || '', y.title);
-							return new Subscription(this.messageStore, element.itemData, subDetails, element.label || '');
-						}
-						return null;
-					});
-
-					return Promise.all(subs);
-				};
-				//TODO: Label should not be nullable, or else we should have an entity id: element.label
-				return element.itemData.clientInstance.getSubscriptions(element.label || '')
-					.then(mapToSubscription);
-			}
-		}
-		else if (element instanceof QueueList) {
-			if (element.itemData.clientInstance) {
-				return element.itemData.clientInstance.getQueues()
-					.then(x => x.map(y =>
-						new Queue(element.itemData, y.title)
-					));
-			}
-		}
-
-		return Promise.resolve([]);
 	}
 
 	public reBuildTree(node?: ExplorerItemBase | undefined): void {

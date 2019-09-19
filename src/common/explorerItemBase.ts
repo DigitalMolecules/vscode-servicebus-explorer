@@ -22,5 +22,9 @@ export class ExplorerItemBase extends vscode.TreeItem {
 		return this.itemData.error ? this.itemData.error.message : '';
 	}
 
+	public getChildren(): Promise<ExplorerItemBase[]> {
+		throw new Error("Not implemented.");
+	}
+
 	contextValue = 'base';
 }
