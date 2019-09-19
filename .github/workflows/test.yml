@@ -1,0 +1,28 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [11.x] #[8.x, 10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+      # Cannot get the test to run
+      run: |
+        export DISPLAY=':99.0'
+        /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        npm install
+        npm run test
+      env:
+        CI: true
