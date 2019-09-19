@@ -84,7 +84,7 @@ export class NameSpace {
         if (this.node === null) {
             // Default to host name
             const serviceBusClient = new ServiceBusClient(state.connectionString || '') as IServiceBusClient;
-            name = serviceBusClient.getHostName();
+            name = serviceBusClient.hostName;
         } else {
             name = this.node.data.name;
         }

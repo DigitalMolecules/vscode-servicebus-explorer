@@ -89,12 +89,12 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "serviceBusExplorer.refreshEntry",
+					"command": "serviceBusExplorer.addEntry",
 					"when": "view == servicebus-namespaces",
 					"group": "navigation"
 				},
 				{
-					"command": "serviceBusExplorer.addEntry",
+					"command": "serviceBusExplorer.refreshEntry",
 					"when": "view == servicebus-namespaces",
 					"group": "navigation"
 				}
