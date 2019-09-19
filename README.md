@@ -1,4 +1,4 @@
-# service-bus-explorer README
+# service-bus-explorer extension for vscode
 
 [![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Build/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
 
