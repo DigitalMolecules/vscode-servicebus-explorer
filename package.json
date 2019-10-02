@@ -1,11 +1,11 @@
 {
 	"name": "service-bus-explorer",
-	"displayName": "Service Bus Explorer",
+	"displayName": "Service Bus Explorer (Preview)",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"version": "0.0.1",
-	"publisher": "Digital Molecules",
+	"publisher": "digital-molecules",
 	"engines": {
-		"vscode": "^1.37.0"
+		"vscode": "^1.38.0"
 	},
 	"categories": [
 		"Other"
@@ -132,7 +132,8 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"publish": "vsce publish"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -145,7 +146,8 @@
 		"mocha": "^6.2.0",
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
-		"vscode-test": "^1.0.2"
+		"vscode-test": "^1.0.2",
+		"vsce": "^1.66.0"
 	},
 	"dependencies": {
 		"@azure/service-bus": "^1.0.3",
