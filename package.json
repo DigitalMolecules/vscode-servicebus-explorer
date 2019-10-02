@@ -3,7 +3,7 @@
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"icon":"resources/icon.png",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"keywords": ["azure", "service bus", "explorer", "extension", "bus", "amqp"],

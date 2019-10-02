@@ -8,15 +8,6 @@ import ServiceBusClient from '../client/ServiceBusClient';
 import { ExplorerItemBase, IItemData } from '../common/explorerItemBase';
 import { NameSpaceItem } from '../namespace/namespaceItem';
 import { NAMESPACE_CONNECTIONS } from '../common/global';
-import { TopicList } from '../topic/topicList';
-import { QueueList } from '../queue/queueList';
-import { Topic } from '../topic/topic';
-import { Queue } from '../queue/queue';
-import { Subscription } from '../topic/subscription';
-import { ISubscription } from '../client/models/ISubscriptionDetails';
-import { ITopic } from '../client/models/ITopicDetails';
-import { IQueue } from '../client/models/IQueueDetails';
-import { IMessageStore } from '../messages/IMessageStore';
 
 export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemBase> {
 
@@ -28,7 +19,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	constructor(
 		private context: vscode.ExtensionContext) {
 
-		this.state = context.workspaceState;
+		this.state = context.globalState;
 		this.reBuildTree();
 	}
 

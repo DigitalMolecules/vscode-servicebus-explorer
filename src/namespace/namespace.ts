@@ -105,7 +105,7 @@ export class NameSpace {
             return 'Name must be filled in';
         }
         else {
-            var items = this.context.workspaceState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+            var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 
             if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
                 return 'Name not unique';
