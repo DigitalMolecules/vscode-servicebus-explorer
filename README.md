@@ -1,8 +1,9 @@
 # service-bus-explorer extension for vscode
 
+<!---  Until vscode support github as badge provider
 [![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Build/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
 [![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Test/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
-
+-->
 
 ## Features
 
@@ -23,6 +24,6 @@ None at the moment.
 
 ## Release Notes
 
-### 0.0.1 (Preview)
+### 0.0.2 (Preview)
 
 Our very first release! Only basic functionality. Much more to come.
