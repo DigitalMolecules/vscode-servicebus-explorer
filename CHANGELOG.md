@@ -1,9 +1,9 @@
 # Change Log
 
-All notable changes to the "service-bus-explorer" extension will be documented in this file.
+## [0.0.3] (Preview)
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Refinement for VS Marketplace 
 
-## [Unreleased]
+## [0.0.2] (Preview)
 
-- Initial release
+Our very first release! Only basic functionality. Much more to come.

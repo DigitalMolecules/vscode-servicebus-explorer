@@ -24,6 +24,4 @@ None at the moment.
 
 ## Release Notes
 
-### 0.0.2 (Preview)
-
-Our very first release! Only basic functionality. Much more to come.
+See CHANGELOG.md for details
