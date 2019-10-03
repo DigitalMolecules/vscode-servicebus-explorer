@@ -18,9 +18,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 
 	constructor(
 		private context: vscode.ExtensionContext) {
-
 		this.state = context.globalState;
-		this.reBuildTree();
 	}
 
 	public getTreeItem(element: ExplorerItemBase): vscode.TreeItem {
