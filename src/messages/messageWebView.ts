@@ -2,6 +2,7 @@ import vscode from 'vscode';
 import { Subscription } from '../topic/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import { MessageStoreInstance } from '../common/global';
+import { ReceivedMessageInfo } from '@azure/service-bus';
 
 export class MessageWebView {
 
@@ -11,7 +12,7 @@ export class MessageWebView {
         private client: IServiceBusClient) {
     }
 
-    async getMessages(topic: string, subscription: string): Promise<any[]> {
+    async getMessages(topic: string, subscription: string): Promise<ReceivedMessageInfo[]> {
         return await this.client.getMessages(topic, subscription);
     }
 

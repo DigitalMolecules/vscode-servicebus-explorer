@@ -2,6 +2,7 @@ import { ISubscription } from "./models/ISubscriptionDetails";
 import { IQueue } from "./models/IQueueDetails";
 import { ITopic } from "./models/ITopicDetails";
 import { IServiceBusAuthHeader } from "../common/serviceBusAuth";
+import { ReceivedMessageInfo } from "@azure/service-bus";
 
 export interface IServiceBusClient {
     
@@ -18,5 +19,5 @@ export interface IServiceBusClient {
 
     getSubscriptionDetails(topic:string, subscription: string) : Promise<ISubscription>;
 
-    getMessages(topic:string, subscription: string) : Promise<any[]>;
+    getMessages(topic:string, subscription: string) : Promise<ReceivedMessageInfo[]>;
 }

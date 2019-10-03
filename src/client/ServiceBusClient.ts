@@ -6,6 +6,7 @@ import * as SBC from '@azure/service-bus';
 import { ITopic } from './models/ITopicDetails';
 import { IQueue } from './models/IQueueDetails';
 import ServiceBusAuth, { IServiceBusAuthHeader } from '../common/serviceBusAuth';
+import Long from 'long';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -44,26 +45,31 @@ export default class ServiceBusClient implements IServiceBusClient {
         return await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
     }
 
-    public getMessages = async (topic: string, subscription: string): Promise<any[]> => {
+    public getMessages = async (topic: string, subscription: string): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
 
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
             const subscriptionClient = client.createSubscriptionClient(topic, subscription);
-            messageReceiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
-            const messages = await messageReceiver.receiveMessages(10, 10); //TODO: This needs to come from the ui as a filter. 10 should be the default.
-            await Promise.all(messages.map(x => x.abandon()));
+            const messages = await subscriptionClient.peekBySequenceNumber(Long.MIN_VALUE, 10);
+            
 
-            await messageReceiver.close();
+            //messageReceiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
+            //const messages = await messageReceiver.receiveMessages(10, 2); //TODO: This needs to come from the ui as a filter. 10 should be the default.
+            //await Promise.all(messages.map((x: SBC.ServiceBusMessage) => x.abandon() ));
+            //await messageReceiver.close();
+            
+            await subscriptionClient.close();
+
             await client.close();
 
             return messages;
         } catch{
 
-            if (messageReceiver) {
-                await messageReceiver.close();
-            }
+            // if (messageReceiver) {
+            //     await messageReceiver.close();
+            // }
 
             if (client) {
                 await client.close();
