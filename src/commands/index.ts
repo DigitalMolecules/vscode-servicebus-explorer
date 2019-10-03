@@ -13,12 +13,12 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 
 		commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-			serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
+			await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
 			var state = await nameSpace.editNamespace(node);
-			serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString });
+			await serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpaceItem) => serviceBusProvider.deleteNamespace(node)),
