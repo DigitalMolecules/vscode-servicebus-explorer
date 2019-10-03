@@ -1,7 +1,6 @@
 import vscode from 'vscode';
 import { Subscription } from '../topic/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
-import { stringify } from 'flatted';
 import { MessageStoreInstance } from '../common/global';
 
 export class MessageWebView {
@@ -24,7 +23,6 @@ export class MessageWebView {
         const messageTable: string =
             messages.length > 0 ?
                 messages.map(x => {
-                    const messageData = stringify(x);
                     MessageStoreInstance.setMessage(x.messageId, x);
                     return `
                     <tr>
@@ -32,10 +30,10 @@ export class MessageWebView {
                             ${x.messageId}
                         </td>
                         <td>
-                            ${x.contentType}
+                            ${x.contentType || ''}
                         </td>
                         <td>
-                            <button onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
+                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
                 `;
@@ -60,6 +58,17 @@ export class MessageWebView {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Cat Coding</title>
+                <style>
+                    .button{
+                        color: var(--vscode-button-foreground);
+                        background-color: var(--vscode-button-background);
+                        padding: 1rem 2rem 1rem 2rem;
+                        border: none;
+                    }
+                    .button:hover:{
+                        background-color: var(--vscode-button-hoverBackground);
+                    }
+                </style>
             </head>
             <body>
                     <h1>Messages (${subscription})</h1>
@@ -74,8 +83,22 @@ export class MessageWebView {
                             })
                         }
                     </script>
-                    <table>
-                        ${messageTable}
+                    <table style="width:100%" >
+                        <thead>
+                            <tr>
+                                <th style="text-align:left">
+                                    Message Id
+                                </th>
+                                <th style="text-align:left">
+                                    Content Type
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${messageTable}
+                        </tbody>
                     </table>
                 </body>
                 

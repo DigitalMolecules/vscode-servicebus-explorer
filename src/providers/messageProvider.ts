@@ -1,6 +1,6 @@
 import vscode from 'vscode';
-import { stringify } from 'flatted';
 import { MessageStoreInstance } from '../common/global';
+import { format } from '../messages/formatter';
 
 export class MessageProvider implements vscode.TextDocumentContentProvider {
 
@@ -15,8 +15,16 @@ export class MessageProvider implements vscode.TextDocumentContentProvider {
             const messageId = result.split('=') ? result.split('=')[1] : '';
             const message = MessageStoreInstance.getMessage(messageId);
             
-            if(message){
-                return  stringify(message.body);
+            if(message && message.body){
+                let stringBody = '';
+                if(typeof message.body === 'object'){
+                    stringBody = JSON.stringify(message.body);
+                }
+                else{
+                    stringBody = message.body;
+                }
+                
+                return  format(stringBody);
             }
             
             return '';
