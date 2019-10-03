@@ -20,7 +20,7 @@ None at the moment.
 
 ## Known Issues
 
-- Slow when opening message list from an empty topic
+- Message count includes DLQ items
 
 ## Release Notes
 
