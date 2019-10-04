@@ -1,8 +1,14 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { TreeItemCollapsibleState, Command } from "vscode";
 import { Topic } from "./topic";
+import path from 'path';
 
 export class TopicList extends ExplorerItemBase {
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'topiclist.svg'),
+		dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'topiclist.svg')
+	};
 
 	constructor(
 		public readonly itemData: IItemData,
@@ -13,7 +19,7 @@ export class TopicList extends ExplorerItemBase {
 		super(itemData, collapsibleState, command);
 		this.label = 'Topics';
 	}
-	
+
 	public get description(): string {
 		return `(${this.topicCount.toLocaleString()})`;
 	}

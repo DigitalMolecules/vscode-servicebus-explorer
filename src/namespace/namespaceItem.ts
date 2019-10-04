@@ -4,8 +4,14 @@ import { ITopic } from "../client/models/ITopicDetails";
 import { IQueue } from "../client/models/IQueueDetails";
 import { QueueList } from "../queue/queueList";
 import { TopicList } from "../topic/topicList";
+import path from 'path';
 
 export class NameSpaceItem extends ExplorerItemBase {
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'namespace.svg'),
+		dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'namespace.svg')
+	};
 
 	constructor(
 		public readonly data: IItemData,
@@ -14,7 +20,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 	) {
 		super(data, collapsibleState, command);
 	}
-	
+
 	public getChildren(): Promise<ExplorerItemBase[]> {
 
 		var topics = Promise.resolve<ITopic[]>([]);
@@ -30,7 +36,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 				new QueueList(this.data, TreeItemCollapsibleState.Collapsed, x[0].length || 0),
 				new TopicList(this.data, TreeItemCollapsibleState.Collapsed, x[1].length || 0)
 			]
-		);
+			);
 	}
 
 	contextValue = 'namespace';
