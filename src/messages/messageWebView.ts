@@ -27,10 +27,10 @@ export class MessageWebView {
                     MessageStoreInstance.setMessage(x.messageId, x);
                     return `
                     <tr>
-                        <td>
+                        <td data-message-id="${x.messageId}">
                             ${x.messageId}
                         </td>
-                        <td>
+                        <td data-content-type="${x.contentType || ''}">
                             ${x.contentType || ''}
                         </td>
                         <td>
@@ -60,15 +60,36 @@ export class MessageWebView {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Cat Coding</title>
                 <style>
+
+                    input {
+                        box-sizing: border-box;
+                    }
+
                     .button{
                         color: var(--vscode-button-foreground);
                         background-color: var(--vscode-button-background);
                         padding: 1rem 2rem 1rem 2rem;
                         border: none;
                     }
+
                     .button:hover:{
                         background-color: var(--vscode-button-hoverBackground);
                     }
+
+                    .input{
+                        background-color: var(--vscode-input-background);
+                        border: var(--vscode-input-border);
+                        color: var(--vscode-input-foreground);
+                        width: calc(100% - 2rem);
+                        padding: 0.5rem 0.8rem 0.5rem 0.8rem;
+                        margin: 0px;
+                    }
+
+
+                    .hidden{
+                        display:none;
+                    }
+
                 </style>
             </head>
             <body>
@@ -83,6 +104,30 @@ export class MessageWebView {
                                 messageId: messageId
                             })
                         }
+
+                        function filter(){
+                            var messageId = filter_messageId.value;
+                            
+                            var nodesToHide = [];
+                            var nodesToShow = [];
+                            if(!messageId || messageId.length === 0){
+                                nodesToShow = document.querySelectorAll('td[data-message-id]');
+                            }
+                            else{
+                                nodesToHide = document.querySelectorAll('td:not([data-message-id="' + messageId + '"])');
+                                nodesToShow = document.querySelectorAll('td[data-message-id="' + messageId + '"]');    
+                            }
+                          
+                            nodesToHide.forEach(function(x) {
+                              
+                              x.parentNode.classList.add('hidden');
+                            });
+                            
+                            nodesToShow.forEach(function(x) { 
+                              x.parentNode.classList.remove('hidden');
+                            });
+                        }
+
                     </script>
                     <table style="width:100%" >
                         <thead>
@@ -92,6 +137,16 @@ export class MessageWebView {
                                 </th>
                                 <th style="text-align:left">
                                     Content Type
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:left">
+                                   <input id="filter_messageId" class="input" onchange="filter()" /> 
+                                </th>
+                                <th style="text-align:left">
+                                    <input id="filter_contentType" class="input" onchange="filter()" /> 
                                 </th>
                                 <th>
                                 </th>
