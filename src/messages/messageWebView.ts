@@ -12,8 +12,8 @@ export class MessageWebView {
         private client: IServiceBusClient) {
     }
 
-    async getMessages(topic: string, subscription: string): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getMessages(topic, subscription);
+    async getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getMessages(topic, subscription, searchArguments);
     }
 
     async renderMessages(topic: string, subscription: string, messages: any[]): Promise<void> {
@@ -107,9 +107,9 @@ export class MessageWebView {
 
     }
 
-    async open(context: vscode.ExtensionContext, node: Subscription): Promise<void> {
+    async open(context: vscode.ExtensionContext, node: Subscription, searchArguments: string | null): Promise<void> {
 
-        const messages = await this.getMessages(node.topicName, node.label);
+        const messages = await this.getMessages(node.topicName, node.label, searchArguments);
 
         this.panel = vscode.window.createWebviewPanel(
             'messagelist', // Identifies the type of the webview. Used internally
@@ -122,7 +122,7 @@ export class MessageWebView {
 
         this.panel.webview.onDidReceiveMessage(
             message => {
-                var msg = messages.find(x=>x.messageId === message.messageId);
+                var msg = messages.find(x => x.messageId === message.messageId);
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);

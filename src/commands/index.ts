@@ -31,7 +31,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
 			var state  = await  subscriptionUI.searchMessages();
-			await node.searchMessages(state.searchArguments);
+			await node.searchMessages(context, state.searchArguments);
 		}),
 		
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string, subscription: string, message: any) => {
