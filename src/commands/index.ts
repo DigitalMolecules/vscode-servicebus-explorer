@@ -6,8 +6,9 @@ import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TopicList } from "../topic/topicList";
 import { QueueList } from "../queue/queueList";
 import { Subscription } from "../topic/subscription";
+import { SubscriptionUI } from "../topic/SubscriptionUI";
 
-export default function registerCommands(context: ExtensionContext, serviceBusProvider: ServiceBusProvider, nameSpace: NameSpace) : IDisposable[] {
+export default function registerCommands(context: ExtensionContext, serviceBusProvider: ServiceBusProvider, nameSpace: NameSpace, subscriptionUI: SubscriptionUI) : IDisposable[] {
 	return [
 		commands.registerCommand('serviceBusExplorer.refreshEntry', () => serviceBusProvider.reBuildTree()),
 
@@ -28,7 +29,11 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => window.showInformationMessage('Refresh Queue List not implemented!')),
 
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
-
+		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
+			var state  = await  subscriptionUI.searchMessages();
+			await node.searchMessages(state.searchArguments);
+		}),
+		
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string, subscription: string, message: any) => {
 			let uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
 			let doc = await workspace.openTextDocument(uri); // calls back into the provider

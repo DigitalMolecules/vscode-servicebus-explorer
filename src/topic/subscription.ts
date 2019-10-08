@@ -6,6 +6,8 @@ import path from 'path';
 
 export class Subscription extends ExplorerItemBase {
 
+	contextValue = 'subscription';
+
 	public label: string;
 	public messageCount: number = 0;
 	public deadLettetCount: number = 0;
@@ -40,5 +42,8 @@ export class Subscription extends ExplorerItemBase {
 		await new MessageWebView(this.itemData.clientInstance).open(context, this);
 	}
 
-	contextValue = 'subscription';
+	public searchMessages = async (searchArguments: String) => {
+		
+	}
+
 }
