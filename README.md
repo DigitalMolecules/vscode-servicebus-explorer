@@ -1,5 +1,5 @@
 # service-bus-explorer extension for vscode
-
+[Get it from the marketplace](https://marketplace.visualstudio.com/items?itemName=digital-molecules.service-bus-explorer&ssr=false#overview)
 <!---  Until vscode support github as badge provider
 [![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Build/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
 [![Actions Status](https://github.com/DigitalMolecules/vscode-servicebus-explorer/workflows/Test/badge.svg)](https://github.com/DigitalMolecules/vscode-servicebus-explorer/actions)
@@ -24,7 +24,7 @@ None at the moment.
 
 ## Release Notes
 
-See CHANGELOG.md for details
+See [CHANGELOG.md](CHANGELOG.md) for details
 
 ## Mentions
 
