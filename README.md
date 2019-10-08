@@ -25,3 +25,8 @@ None at the moment.
 ## Release Notes
 
 See CHANGELOG.md for details
+
+## Mentions
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/"         title="Flaticon">www.flaticon.com</a>
+</div>

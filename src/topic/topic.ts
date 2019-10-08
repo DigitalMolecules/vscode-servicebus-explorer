@@ -2,8 +2,15 @@ import { TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { Subscription } from "./subscription";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
+import path from 'path';
+
 
 export class Topic extends ExplorerItemBase {
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'topic.svg'),
+		dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'topic.svg')
+	};
 
 	constructor(
 		public readonly itemData: IItemData,
@@ -23,7 +30,7 @@ export class Topic extends ExplorerItemBase {
 	public async getChildren(): Promise<ExplorerItemBase[]> {
 		if (this.itemData.clientInstance) {
 			const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
-				
+
 				if (!subs || !Array.isArray(subs)) {
 					return [];
 				}
@@ -38,7 +45,7 @@ export class Topic extends ExplorerItemBase {
 
 				return await Promise.all(subs);
 			};
-			
+
 			return await (this.itemData.clientInstance.getSubscriptions(this.label || '')
 				.then(mapToSubscription));
 		}

@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.6] (Preview)
+- Icons for better visual recongnition
+- Ability to search by message id (100% match only for now)
+
 ## [0.0.5] (Preview)
 
 - Using peek instead of receieve/abandon messages improved read speed.

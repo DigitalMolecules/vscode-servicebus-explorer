@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { IServiceBusClient } from '../client/IServiceBusClient';
+import path from 'path';
 
 export interface IItemData {
 	name: string;
