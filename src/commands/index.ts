@@ -31,6 +31,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
+		
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
 			var state = await subscriptionUI.searchMessages();
 			await node.searchMessages(context, state.searchArguments);
@@ -41,6 +42,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 			let doc = await workspace.openTextDocument(uri); // calls back into the provider
 			await window.showTextDocument(doc, { preview: false });
 		}),
+
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {
 				const documentText = window.activeTextEditor.document.getText();
@@ -53,6 +55,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 			}
 
 		}),		
+		
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
 			await node.createSubscription(context, state.name);
