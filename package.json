@@ -152,6 +152,20 @@
 					"command": "serviceBusExplorer.searchMessage",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				}
+			],
+			"commandPalette": [
+				{
+					"command": "serviceBusExplorer.refreshEntry",
+					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.refreshQueueList",
+					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.refreshTopicList",
+					"when": "false"
+				}
 			]
 		}
 	},
