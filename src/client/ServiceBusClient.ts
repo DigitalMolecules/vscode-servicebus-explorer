@@ -42,7 +42,16 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     public getSubscriptionDetails = async (topic: string, subscription: string): Promise<ISubscription> => {
-        return await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
+        const subDetail = await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
+        
+        // Strip out the d3p1: from CountDetails members
+        var leObject = subDetail.content.SubscriptionDescription.CountDetails as any;
+        Object.keys(subDetail.content.SubscriptionDescription.CountDetails).map(x=>{
+            leObject[x.substring(5)]= leObject[x];
+        });
+        //
+
+        return subDetail;
     }
 
     public createSubscription = async (topic: string, subscription: string): Promise<ISubscription> => {
@@ -113,11 +122,10 @@ export default class ServiceBusClient implements IServiceBusClient {
     private async sendRequest(method: string, path: string, bodyContent: string | undefined = undefined): Promise<any> {
         const { sasToken, endpoint } = this.auth;
 
-        var result = await fetch(endpoint.replace('sb', 'https') + path, {
+        var result = await fetch(endpoint.replace('sb', 'https') + path + '?api-version=2015-01', {
             method: method || 'GET',
             headers: {
-                'Authorization': sasToken,
-                // 'api-version': '2015-01'
+                'Authorization': sasToken
             },
             body: bodyContent,
         });

@@ -19,6 +19,14 @@ export interface ISubscriptionDescription {
     LockDuration:string;
     MaxDeliveryCount:number;
     MessageCount:number;
-    MessageCountDetails: any;
+    CountDetails: ICountDetails;
     RequiresSession:boolean;
+}
+
+export interface ICountDetails {
+    ActiveMessageCount:number;
+    DeadLetterMessageCount:number;
+    ScheduledMessageCount:number;
+    TransferMessageCount:number;
+    TransferDeadLetterMessageCount:number;
 }
