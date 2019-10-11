@@ -26,9 +26,9 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 
 		commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpaceItem) => serviceBusProvider.deleteNamespace(node)),
 
-		commands.registerCommand('serviceBusExplorer.refreshTopicList', (node: TopicList) => window.showInformationMessage('Refresh Topic List not implemented!')),
+		commands.registerCommand('serviceBusExplorer.refreshTopicList', (node: TopicList) => serviceBusProvider.reBuildTree(node)),
 
-		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => window.showInformationMessage('Refresh Queue List not implemented!')),
+		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
