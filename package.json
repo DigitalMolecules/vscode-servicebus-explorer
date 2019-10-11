@@ -109,6 +109,14 @@
 			{
 				"command": "serviceBusExplorer.sendToBus",
 				"title": "Service Bus Explorer: Send to Bus"
+			},
+			{
+				"command": "serviceBusExplorer.createSubscription",
+				"title": "Create Subscription",
+				"icon": {
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
+				}
 			}
 		],
 		"menus": {
@@ -152,6 +160,10 @@
 				{
 					"command": "serviceBusExplorer.searchMessage",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.createSubscription",
+					"when": "view == servicebus-namespaces && viewItem == topic"
 				}
 			],
 			"commandPalette": [

@@ -8,6 +8,7 @@ import { QueueList } from "../queue/queueList";
 import { Subscription } from "../topic/subscription";
 import { SubscriptionUI } from "../topic/SubscriptionUI";
 import { SendToBus } from "../messages/sendToBus";
+import { Topic } from "../topic/topic";
 
 export default function registerCommands(context: ExtensionContext, serviceBusProvider: ServiceBusProvider, nameSpace: NameSpace, subscriptionUI: SubscriptionUI, sendToBus: SendToBus): IDisposable[] {
 	return [
@@ -40,7 +41,6 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 			let doc = await workspace.openTextDocument(uri); // calls back into the provider
 			await window.showTextDocument(doc, { preview: false });
 		}),
-
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {
 				const documentText = window.activeTextEditor.document.getText();
@@ -52,6 +52,10 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 				window.showErrorMessage('Only implemented for active document');
 			}
 
+		}),		
+		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
+			var state  = await  subscriptionUI.createSubscription();
+			await node.createSubscription(context, state.name);
 		})
 	];
 }

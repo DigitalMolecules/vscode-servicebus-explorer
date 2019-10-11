@@ -2,6 +2,8 @@ import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { TreeItemCollapsibleState, Command } from "vscode";
 import { Topic } from "./topic";
 import path from 'path';
+import { ITopic } from "../client/models/ITopicDetails";
+import { ISubscription } from "../client/models/ISubscriptionDetails";
 
 export class TopicList extends ExplorerItemBase {
 
@@ -26,10 +28,15 @@ export class TopicList extends ExplorerItemBase {
 
 	public async getChildren(): Promise<ExplorerItemBase[]> {
 		if (this.itemData.clientInstance) {
-			return (await this.itemData.clientInstance.getTopics())
-				.map(y =>
-					new Topic(this.itemData, y.title)
-				);
+			let topicDetails = await this.itemData.clientInstance.getTopics();			
+			let topics:ExplorerItemBase[] = [];
+
+			for(var i = 0; i < topicDetails.length; i++) {
+				var subscriptions:ISubscription[] =	await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
+				topics.push(new Topic(this.itemData, topicDetails[i].title, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+			}
+
+			return topics;
 		} else {
 			return [];
 		}

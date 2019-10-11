@@ -1,5 +1,5 @@
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { TreeItemCollapsibleState, Command, ExtensionContext } from "vscode";
+import { TreeItemCollapsibleState, Command, ExtensionContext, window } from "vscode";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
 import { MessageWebView } from "../messages/messageWebView";
 import path from 'path';
@@ -48,5 +48,4 @@ export class Subscription extends ExplorerItemBase {
 		}
 		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
 	}
-
 }

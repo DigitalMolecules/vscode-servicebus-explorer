@@ -93,7 +93,7 @@ export default class ServiceBusClient implements IServiceBusClient {
                     return [result.feed.entry];
                 }
                 else {
-                    return result.feed;
+                    return [];
                 }
             }
             else {

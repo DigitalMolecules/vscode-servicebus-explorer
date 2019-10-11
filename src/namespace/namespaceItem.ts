@@ -36,7 +36,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 				new QueueList(this.data, TreeItemCollapsibleState.Collapsed, x[0].length || 0),
 				new TopicList(this.data, TreeItemCollapsibleState.Collapsed, x[1].length || 0)
 			]
-			);
+		);
 	}
 
 	contextValue = 'namespace';
