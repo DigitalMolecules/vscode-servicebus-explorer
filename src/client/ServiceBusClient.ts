@@ -152,5 +152,33 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
+<<<<<<< HEAD
     
+=======
+    public async sendMessage(topic: string, body: any, contentType: string): Promise<void> {
+        let client;
+
+        try {
+            client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+            const topicClient = client.createTopicClient(topic);
+
+            const sender = topicClient.createSender();
+
+            sender.send({
+                body: body,
+                contentType: contentType
+            });
+            
+
+            await client.close();
+           
+        } catch{
+
+            if (client) {
+                await client.close();
+            }
+        }
+    }
+
+>>>>>>> bcc2a545112a84aa6cf04675241f825a9e13ddff
 }
