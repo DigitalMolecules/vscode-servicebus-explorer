@@ -23,7 +23,8 @@
 	],
 	"activationEvents": [
 		"onView:servicebus-namespaces",
-		"onCommand:serviceBusExplorer.addEntry"
+		"onCommand:serviceBusExplorer.addEntry",
+		"onCommand:serviceBusExplorer.sendToBus"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -106,8 +107,8 @@
 				}
 			},
 			{
-				"command": "serviceBusExplorer.potato",
-				"title": "Potato"
+				"command": "serviceBusExplorer.sendToBus",
+				"title": "Service Bus Explorer: Send to Bus"
 			}
 		],
 		"menus": {
@@ -165,6 +166,11 @@
 				{
 					"command": "serviceBusExplorer.refreshTopicList",
 					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.sendToBus",
+					"group": "Service Bus Explorer",
+					"when": "editorLangId == json"
 				}
 			]
 		}

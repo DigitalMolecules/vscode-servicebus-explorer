@@ -5,19 +5,21 @@ import { IServiceBusAuthHeader } from "../common/serviceBusAuth";
 import { ReceivedMessageInfo } from "@azure/service-bus";
 
 export interface IServiceBusClient {
-    
+
     readonly auth: IServiceBusAuthHeader;
     readonly hostName: string;
 
     getTopics(): Promise<ITopic[]>;
-    
+
     getSubscriptions(topicName: string): Promise<ISubscription[]>;
-    
+
     getQueues(): Promise<IQueue[]>;
-    
-    validateAndThrow():Promise<void>;
 
-    getSubscriptionDetails(topic:string, subscription: string) : Promise<ISubscription>;
+    validateAndThrow(): Promise<void>;
 
-    getMessages(topic:string, subscription: string, searchArguments: string | null) : Promise<ReceivedMessageInfo[]>;
+    getSubscriptionDetails(topic: string, subscription: string): Promise<ISubscription>;
+
+    getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]>;
+
+    sendMessage(topic: string, body: any, contentType: string): Promise<void>;
 }
