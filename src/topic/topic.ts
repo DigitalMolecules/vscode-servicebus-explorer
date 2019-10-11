@@ -53,7 +53,10 @@ export class Topic extends ExplorerItemBase {
 	}
 
 	public createSubscription = async (context: ExtensionContext, newSubscriptionName: string) => {
-		window.showErrorMessage(`Cannot create subscription ${newSubscriptionName} function not implemented`);
+		if (this.itemData.clientInstance) {
+			const subDetails: ISubscription = await this.itemData.clientInstance.createSubscription(this.label || '', newSubscriptionName);
+			return new Subscription(this.itemData, subDetails, this.label || '');
+		}
 	}
 
 	contextValue = 'topic';
