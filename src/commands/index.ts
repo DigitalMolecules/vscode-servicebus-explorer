@@ -7,6 +7,7 @@ import { TopicList } from "../topic/topicList";
 import { QueueList } from "../queue/queueList";
 import { Subscription } from "../topic/subscription";
 import { SubscriptionUI } from "../topic/SubscriptionUI";
+import { Topic } from "../topic/topic";
 
 export default function registerCommands(context: ExtensionContext, serviceBusProvider: ServiceBusProvider, nameSpace: NameSpace, subscriptionUI: SubscriptionUI) : IDisposable[] {
 	return [
@@ -32,12 +33,15 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
 			var state  = await  subscriptionUI.searchMessages();
 			await node.searchMessages(context, state.searchArguments);
-		}),
-		
+		}),		
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string, subscription: string, message: any) => {
 			let uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
 			let doc = await workspace.openTextDocument(uri); // calls back into the provider
 			await window.showTextDocument(doc, { preview: false });
-		})
+		}),		
+		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
+			var state  = await  subscriptionUI.createSubscription();
+			await node.createSubscription(context, state.name);
+		}),
 	];
 }

@@ -14,6 +14,10 @@ interface ISearchMessageState {
     //runtime: QuickPickItem;
 }
 
+interface ICreateSubscriptionState {
+    name: string;
+}
+
 export class SubscriptionUI {
 
     private node: Subscription | null = null;
@@ -81,5 +85,28 @@ export class SubscriptionUI {
         //         return 'Name not unique';
         //     }
         // }
+    }
+
+    private inputCreateSubscriptionArguments = async (input: MultiStepInput, state: Partial<ICreateSubscriptionState>) => {
+     
+     
+        state.name = await input.showInputBox({
+            title: 'Create Subscription',
+            step: 1,
+            totalSteps: 1,
+            value: '',
+            prompt: 'Set the name of the subscription',
+            validate: this.validateNameIsUnique,
+            shouldResume: this.shouldResume
+        });
+    }
+
+    public createSubscription = async () => {
+
+        const state = {} as ICreateSubscriptionState;
+
+        await MultiStepInput.run(input => this.inputCreateSubscriptionArguments(input, state));
+
+        return state;
     }
 }

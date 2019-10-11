@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, Command } from "vscode";
+import { TreeItemCollapsibleState, ExtensionContext, Command, window } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { Subscription } from "./subscription";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
@@ -50,6 +50,10 @@ export class Topic extends ExplorerItemBase {
 		}
 
 		return Promise.resolve([]);
+	}
+
+	public createSubscription = async (context: ExtensionContext, newSubscriptionName: string) => {
+		window.showErrorMessage(`Cannot create subscription ${newSubscriptionName} function not implemented`);
 	}
 
 	contextValue = 'topic';
