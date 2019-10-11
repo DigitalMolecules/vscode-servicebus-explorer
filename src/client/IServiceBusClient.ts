@@ -21,11 +21,8 @@ export interface IServiceBusClient {
 
     getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]>;
 
-<<<<<<< HEAD
     getMessages(topic:string, subscription: string, searchArguments: string | null) : Promise<ReceivedMessageInfo[]>;
 
     createSubscription(topic:string, subscription: string) : Promise<ISubscription>;
-=======
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
->>>>>>> bcc2a545112a84aa6cf04675241f825a9e13ddff
 }
