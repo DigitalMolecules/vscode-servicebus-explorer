@@ -3,7 +3,7 @@
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"icon": "resources/icon.png",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"keywords": [
@@ -22,7 +22,9 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:servicebus-namespaces"
+		"onView:servicebus-namespaces",
+		"onCommand:serviceBusExplorer.addEntry",
+		"onCommand:serviceBusExplorer.sendToBus"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -70,7 +72,7 @@
 			},
 			{
 				"command": "serviceBusExplorer.addEntry",
-				"title": "Add",
+				"title": "Service Bus Explorer: Add",
 				"icon": {
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
@@ -99,6 +101,18 @@
 			{
 				"command": "serviceBusExplorer.searchMessage",
 				"title": "Search Messages",
+				"icon": {
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.sendToBus",
+				"title": "Service Bus Explorer: Send to Bus"
+			},
+			{
+				"command": "serviceBusExplorer.createSubscription",
+				"title": "Create Subscription",
 				"icon": {
 					"light": "resources/light/selection.svg",
 					"dark": "resources/dark/selection.svg"
@@ -146,6 +160,29 @@
 				{
 					"command": "serviceBusExplorer.searchMessage",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.createSubscription",
+					"when": "view == servicebus-namespaces && viewItem == topic"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "serviceBusExplorer.refreshEntry",
+					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.refreshQueueList",
+					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.refreshTopicList",
+					"when": "false"
+				},
+				{
+					"command": "serviceBusExplorer.sendToBus",
+					"group": "Service Bus Explorer",
+					"when": "editorLangId == json"
 				}
 			]
 		}

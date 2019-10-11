@@ -3,6 +3,7 @@ import { TreeItemCollapsibleState, Command, ExtensionContext } from "vscode";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
 import { MessageWebView } from "../messages/messageWebView";
 import path from 'path';
+import { URL } from "url";
 
 export class Subscription extends ExplorerItemBase {
 
@@ -26,10 +27,12 @@ export class Subscription extends ExplorerItemBase {
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = subscription.title;
-		this.messageCount = subscription.content.SubscriptionDescription.MessageCount;
+		this.messageCount = subscription.content.SubscriptionDescription.CountDetails.ActiveMessageCount;
+		this.deadLettetCount = subscription.content.SubscriptionDescription.CountDetails.DeadLetterMessageCount;
 	}
 
 	public get description(): string {
+
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLettetCount.toLocaleString()})`;
 	}
 
@@ -48,5 +51,4 @@ export class Subscription extends ExplorerItemBase {
 		}
 		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
 	}
-
 }

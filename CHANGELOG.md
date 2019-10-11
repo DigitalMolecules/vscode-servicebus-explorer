@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.7] (Preview)
+- Send a message from anywhere in vscode using the document as body #8
+- Include TimeStamp as a Column on the list of messages #9
+
 ## [0.0.6] (Preview)
 - Icons for better visual recongnition
 - Ability to search by message id (100% match only for now)
