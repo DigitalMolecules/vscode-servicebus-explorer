@@ -7,11 +7,13 @@ import registerCommands from './commands';
 import { IDisposable } from './disposable';
 import { ExtensionContext, window, workspace } from 'vscode';
 import { SubscriptionUI } from './topic/SubscriptionUI';
+import { SendToBus } from './messages/sendToBus';
 
 export function activate(context: ExtensionContext) {
 
 	const serviceBusProvider = new ServiceBusProvider(context);
 	const nameSpace = new NameSpace(context);
+	const sendToBus = new SendToBus(context);
 	const subscriptionUI = new SubscriptionUI(context);
 	const messageProvider = new MessageProvider();
 
@@ -19,7 +21,7 @@ export function activate(context: ExtensionContext) {
 	
 	disposables.push(window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
 	disposables.push(workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));
-	disposables.push(...registerCommands(context, serviceBusProvider, nameSpace, subscriptionUI));	
+	disposables.push(...registerCommands(context, serviceBusProvider, nameSpace, subscriptionUI, sendToBus));	
 
 	context.subscriptions.push(...disposables);
 }
