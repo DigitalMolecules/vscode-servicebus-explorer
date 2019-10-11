@@ -24,7 +24,7 @@ None at the moment.
 
 ## Release Notes
 
-See [CHANGELOG.md](CHANGELOG.md) for details
+See [CHANGELOG.md](https://github.com/DigitalMolecules/vscode-servicebus-explorer/blob/development/CHANGELOG.md) for details
 
 ## Mentions
 
