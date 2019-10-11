@@ -34,6 +34,9 @@ export class MessageWebView {
                             ${x.contentType || ''}
                         </td>
                         <td>
+                            ${ x.enqueuedTimeUtc.toLocaleString() || ''}
+                        </td>
+                        <td>
                             <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
@@ -138,6 +141,9 @@ export class MessageWebView {
                                 <th style="text-align:left">
                                     Content Type
                                 </th>
+                                <th style="text-align:left">
+                                    TimeStamp
+                                </th>
                                 <th>
                                 </th>
                             </tr>
@@ -147,6 +153,9 @@ export class MessageWebView {
                                 </th>
                                 <th style="text-align:left">
                                     <input id="filter_contentType" class="input" onchange="filter()" /> 
+                                </th>
+                                <th style="text-align:left">
+                                    
                                 </th>
                                 <th>
                                 </th>
