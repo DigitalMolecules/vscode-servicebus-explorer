@@ -4,7 +4,6 @@ import { Subscription } from "./subscription";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
 import path from 'path';
 
-
 export class Topic extends ExplorerItemBase {
 
 	iconPath = {
