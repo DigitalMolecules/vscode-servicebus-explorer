@@ -22,7 +22,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:servicebus-namespaces"
+		"onView:servicebus-namespaces",
+		"onCommand:serviceBusExplorer.addEntry"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -70,7 +71,7 @@
 			},
 			{
 				"command": "serviceBusExplorer.addEntry",
-				"title": "Add",
+				"title": "Service Bus Explorer: Add",
 				"icon": {
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
@@ -103,6 +104,10 @@
 					"light": "resources/light/selection.svg",
 					"dark": "resources/dark/selection.svg"
 				}
+			},
+			{
+				"command": "serviceBusExplorer.potato",
+				"title": "Potato"
 			}
 		],
 		"menus": {
