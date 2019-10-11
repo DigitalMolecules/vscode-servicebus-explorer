@@ -56,11 +56,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
 			await node.createSubscription(context, state.name);
-<<<<<<< HEAD
 			await serviceBusProvider.reBuildTree(node);
-		}),
-=======
 		})
->>>>>>> bcc2a545112a84aa6cf04675241f825a9e13ddff
 	];
 }

@@ -152,9 +152,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-<<<<<<< HEAD
     
-=======
     public async sendMessage(topic: string, body: any, contentType: string): Promise<void> {
         let client;
 
@@ -180,5 +178,4 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
->>>>>>> bcc2a545112a84aa6cf04675241f825a9e13ddff
 }
