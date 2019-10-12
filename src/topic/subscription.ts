@@ -51,4 +51,10 @@ export class Subscription extends ExplorerItemBase {
 		}
 		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
 	}
+
+	public deleteSubscription = async (context: ExtensionContext) => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.deleteSubscription(this.topicName, this.label);
+		}
+	}
 }

@@ -18,6 +18,10 @@ interface ICreateSubscriptionState {
     name: string;
 }
 
+interface IDeleteSubscriptionState {
+    confirm: string;
+}
+
 export class SubscriptionUI {
 
     private node: Subscription | null = null;
@@ -106,6 +110,29 @@ export class SubscriptionUI {
         const state = {} as ICreateSubscriptionState;
 
         await MultiStepInput.run(input => this.inputCreateSubscriptionArguments(input, state));
+
+        return state;
+    }
+
+    private inputDeleteSubscriptionArguments = async (input: MultiStepInput, state: Partial<IDeleteSubscriptionState>) => {
+     
+     
+        state.confirm = await input.showInputBox({
+            title: 'Delete Subscription',
+            step: 1,
+            totalSteps: 1,
+            value: '',
+            prompt: 'Type "Yes" to confirm deletion',
+            validate: this.validateNameIsUnique,
+            shouldResume: this.shouldResume
+        });
+    }
+
+    public deleteSubscription = async () => {
+
+        const state = {} as IDeleteSubscriptionState;
+
+        await MultiStepInput.run(input => this.inputDeleteSubscriptionArguments(input, state));
 
         return state;
     }

@@ -117,6 +117,14 @@
 					"light": "resources/light/selection.svg",
 					"dark": "resources/dark/selection.svg"
 				}
+			},
+			{
+				"command": "serviceBusExplorer.deleteSubscription",
+				"title": "Delete Subscription",
+				"icon": {
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
+				}
 			}
 		],
 		"menus": {
@@ -164,6 +172,10 @@
 				{
 					"command": "serviceBusExplorer.createSubscription",
 					"when": "view == servicebus-namespaces && viewItem == topic"
+				},				
+				{
+					"command": "serviceBusExplorer.deleteSubscription",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
 				}
 			],
 			"commandPalette": [

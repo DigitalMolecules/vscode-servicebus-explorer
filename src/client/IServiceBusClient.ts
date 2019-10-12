@@ -24,5 +24,8 @@ export interface IServiceBusClient {
     getMessages(topic:string, subscription: string, searchArguments: string | null) : Promise<ReceivedMessageInfo[]>;
 
     createSubscription(topic:string, subscription: string) : Promise<ISubscription>;
+
+    deleteSubscription(topic:string, subscription: string) : Promise<ISubscription>;
+
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
 }

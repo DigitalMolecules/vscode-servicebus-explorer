@@ -1,6 +1,6 @@
 import { IDisposable } from "../disposable";
 import { ServiceBusProvider } from "../providers/serviceBusProvider";
-import { commands, window, Uri, workspace, ExtensionContext } from "vscode";
+import { commands, window, Uri, workspace, ExtensionContext, TreeItemCollapsibleState } from "vscode";
 import { NameSpace } from "../namespace/namespace";
 import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TopicList } from "../topic/topicList";
@@ -59,7 +59,18 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
 			await node.createSubscription(context, state.name);
-			await serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.reBuildTree(node);
+		}),
+
+		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
+			var state  = await  subscriptionUI.deleteSubscription();
+			if (state.confirm.toUpperCase() === "YES") {
+				await node.deleteSubscription(context);
+				//todo: refresh topic - serviceBusProvider.reBuildTree(topic);
+			}
+			else {
+				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+			}
 		})
 	];
 }

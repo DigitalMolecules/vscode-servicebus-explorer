@@ -60,6 +60,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         return result.entry;
     }
 
+    public deleteSubscription = async (topic: string, subscription: string): Promise<ISubscription> => {
+        const result = await this.sendRequest('DELETE', `${topic}/subscriptions/${subscription}`);
+        return result.entry;
+    }
+
     public getMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
