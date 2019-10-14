@@ -37,7 +37,7 @@ export class Topic extends ExplorerItemBase {
 				subs = subs.map(async (y: { title: string; }) => {
 					if (this.itemData.clientInstance) {
 						const subDetails: ISubscription = await this.itemData.clientInstance.getSubscriptionDetails(this.label || '', y.title);
-						return new Subscription(this.itemData, subDetails, this.label || '');
+						return new Subscription(this.itemData, subDetails, this.label || '', this);
 					}
 					return null;
 				});

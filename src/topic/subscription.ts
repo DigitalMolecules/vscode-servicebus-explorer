@@ -4,6 +4,7 @@ import { ISubscription } from "../client/models/ISubscriptionDetails";
 import { MessageWebView } from "../messages/messageWebView";
 import path from 'path';
 import { URL } from "url";
+import { Topic } from "./topic";
 
 export class Subscription extends ExplorerItemBase {
 
@@ -11,7 +12,7 @@ export class Subscription extends ExplorerItemBase {
 
 	public label: string;
 	public messageCount: number = 0;
-	public deadLettetCount: number = 0;
+	public deadLetterCount: number = 0;
 
 	iconPath = {
 		light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'subscription.svg'),
@@ -22,18 +23,19 @@ export class Subscription extends ExplorerItemBase {
 		public readonly itemData: IItemData,
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
+		public readonly parent: Topic,
 		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
 		this.label = subscription.title;
 		this.messageCount = subscription.content.SubscriptionDescription.CountDetails.ActiveMessageCount;
-		this.deadLettetCount = subscription.content.SubscriptionDescription.CountDetails.DeadLetterMessageCount;
+		this.deadLetterCount = subscription.content.SubscriptionDescription.CountDetails.DeadLetterMessageCount;
 	}
 
 	public get description(): string {
 
-		return `(${this.messageCount.toLocaleString()}) (${this.deadLettetCount.toLocaleString()})`;
+		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
 	public getSubscriptionMessages = async (context: ExtensionContext): Promise<void> => {

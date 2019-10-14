@@ -66,7 +66,7 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 			var state  = await  subscriptionUI.deleteSubscription();
 			if (state.confirm.toUpperCase() === "YES") {
 				await node.deleteSubscription(context);
-				//todo: refresh topic - serviceBusProvider.reBuildTree(topic);
+				serviceBusProvider.reBuildTree(node.parent);
 			}
 			else {
 				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
