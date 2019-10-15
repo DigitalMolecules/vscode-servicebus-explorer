@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public readonly collapsibleState: TreeItemCollapsibleState,
+		public collapsibleState: TreeItemCollapsibleState,
 		public readonly topicCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -26,20 +26,23 @@ export class TopicList extends ExplorerItemBase {
 		return `(${this.topicCount.toLocaleString()})`;
 	}
 
-	public async getChildren(): Promise<ExplorerItemBase[]> {
-		if (this.itemData.clientInstance) {
-			let topicDetails = await this.itemData.clientInstance.getTopics();			
-			let topics:ExplorerItemBase[] = [];
+	public async getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
+		if (refresh || !this.children) {
+			this.children = [];	
+			if (this.itemData.clientInstance) {
+				let topicDetails = await this.itemData.clientInstance.getTopics();
+				let topics: ExplorerItemBase[] = [];
 
-			for(var i = 0; i < topicDetails.length; i++) {
-				var subscriptions:ISubscription[] =	await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
-				topics.push(new Topic(this.itemData, topicDetails[i].title, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+				for (var i = 0; i < topicDetails.length; i++) {
+					var subscriptions: ISubscription[] = await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
+					topics.push(new Topic(this.itemData, topicDetails[i].title, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+				}
+
+				this.children = topics;	
 			}
-
-			return topics;
-		} else {
-			return [];
 		}
+
+		return Promise.resolve(this.children);
 	}
 
 	contextValue = 'topiclist';

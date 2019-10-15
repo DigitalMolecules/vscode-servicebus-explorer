@@ -5,18 +5,24 @@ import { NameSpace } from "../namespace/namespace";
 import { NameSpaceItem } from "../namespace/namespaceItem";
 import { TopicList } from "../topic/topicList";
 import { QueueList } from "../queue/queueList";
-import { Subscription } from "../topic/subscription";
-import { SubscriptionUI } from "../topic/SubscriptionUI";
+import { Subscription } from "../subscription/subscription";
+import { SubscriptionUI } from "../subscription/SubscriptionUI";
 import { SendToBus } from "../messages/sendToBus";
 import { Topic } from "../topic/topic";
+import { ExplorerItemBase } from "../common/explorerItemBase";
 
-export default function registerCommands(context: ExtensionContext, serviceBusProvider: ServiceBusProvider, nameSpace: NameSpace, subscriptionUI: SubscriptionUI, sendToBus: SendToBus): IDisposable[] {
+export default function registerCommands(
+	context: ExtensionContext, 
+	serviceBusProvider: ServiceBusProvider, 
+	nameSpace: NameSpace, 
+	subscriptionUI: SubscriptionUI, 
+	sendToBus: SendToBus): IDisposable[] {
 	return [
 		commands.registerCommand('serviceBusExplorer.refreshEntry', () => serviceBusProvider.reBuildTree()),
 
 		commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-			await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
+		    await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
@@ -58,19 +64,30 @@ export default function registerCommands(context: ExtensionContext, serviceBusPr
 		
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
-			await node.createSubscription(context, state.name);
+			await node.createSubscription(state.name);
 			serviceBusProvider.reBuildTree(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
-			var state  = await  subscriptionUI.deleteSubscription();
+			var state  = await subscriptionUI.deleteSubscription();
+
 			if (state.confirm.toUpperCase() === "YES") {
-				await node.deleteSubscription(context);
+				await node.deleteSubscription();
 				serviceBusProvider.reBuildTree(node.parent);
 			}
 			else {
 				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
 			}
+		}),
+
+		commands.registerCommand('serviceBusExplorer.collapseAll', async (node: ExplorerItemBase) => {
+			let items = await node.getChildren(false);
+
+			if (items && items.length > 0) {
+				items.forEach(i => i.collapse());
+			}
+
+			serviceBusProvider.refresh(node);
 		})
 	];
 }

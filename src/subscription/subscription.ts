@@ -4,7 +4,7 @@ import { ISubscription } from "../client/models/ISubscriptionDetails";
 import { MessageWebView } from "../messages/messageWebView";
 import path from 'path';
 import { URL } from "url";
-import { Topic } from "./topic";
+import { Topic } from "../topic/topic";
 
 export class Subscription extends ExplorerItemBase {
 
@@ -24,7 +24,7 @@ export class Subscription extends ExplorerItemBase {
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
 		public readonly parent: Topic,
-		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
+		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
@@ -34,12 +34,10 @@ export class Subscription extends ExplorerItemBase {
 	}
 
 	public get description(): string {
-
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
 	public getSubscriptionMessages = async (context: ExtensionContext): Promise<void> => {
-
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
@@ -54,7 +52,7 @@ export class Subscription extends ExplorerItemBase {
 		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
 	}
 
-	public deleteSubscription = async (context: ExtensionContext) => {
+	public deleteSubscription = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.deleteSubscription(this.topicName, this.label);
 		}

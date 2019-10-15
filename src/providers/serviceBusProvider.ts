@@ -51,8 +51,9 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			this.state.update(NAMESPACE_CONNECTIONS, items);
 			this._onDidChangeTreeData.fire(node);
 		});
+	}
 
-		this.state.update(NAMESPACE_CONNECTIONS, items);
+	public refresh(node?: ExplorerItemBase | undefined): void {
 		this._onDidChangeTreeData.fire(node);
 	}
 

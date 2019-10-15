@@ -2,10 +2,11 @@
 	"name": "service-bus-explorer",
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
-	"icon": "resources/icon.png",
+	"icon": "https://github.com/DigitalMolecules/vscode-servicebus-explorer/blob/master/resources/icon.png",
 	"version": "0.0.7",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
+	"license": "MIT",
 	"keywords": [
 		"azure",
 		"service bus",
@@ -87,6 +88,14 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.collapseAll",
+				"title": "Collapse",
+				"icon": {
+					"light": "resources/light/collapse-all.svg",
+					"dark": "resources/dark/collapse-all.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.deleteEntry",
 				"title": "Delete"
 			},
@@ -147,6 +156,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "serviceBusExplorer.collapseAll",
+					"when": "view == servicebus-namespaces && viewItem == namespace",
+					"group": "inline"
+				},
+				{
 					"command": "serviceBusExplorer.deleteEntry",
 					"when": "view == servicebus-namespaces && viewItem == namespace"
 				},
@@ -172,7 +186,7 @@
 				{
 					"command": "serviceBusExplorer.createSubscription",
 					"when": "view == servicebus-namespaces && viewItem == topic"
-				},				
+				},
 				{
 					"command": "serviceBusExplorer.deleteSubscription",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
@@ -209,22 +223,22 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.6",
-		"@types/node": "^12.7.4",
-		"@types/vscode": "^1.38.0",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.7.12",
+		"@types/vscode": "^1.39.0",
 		"@types/crypto-js": "^3.1.43",
-		"@types/node-fetch": "^2.5.0",
+		"@types/node-fetch": "^2.5.2",
 		"glob": "^7.1.4",
-		"mocha": "^6.2.0",
-		"tslint": "^5.12.1",
-		"typescript": "^3.3.1",
-		"vscode-test": "^1.0.2",
-		"vsce": "^1.66.0"
+		"mocha": "^6.2.1",
+		"tslint": "^5.20.0",
+		"typescript": "^3.6.4",
+		"vscode-test": "^1.2.0",
+		"vsce": "^1.67.1"
 	},
 	"dependencies": {
-		"@azure/service-bus": "^1.0.3",
+		"@azure/service-bus": "^1.1.0",
 		"crypto-js": "^3.1.9-1",
-		"fast-xml-parser": "^3.12.20",
+		"fast-xml-parser": "^3.13.0",
 		"node-fetch": "^2.6.0"
 	}
 }

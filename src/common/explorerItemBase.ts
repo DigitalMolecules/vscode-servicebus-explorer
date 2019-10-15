@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import path from 'path';
+import { ServiceBusProvider } from '../providers/serviceBusProvider';
 
 export interface IItemData {
 	name: string;
@@ -10,10 +11,11 @@ export interface IItemData {
 }
 
 export class ExplorerItemBase extends vscode.TreeItem {
+	protected children: ExplorerItemBase[] = [];
 
 	constructor(
 		public readonly itemData: IItemData,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+		public collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
 		super(itemData.name, collapsibleState);
@@ -23,8 +25,21 @@ export class ExplorerItemBase extends vscode.TreeItem {
 		return this.itemData.error ? this.itemData.error.message : '';
 	}
 
-	public getChildren(): Promise<ExplorerItemBase[]> {
+	public getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
 		throw new Error("Not implemented.");
+	}
+
+	public collapse(): void {
+		if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
+			return;
+		}
+
+		if (this.children) {
+			 this.children.forEach(c => c.collapse());
+		}		
+
+		this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+		this.label = 'Hello';
 	}
 
 	contextValue = 'base';
