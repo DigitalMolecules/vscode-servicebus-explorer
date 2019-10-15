@@ -25,7 +25,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 		return this.itemData.error ? this.itemData.error.message : '';
 	}
 
-	public getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
+	public getChildren(): Promise<ExplorerItemBase[]> {
 		throw new Error("Not implemented.");
 	}
 
@@ -38,8 +38,14 @@ export class ExplorerItemBase extends vscode.TreeItem {
 			 this.children.forEach(c => c.collapse());
 		}		
 
-		this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-		this.label = 'Hello';
+		this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+		
+		// There is a bug: Simply updating TreeItemCollapsibleState will not update the UI. This is a hack below to force UI update ( add or remove space ) 
+		if (this.itemData.name.substr(0, this.itemData.name.length) === ' ') {
+			this.itemData.name = this.itemData.name.trim();	
+		} else {
+			this.itemData.name = this.itemData.name + ' ';
+		}
 	}
 
 	contextValue = 'base';

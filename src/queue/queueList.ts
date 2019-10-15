@@ -12,7 +12,7 @@ export class QueueList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public collapsibleState: TreeItemCollapsibleState,
+		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
 		public readonly itemCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -24,17 +24,16 @@ export class QueueList extends ExplorerItemBase {
 		return `(${this.itemCount.toLocaleString()})`;
 	}
 
-	public async getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
-		if (refresh || !this.children) {
-			this.children = [];
-			if (this.itemData.clientInstance) {
-				let queues = (await this.itemData.clientInstance.getQueues())
-					.map(y =>
-						new Queue(this.itemData, y.title)
-					);
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
 
-				this.children = queues;
-			}
+		if (this.itemData.clientInstance) {
+			let queues = (await this.itemData.clientInstance.getQueues())
+				.map(y =>
+					new Queue(this.itemData, y.title, TreeItemCollapsibleState.Collapsed)
+				);
+
+			this.children = queues;
 		}
 
 		return Promise.resolve(this.children);

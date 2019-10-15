@@ -54,7 +54,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	}
 
 	public refresh(node?: ExplorerItemBase | undefined): void {
-		this._onDidChangeTreeData.fire(node);
+		this._onDidChangeTreeData.fire();
 	}
 
 	private async buildTreeItem(item: IItemData): Promise<void> {

@@ -81,12 +81,7 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.collapseAll', async (node: ExplorerItemBase) => {
-			let items = await node.getChildren(false);
-
-			if (items && items.length > 0) {
-				items.forEach(i => i.collapse());
-			}
-
+			node.collapse();
 			serviceBusProvider.refresh(node);
 		})
 	];

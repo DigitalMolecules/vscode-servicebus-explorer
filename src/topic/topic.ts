@@ -14,7 +14,7 @@ export class Topic extends ExplorerItemBase {
 	constructor(
 		public readonly itemData: IItemData,
 		public readonly title: string,
-		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
 		public readonly subscriptionCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -26,30 +26,28 @@ export class Topic extends ExplorerItemBase {
 		return `(${this.subscriptionCount.toLocaleString()})`;
 	}
 
-	public async getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
-		if (refresh || !this.children) {
-			this.children = [];
-			
-			if (this.itemData.clientInstance) {
-				const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
-					if (!subs || !Array.isArray(subs)) {
-						return [];
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
+
+		if (this.itemData.clientInstance) {
+			const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
+				if (!subs || !Array.isArray(subs)) {
+					return [];
+				}
+
+				subs = subs.map(async (y: { title: string; }) => {
+					if (this.itemData.clientInstance) {
+						const subDetails: ISubscription = await this.itemData.clientInstance.getSubscriptionDetails(this.label || '', y.title);
+						return new Subscription(this.itemData, subDetails, this.label || '', this);
 					}
+					return null;
+				});
 
-					subs = subs.map(async (y: { title: string; }) => {
-						if (this.itemData.clientInstance) {
-							const subDetails: ISubscription = await this.itemData.clientInstance.getSubscriptionDetails(this.label || '', y.title);
-							return new Subscription(this.itemData, subDetails, this.label || '', this);
-						}
-						return null;
-					});
+				return await Promise.all(subs);
+			};
 
-					return await Promise.all(subs);
-				};
-
-				this.children = await (this.itemData.clientInstance.getSubscriptions(this.label || '')
-					.then(mapToSubscription));
-			}
+			this.children = await (this.itemData.clientInstance.getSubscriptions(this.label || '')
+				.then(mapToSubscription));
 		}
 
 		return Promise.resolve(this.children);

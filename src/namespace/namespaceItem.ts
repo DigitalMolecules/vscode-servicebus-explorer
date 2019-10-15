@@ -13,23 +13,21 @@ export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
 		public readonly data: IItemData,
-		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Expanded,
+		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
 		super(data, collapsibleState, command);
 	}
 
-	public async getChildren(refresh: boolean = true): Promise<ExplorerItemBase[]> {
-		if (refresh || !this.children) {
-			this.children = [];
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
 
-			if (this.data.clientInstance && !this.data.error) {
-				let topics = await this.data.clientInstance.getTopics();
-				let queues = await this.data.clientInstance.getQueues();
+		if (this.data.clientInstance && !this.data.error) {
+			let topics = await this.data.clientInstance.getTopics();
+			let queues = await this.data.clientInstance.getQueues();
 
-				this.children.push(new QueueList(this.data, TreeItemCollapsibleState.Collapsed, queues.length || 0));
-				this.children.push(new TopicList(this.data, TreeItemCollapsibleState.Collapsed, topics.length || 0));	
-			}
+			this.children.push(new QueueList(this.data, TreeItemCollapsibleState.Collapsed, queues.length || 0));
+			this.children.push(new TopicList(this.data, TreeItemCollapsibleState.Collapsed, topics.length || 0));
 		}
 
 		return Promise.resolve(this.children);
