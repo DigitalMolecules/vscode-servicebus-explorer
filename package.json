@@ -143,6 +143,19 @@
 				"command": "serviceBusExplorer.deleteTopic",
 				"title": "Delete Topic"
 			}
+			,
+			{
+				"command": "serviceBusExplorer.createQueue",
+				"title": "Create Queue",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.deleteQueue",
+				"title": "Delete Queue"
+			}
 		],
 		"menus": {
 			"view/title": [
@@ -216,6 +229,19 @@
 				{
 					"command": "serviceBusExplorer.deleteTopic",
 					"when": "view == servicebus-namespaces && viewItem == topic"
+				},
+				{
+					"command": "serviceBusExplorer.createQueue",
+					"when": "view == servicebus-namespaces && viewItem == queuelist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createQueue",
+					"when": "view == servicebus-namespaces && viewItem == queuelist"
+				},
+				{
+					"command": "serviceBusExplorer.deleteQueue",
+					"when": "view == servicebus-namespaces && viewItem == queue"
 				}
 			],
 			"commandPalette": [

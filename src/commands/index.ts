@@ -11,6 +11,8 @@ import { SendToBus } from "../messages/sendToBus";
 import { Topic } from "../topic/topic";
 import { ExplorerItemBase } from "../common/explorerItemBase";
 import { TopicUI } from "../topic/TopicUI";
+import { Queue } from "../queue/queue";
+import { QueueUI } from "../queue/QueueUI";
 
 export default function registerCommands(
 	context: ExtensionContext, 
@@ -18,6 +20,7 @@ export default function registerCommands(
 	nameSpace: NameSpace, 
 	subscriptionUI: SubscriptionUI, 
 	topicUI: TopicUI,
+	queueUI: QueueUI, 
 	sendToBus: SendToBus): IDisposable[] {
 	return [
 		commands.registerCommand('serviceBusExplorer.refreshEntry', () => serviceBusProvider.reBuildTree()),
@@ -93,6 +96,24 @@ export default function registerCommands(
 
 			if (state.confirm.toUpperCase() === "YES") {
 				await node.deleteTopic();
+				serviceBusProvider.reBuildTree(node.parent);
+			}
+			else {
+				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+			}
+		}),
+
+		commands.registerCommand('serviceBusExplorer.createQueue', async (node: QueueList) => {
+			var state  = await  queueUI.createQueue();
+			await node.createQueue(state.name);
+			serviceBusProvider.reBuildTree(node);
+		}),
+
+		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
+			var state  = await queueUI.deleteQueue();
+
+			if (state.confirm.toUpperCase() === "YES") {
+				await node.deleteQueue();
 				serviceBusProvider.reBuildTree(node.parent);
 			}
 			else {

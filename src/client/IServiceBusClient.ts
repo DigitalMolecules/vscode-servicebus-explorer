@@ -30,6 +30,10 @@ export interface IServiceBusClient {
     createTopic(topic:string) : Promise<ITopic>;
 
     deleteTopic(topic:string) : Promise<ITopic>;
+    
+    createQueue(queue:string) : Promise<IQueue>;
+
+    deleteQueue(queue:string) : Promise<IQueue>;
 
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
 }
