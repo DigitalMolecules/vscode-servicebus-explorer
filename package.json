@@ -172,7 +172,7 @@
 				{
 					"command": "serviceBusExplorer.createSubscription",
 					"when": "view == servicebus-namespaces && viewItem == topic"
-				},				
+				},
 				{
 					"command": "serviceBusExplorer.deleteSubscription",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
