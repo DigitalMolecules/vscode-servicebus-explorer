@@ -123,17 +123,25 @@
 				"command": "serviceBusExplorer.createSubscription",
 				"title": "Create Subscription",
 				"icon": {
-					"light": "resources/light/selection.svg",
-					"dark": "resources/dark/selection.svg"
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
 			},
 			{
 				"command": "serviceBusExplorer.deleteSubscription",
-				"title": "Delete Subscription",
+				"title": "Delete Subscription"
+			},
+			{
+				"command": "serviceBusExplorer.createTopic",
+				"title": "Create Topic",
 				"icon": {
-					"light": "resources/light/selection.svg",
-					"dark": "resources/dark/selection.svg"
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
+			},
+			{
+				"command": "serviceBusExplorer.deleteTopic",
+				"title": "Delete Topic"
 			}
 		],
 		"menus": {
@@ -185,11 +193,29 @@
 				},
 				{
 					"command": "serviceBusExplorer.createSubscription",
+					"when": "view == servicebus-namespaces && viewItem == topic",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createSubscription",
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
 					"command": "serviceBusExplorer.deleteSubscription",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.createTopic",
+					"when": "view == servicebus-namespaces && viewItem == topiclist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createTopic",
+					"when": "view == servicebus-namespaces && viewItem == topiclist"
+				},
+				{
+					"command": "serviceBusExplorer.deleteTopic",
+					"when": "view == servicebus-namespaces && viewItem == topic"
 				}
 			],
 			"commandPalette": [

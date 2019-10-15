@@ -27,5 +27,9 @@ export interface IServiceBusClient {
 
     deleteSubscription(topic:string, subscription: string) : Promise<ISubscription>;
 
+    createTopic(topic:string) : Promise<ITopic>;
+
+    deleteTopic(topic:string) : Promise<ITopic>;
+
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
 }
