@@ -144,22 +144,23 @@ export class MultiStepInput {
 						}
 					}),
 					input.onDidAccept(async () => {
-						const value = input.value;
 						input.enabled = false;
 						input.busy = true;
-						if (!(await validate(value))) {
-							resolve(value);
+						input.validationMessage = await validate(input.value);
+
+						if (!input.validationMessage) {
+							resolve(input.value);
 						}
+
 						input.enabled = true;
 						input.busy = false;
 					}),
 					input.onDidChangeValue(async text => {
-						const current = validate(text);
-						validating = current;
-						const validationMessage = await current;
-						if (current === validating) {
-							input.validationMessage = validationMessage;
-						}
+						input.enabled = false;
+						input.busy = true;
+						input.validationMessage = await validate(text);
+						input.enabled = true;
+						input.busy = false;
 					}),
 					input.onDidHide(() => {
 						(async () => {

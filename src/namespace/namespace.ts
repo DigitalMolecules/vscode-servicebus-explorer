@@ -49,17 +49,21 @@ export class NameSpace {
         return state;
     }
 
-    private shouldResume() {
-        // Could show a notification with the option to resume.
-        return new Promise<boolean>((resolve, reject) => {
+    private shouldResume(): Promise<boolean> {
 
+        return new Promise<boolean>((resolve, reject) => {
         });
     }
 
     private validateConnectionString = async (name: string): Promise<string | undefined> => {
-        // ...validate...
         if (name.trim() === '') {
             return 'Connection string must be filled in';
+        }
+
+        var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+
+        if ((this.node === null || this.node.data.connection !== name.trim()) && items.find(p => p.connection === name.trim())) {
+             return 'Connection string already exists';
         }
     }
 
@@ -82,7 +86,6 @@ export class NameSpace {
         let name = '';
 
         if (this.node === null) {
-            // Default to host name
             const serviceBusClient = new ServiceBusClient(state.connectionString || '') as IServiceBusClient;
             name = serviceBusClient.hostName;
         } else {
@@ -95,21 +98,20 @@ export class NameSpace {
             totalSteps: 2,
             value: name,
             prompt: 'Choose a name for the namespace',
-            validate: this.validateNameIsUnique,
+            validate: this.validateName,
             shouldResume: this.shouldResume
         });
     }
 
-    private validateNameIsUnique = async (name: string) => {
+    private validateName = async (name: string): Promise<string | undefined> => {
         if (name.trim() === '') {
             return 'Name must be filled in';
         }
-        else {
-            var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 
-            if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
-                return 'Name not unique';
-            }
+        var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+
+        if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
+            return 'Name already exists';
         }
     }
 }

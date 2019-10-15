@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState, ExtensionContext, Command, window } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { Subscription } from "./subscription";
+import { Subscription } from "../subscription/subscription";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
 import path from 'path';
 
@@ -14,7 +14,7 @@ export class Topic extends ExplorerItemBase {
 	constructor(
 		public readonly itemData: IItemData,
 		public readonly title: string,
-		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
 		public readonly subscriptionCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -27,9 +27,10 @@ export class Topic extends ExplorerItemBase {
 	}
 
 	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
+
 		if (this.itemData.clientInstance) {
 			const mapToSubscription = async (subs: any[]): Promise<Subscription[]> => {
-
 				if (!subs || !Array.isArray(subs)) {
 					return [];
 				}
@@ -37,7 +38,7 @@ export class Topic extends ExplorerItemBase {
 				subs = subs.map(async (y: { title: string; }) => {
 					if (this.itemData.clientInstance) {
 						const subDetails: ISubscription = await this.itemData.clientInstance.getSubscriptionDetails(this.label || '', y.title);
-						return new Subscription(this.itemData, subDetails, this.label || '');
+						return new Subscription(this.itemData, subDetails, this.label || '', this);
 					}
 					return null;
 				});
@@ -45,14 +46,14 @@ export class Topic extends ExplorerItemBase {
 				return await Promise.all(subs);
 			};
 
-			return await (this.itemData.clientInstance.getSubscriptions(this.label || '')
+			this.children = await (this.itemData.clientInstance.getSubscriptions(this.label || '')
 				.then(mapToSubscription));
 		}
 
-		return Promise.resolve([]);
+		return Promise.resolve(this.children);
 	}
 
-	public createSubscription = async (context: ExtensionContext, newSubscriptionName: string) => {
+	public createSubscription = async (newSubscriptionName: string) => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.createSubscription(this.label || '', newSubscriptionName);
 		}

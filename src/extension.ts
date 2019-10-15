@@ -6,7 +6,7 @@ import { MessageProvider } from './providers/messageProvider';
 import registerCommands from './commands';
 import { IDisposable } from './disposable';
 import { ExtensionContext, window, workspace } from 'vscode';
-import { SubscriptionUI } from './topic/SubscriptionUI';
+import { SubscriptionUI } from './subscription/SubscriptionUI';
 import { SendToBus } from './messages/sendToBus';
 
 export function activate(context: ExtensionContext) {
