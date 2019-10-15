@@ -1,8 +1,14 @@
 import { TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
+import path from 'path';
 import { QueueList } from "./queueList";
 
 export class Queue extends ExplorerItemBase {
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'queue.svg'),
+		dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'queue.svg')
+	};
 
 	constructor(
 		public readonly itemData: IItemData,
