@@ -25,7 +25,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 	}
 
 	public getChildren(): Promise<ExplorerItemBase[]> {
-		return Promise.all([]);
+		return Promise.resolve([]);
 	}
 
 	contextValue = 'base';
