@@ -28,5 +28,6 @@ See [CHANGELOG.md](https://github.com/DigitalMolecules/vscode-servicebus-explore
 
 ## Mentions
 
-<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/"         title="Flaticon">www.flaticon.com</a>
-</div>
+- Project's logo designed by [Maaike Min](https://www.linkedin.com/in/maaike-min "Maaike Min")
+
+- App's Icons made by [Smashicons](https://www.flaticon.com/authors/smashicons "Smashicons") from [www.flaticon.com](https://www.flaticon.com/ "Flaticon")

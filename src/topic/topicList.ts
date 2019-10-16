@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
+		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly topicCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -34,13 +34,19 @@ export class TopicList extends ExplorerItemBase {
 
 			for (var i = 0; i < topicDetails.length; i++) {
 				var subscriptions: ISubscription[] = await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
-				topics.push(new Topic(this.itemData, topicDetails[i].title, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+				topics.push(new Topic(this.itemData, topicDetails[i].title, this, TreeItemCollapsibleState.Collapsed, subscriptions.length));
 			}
 
 			this.children = topics;
 		}
 
 		return Promise.resolve(this.children);
+	}
+
+	public createTopic = async (newTopicName: string) => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.createTopic(newTopicName);
+		}
 	}
 
 	contextValue = 'topiclist';

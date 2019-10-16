@@ -3,6 +3,7 @@ import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import { Subscription } from "../subscription/subscription";
 import { ISubscription } from "../client/models/ISubscriptionDetails";
 import path from 'path';
+import { TopicList } from "./topicList";
 
 export class Topic extends ExplorerItemBase {
 
@@ -14,7 +15,8 @@ export class Topic extends ExplorerItemBase {
 	constructor(
 		public readonly itemData: IItemData,
 		public readonly title: string,
-		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
+		public readonly parent: TopicList,
+		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly subscriptionCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -56,6 +58,12 @@ export class Topic extends ExplorerItemBase {
 	public createSubscription = async (newSubscriptionName: string) => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.createSubscription(this.label || '', newSubscriptionName);
+		}
+	}
+
+	public deleteTopic = async () => {
+		if (this.itemData.clientInstance && this.label) {
+			await this.itemData.clientInstance.deleteTopic(this.label);
 		}
 	}
 

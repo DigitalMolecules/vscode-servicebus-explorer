@@ -2,8 +2,8 @@
 	"name": "service-bus-explorer",
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
-	"icon": "https://github.com/DigitalMolecules/vscode-servicebus-explorer/blob/master/resources/icon.png",
-	"version": "0.0.7",
+	"icon": "https://raw.githubusercontent.com/DigitalMolecules/vscode-servicebus-explorer/master/resources/icon.png",
+	"version": "0.0.8",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"license": "MIT",
@@ -34,7 +34,7 @@
 				{
 					"id": "servicebus-explorer",
 					"title": "Service Bus Explorer",
-					"icon": "resources/servicebus.png"
+					"icon": "resources/servicebus.svg"
 				}
 			]
 		},
@@ -123,17 +123,38 @@
 				"command": "serviceBusExplorer.createSubscription",
 				"title": "Create Subscription",
 				"icon": {
-					"light": "resources/light/selection.svg",
-					"dark": "resources/dark/selection.svg"
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
 			},
 			{
 				"command": "serviceBusExplorer.deleteSubscription",
-				"title": "Delete Subscription",
+				"title": "Delete Subscription"
+			},
+			{
+				"command": "serviceBusExplorer.createTopic",
+				"title": "Create Topic",
 				"icon": {
-					"light": "resources/light/selection.svg",
-					"dark": "resources/dark/selection.svg"
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
+			},
+			{
+				"command": "serviceBusExplorer.deleteTopic",
+				"title": "Delete Topic"
+			}
+			,
+			{
+				"command": "serviceBusExplorer.createQueue",
+				"title": "Create Queue",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.deleteQueue",
+				"title": "Delete Queue"
 			}
 		],
 		"menus": {
@@ -185,11 +206,42 @@
 				},
 				{
 					"command": "serviceBusExplorer.createSubscription",
+					"when": "view == servicebus-namespaces && viewItem == topic",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createSubscription",
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
 					"command": "serviceBusExplorer.deleteSubscription",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.createTopic",
+					"when": "view == servicebus-namespaces && viewItem == topiclist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createTopic",
+					"when": "view == servicebus-namespaces && viewItem == topiclist"
+				},
+				{
+					"command": "serviceBusExplorer.deleteTopic",
+					"when": "view == servicebus-namespaces && viewItem == topic"
+				},
+				{
+					"command": "serviceBusExplorer.createQueue",
+					"when": "view == servicebus-namespaces && viewItem == queuelist",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.createQueue",
+					"when": "view == servicebus-namespaces && viewItem == queuelist"
+				},
+				{
+					"command": "serviceBusExplorer.deleteQueue",
+					"when": "view == servicebus-namespaces && viewItem == queue"
 				}
 			],
 			"commandPalette": [
