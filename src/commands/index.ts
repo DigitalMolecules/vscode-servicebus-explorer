@@ -13,6 +13,8 @@ import { ExplorerItemBase } from "../common/explorerItemBase";
 import { TopicUI } from "../topic/TopicUI";
 import { Queue } from "../queue/queue";
 import { QueueUI } from "../queue/QueueUI";
+import { withUsernamePasswordWithAuthResponse } from "@azure/ms-rest-nodeauth/dist/lib/login";
+import { confirmDialog } from "../common/global";
 
 export default function registerCommands(
 	context: ExtensionContext, 
@@ -74,14 +76,9 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
-			var state  = await subscriptionUI.deleteSubscription();
-
-			if (state.confirm.toUpperCase() === "YES") {
+			if ((await confirmDialog())) {
 				await node.deleteSubscription();
-				serviceBusProvider.refresh(node.parent);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
 
@@ -92,14 +89,9 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
-			var state  = await topicUI.deleteTopic();
-
-			if (state.confirm.toUpperCase() === "YES") {
+			if ((await confirmDialog())) {
 				await node.deleteTopic();
-				serviceBusProvider.refresh(node);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+				serviceBusProvider.refresh(node);				
 			}
 		}),
 
@@ -110,14 +102,9 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
-			var state  = await queueUI.deleteQueue();
-
-			if (state.confirm.toUpperCase() === "YES") {
+			if ((await confirmDialog())) {
 				await node.deleteQueue();
-				serviceBusProvider.refresh(node.parent);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
 
