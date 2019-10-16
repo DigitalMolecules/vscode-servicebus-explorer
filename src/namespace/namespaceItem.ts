@@ -26,8 +26,8 @@ export class NameSpaceItem extends ExplorerItemBase {
 			let topics = await this.data.clientInstance.getTopics();
 			let queues = await this.data.clientInstance.getQueues();
 
-			this.children.push(new QueueList(this.data, this.collapsibleState, queues.length || 0));
-			this.children.push(new TopicList(this.data, this.collapsibleState, topics.length || 0));
+			this.children.push(new QueueList(this.data, queues.length ? this.collapsibleState : TreeItemCollapsibleState.None, queues.length || 0));
+			this.children.push(new TopicList(this.data, topics.length ? this.collapsibleState : TreeItemCollapsibleState.None, topics.length || 0));
 		}
 
 		return Promise.resolve(this.children);

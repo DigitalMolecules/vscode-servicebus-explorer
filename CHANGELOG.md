@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.2] (Preview)
+- On Delete and Add or Topic/Subscription/Queue, the number at list level needs to be refreshed #18
+- UI Improvements
+
+## [0.1.1] (Preview)
+- Bug Fixes
+
 ## [0.1.0] (Preview)
 - Delete Subscription #11
 - Create/Delete Topic #12

@@ -35,7 +35,7 @@ export class TopicList extends ExplorerItemBase {
 
 			for (var i = 0; i < topicDetails.length; i++) {
 				var subscriptions: ISubscription[] = await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
-				topics.push(new Topic(this.itemData, topicDetails[i].title, this, this.collapsibleState, subscriptions.length));
+				topics.push(new Topic(this.itemData, topicDetails[i].title, this, subscriptions.length ? this.collapsibleState : TreeItemCollapsibleState.None, subscriptions.length));
 			}
 
 			this.children = topics;

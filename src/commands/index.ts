@@ -70,7 +70,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
 			await node.createSubscription(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
@@ -78,7 +78,7 @@ export default function registerCommands(
 
 			if (state.confirm.toUpperCase() === "YES") {
 				await node.deleteSubscription();
-				serviceBusProvider.reBuildTree(node.parent);
+				serviceBusProvider.refresh(node.parent);
 			}
 			else {
 				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
@@ -88,7 +88,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.createTopic', async (node: TopicList) => {
 			var state  = await  topicUI.createTopic();
 			await node.createTopic(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
@@ -96,7 +96,7 @@ export default function registerCommands(
 
 			if (state.confirm.toUpperCase() === "YES") {
 				await node.deleteTopic();
-				serviceBusProvider.reBuildTree(node.parent);
+				serviceBusProvider.refresh(node);
 			}
 			else {
 				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
@@ -106,7 +106,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.createQueue', async (node: QueueList) => {
 			var state  = await  queueUI.createQueue();
 			await node.createQueue(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
@@ -114,7 +114,7 @@ export default function registerCommands(
 
 			if (state.confirm.toUpperCase() === "YES") {
 				await node.deleteQueue();
-				serviceBusProvider.reBuildTree(node.parent);
+				serviceBusProvider.refresh(node.parent);
 			}
 			else {
 				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');

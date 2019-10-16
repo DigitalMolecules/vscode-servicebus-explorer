@@ -3,7 +3,7 @@
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"icon": "resources/icon.png",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"license": "MIT",
@@ -185,8 +185,7 @@
 			"view/item/context": [
 				{
 					"command": "serviceBusExplorer.editEntry",
-					"when": "view == servicebus-namespaces && viewItem == namespace",
-					"group": "inline"
+					"when": "view == servicebus-namespaces && viewItem == namespace"
 				},
 				{
 					"command": "serviceBusExplorer.toggleCollapseAll",
@@ -230,11 +229,6 @@
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
-					"command": "serviceBusExplorer.deleteSubscription",
-					"when": "view == servicebus-namespaces && viewItem == subscription",
-					"group": "inline"
-				},
-				{
 					"command": "serviceBusExplorer.createTopic",
 					"when": "view == servicebus-namespaces && viewItem == topiclist",
 					"group": "inline"
@@ -248,11 +242,6 @@
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
-					"command": "serviceBusExplorer.deleteTopic",
-					"when": "view == servicebus-namespaces && viewItem == topic",
-					"group": "inline"
-				},
-				{
 					"command": "serviceBusExplorer.createQueue",
 					"when": "view == servicebus-namespaces && viewItem == queuelist",
 					"group": "inline"
@@ -264,11 +253,6 @@
 				{
 					"command": "serviceBusExplorer.deleteQueue",
 					"when": "view == servicebus-namespaces && viewItem == queue"
-				},
-				{
-					"command": "serviceBusExplorer.deleteQueue",
-					"when": "view == servicebus-namespaces && viewItem == queue",
-					"group": "inline"
 				}
 			],
 			"commandPalette": [
