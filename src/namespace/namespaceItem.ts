@@ -13,7 +13,7 @@ export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
 		public readonly data: IItemData,
-		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
+		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly command?: Command
 	) {
 		super(data, collapsibleState, command);
