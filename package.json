@@ -158,8 +158,7 @@
 					"light": "resources/light/delete.svg",
 					"dark": "resources/dark/delete.svg"
 				}
-			}
-			,
+			},
 			{
 				"command": "serviceBusExplorer.createQueue",
 				"title": "Create Queue",
