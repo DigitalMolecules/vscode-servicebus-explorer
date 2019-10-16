@@ -33,6 +33,12 @@ export class MessageWebView {
                         <td data-content-type="${x.contentType || ''}">
                             ${x.contentType || ''}
                         </td>
+                        <td data-content-type="${x.label || ''}">
+                            ${x.label || ''}
+                        </td>
+                        <td data-content-type="${x.enqueuedSequenceNumber || ''}">
+                            ${x.enqueuedSequenceNumber || ''}
+                        </td>
                         <td>
                             ${ x.enqueuedTimeUtc.toLocaleString() || ''}
                         </td>
@@ -140,6 +146,12 @@ export class MessageWebView {
                                 </th>
                                 <th style="text-align:left">
                                     Content Type
+                                </th>
+                                <th style="text-align:left">
+                                    Label
+                                </th>
+                                <th style="text-align:left">
+                                    Enqueued Sequencenumber
                                 </th>
                                 <th style="text-align:left">
                                     TimeStamp
