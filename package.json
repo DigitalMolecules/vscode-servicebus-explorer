@@ -2,8 +2,8 @@
 	"name": "service-bus-explorer",
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
-	"icon": "https://github.com/DigitalMolecules/vscode-servicebus-explorer/blob/master/resources/icon.png",
-	"version": "0.0.7",
+	"icon": "https://raw.githubusercontent.com/DigitalMolecules/vscode-servicebus-explorer/master/resources/icon.png",
+	"version": "0.0.8",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"license": "MIT",
@@ -34,7 +34,7 @@
 				{
 					"id": "servicebus-explorer",
 					"title": "Service Bus Explorer",
-					"icon": "resources/servicebus.png"
+					"icon": "resources/servicebus.svg"
 				}
 			]
 		},
