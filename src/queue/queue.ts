@@ -14,7 +14,7 @@ export class Queue extends ExplorerItemBase {
 		public readonly itemData: IItemData,
 		public readonly title: string,
 		public readonly parent: QueueList,
-		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly messageCount: number = 0,
 		public readonly deadLettetCount: number = 0,
 		public readonly command?: Command

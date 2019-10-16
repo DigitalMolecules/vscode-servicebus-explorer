@@ -1,4 +1,4 @@
-import { ExtensionContext, window, QuickPickItem } from "vscode";
+import { ExtensionContext, window, QuickPickItem, TreeItemCollapsibleState } from "vscode";
 import { MultiStepInput } from "../common/multiStepInput";
 import { NAMESPACE_CONNECTIONS } from "../common/global";
 import ServiceBusClient from "../client/ServiceBusClient";
@@ -13,6 +13,7 @@ interface IState {
     connectionString: string;
     name: string;
     runtime: QuickPickItem;
+    collapsibleState: TreeItemCollapsibleState;
 }
 
 export class NameSpace {
@@ -31,7 +32,7 @@ export class NameSpace {
         this.node = null;
 
         const state = {} as IState;
-
+        state.collapsibleState = TreeItemCollapsibleState.Collapsed;
         await MultiStepInput.run(input => this.inputConnnectionString(input, state));
 
         window.showInformationMessage(`Adding Namespace  '${state.name}'`);
@@ -44,6 +45,7 @@ export class NameSpace {
         this.node = node;
 
         const state = {} as IState;
+        state.collapsibleState = node.collapsibleState;
         await MultiStepInput.run(input => this.inputConnnectionString(input, state));
         window.showInformationMessage(`Editing Namespace  '${state.name}'`);
         return state;

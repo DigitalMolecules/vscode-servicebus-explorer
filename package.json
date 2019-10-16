@@ -88,7 +88,7 @@
 				}
 			},
 			{
-				"command": "serviceBusExplorer.collapseAll",
+				"command": "serviceBusExplorer.toggleCollapseAll",
 				"title": "Collapse",
 				"icon": {
 					"light": "resources/light/collapse-all.svg",
@@ -189,7 +189,7 @@
 					"group": "inline"
 				},
 				{
-					"command": "serviceBusExplorer.collapseAll",
+					"command": "serviceBusExplorer.toggleCollapseAll",
 					"when": "view == servicebus-namespaces && viewItem == namespace",
 					"group": "inline"
 				},

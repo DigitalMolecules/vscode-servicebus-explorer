@@ -24,7 +24,7 @@ export class Subscription extends ExplorerItemBase {
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
 		public readonly parent: Topic,
-		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
 		super(itemData, collapsibleState, command);
