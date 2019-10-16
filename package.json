@@ -304,7 +304,7 @@
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.7.12",
-		"@types/vscode": "^1.39.0",
+		"@types/vscode": "^1.38.0",
 		"@types/crypto-js": "^3.1.43",
 		"@types/node-fetch": "^2.5.2",
 		"glob": "^7.1.4",
