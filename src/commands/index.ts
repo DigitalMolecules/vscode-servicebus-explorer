@@ -122,11 +122,6 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.toggleCollapseAll', async (node: NameSpaceItem) => {
-			//node.collapse();
-			//node.itemData.collapsibleState = TreeItemCollapsibleState.Expanded;
-
-			//serviceBusProvider.refresh(node);
-
 			await serviceBusProvider.toggleCollapse(node, node.itemData);
 		})
 	];
