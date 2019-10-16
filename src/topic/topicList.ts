@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public collapsibleState: TreeItemCollapsibleState,// = TreeItemCollapsibleState.None,
+		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly topicCount: number = 0,
 		public readonly command?: Command
 	) {

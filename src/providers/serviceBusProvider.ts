@@ -32,7 +32,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			const namespaces = Promise.all([
 				...connections.map(async c => {
 					await this.buildTreeItem(c);
-					return new NameSpaceItem(c, vscode.TreeItemCollapsibleState.Expanded);
+					return new NameSpaceItem(c);
 				})
 			]);
 
