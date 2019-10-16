@@ -27,12 +27,12 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-		    await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString });
+		    await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString, collapsibleState: TreeItemCollapsibleState.Collapsed });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
 			var state = await nameSpace.editNamespace(node);
-			await serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString });
+			await serviceBusProvider.editNamespace(node, { name: state.name, connection: state.connectionString, collapsibleState: state.collapsibleState });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteEntry', (node: NameSpaceItem) => serviceBusProvider.deleteNamespace(node)),
@@ -121,9 +121,13 @@ export default function registerCommands(
 			}
 		}),
 
-		commands.registerCommand('serviceBusExplorer.collapseAll', async (node: ExplorerItemBase) => {
-			node.collapse();
-			serviceBusProvider.refresh(node);
+		commands.registerCommand('serviceBusExplorer.toggleCollapseAll', async (node: NameSpaceItem) => {
+			//node.collapse();
+			//node.itemData.collapsibleState = TreeItemCollapsibleState.Expanded;
+
+			//serviceBusProvider.refresh(node);
+
+			await serviceBusProvider.toggleCollapse(node, node.itemData);
 		})
 	];
 }

@@ -32,7 +32,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 			const namespaces = Promise.all([
 				...connections.map(async c => {
 					await this.buildTreeItem(c);
-					return new NameSpaceItem(c);
+					return new NameSpaceItem(c, c.collapsibleState);
 				})
 			]);
 
@@ -74,6 +74,31 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		await this.buildTreeItem(item);
 
 		items.push(item);
+
+		await this.state.update(NAMESPACE_CONNECTIONS, items);
+		this._onDidChangeTreeData.fire();
+	}
+
+	public async toggleCollapse(node: NameSpaceItem, item: IItemData): Promise<void> {
+		var items = this.state.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+
+		let collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+
+		if (item.collapsibleState === vscode.TreeItemCollapsibleState.None) {
+			return;
+		}
+
+		if (item.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed) {
+			collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+		}
+
+		items.forEach((p) => {
+			if (p.name === node.data.name) {
+				// Updating the name invalidates the cache and causes a redraw
+				p.name = (p.name.substr(0, p.name.length) === ' ') ? p.name.trim() : p.name = p.name + ' ';
+				p.collapsibleState = collapsibleState;
+			}
+		});
 
 		await this.state.update(NAMESPACE_CONNECTIONS, items);
 		this._onDidChangeTreeData.fire();

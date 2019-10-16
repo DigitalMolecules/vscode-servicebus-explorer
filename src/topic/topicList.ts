@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly topicCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -28,13 +28,14 @@ export class TopicList extends ExplorerItemBase {
 
 	public async getChildren(): Promise<ExplorerItemBase[]> {
 		this.children = [];
+		
 		if (this.itemData.clientInstance) {
 			let topicDetails = await this.itemData.clientInstance.getTopics();
 			let topics: ExplorerItemBase[] = [];
 
 			for (var i = 0; i < topicDetails.length; i++) {
 				var subscriptions: ISubscription[] = await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
-				topics.push(new Topic(this.itemData, topicDetails[i].title, this, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+				topics.push(new Topic(this.itemData, topicDetails[i].title, this, this.collapsibleState, subscriptions.length));
 			}
 
 			this.children = topics;
