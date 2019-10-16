@@ -1,7 +1,5 @@
 import { TreeItemCollapsibleState, Command } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
-import { ITopic } from "../client/models/ITopicDetails";
-import { IQueue } from "../client/models/IQueueDetails";
 import { QueueList } from "../queue/queueList";
 import { TopicList } from "../topic/topicList";
 import path from 'path';
@@ -15,28 +13,24 @@ export class NameSpaceItem extends ExplorerItemBase {
 
 	constructor(
 		public readonly data: IItemData,
-		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Expanded,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly command?: Command
 	) {
 		super(data, collapsibleState, command);
 	}
 
-	public getChildren(): Promise<ExplorerItemBase[]> {
-
-		var topics = Promise.resolve<ITopic[]>([]);
-		var queues = Promise.resolve<IQueue[]>([]);
+	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
 
 		if (this.data.clientInstance && !this.data.error) {
-			topics = this.data.clientInstance.getTopics();
-			queues = this.data.clientInstance.getQueues();
+			let topics = await this.data.clientInstance.getTopics();
+			let queues = await this.data.clientInstance.getQueues();
+
+			this.children.push(new QueueList(this.data, this.collapsibleState, queues.length || 0));
+			this.children.push(new TopicList(this.data, this.collapsibleState, topics.length || 0));
 		}
 
-		return Promise.all([queues, topics])
-			.then(x => [
-				new QueueList(this.data, TreeItemCollapsibleState.Collapsed, x[0].length || 0),
-				new TopicList(this.data, TreeItemCollapsibleState.Collapsed, x[1].length || 0)
-			]
-		);
+		return Promise.resolve(this.children);
 	}
 
 	contextValue = 'namespace';

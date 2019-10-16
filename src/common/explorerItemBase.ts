@@ -1,15 +1,16 @@
 import * as vscode from 'vscode';
 import { IServiceBusClient } from '../client/IServiceBusClient';
-import path from 'path';
 
 export interface IItemData {
 	name: string;
 	connection: string;
 	error?: any;
 	clientInstance?: IServiceBusClient;
+	collapsibleState: vscode.TreeItemCollapsibleState;
 }
 
 export class ExplorerItemBase extends vscode.TreeItem {
+	protected children: ExplorerItemBase[] = [];
 
 	constructor(
 		public readonly itemData: IItemData,
@@ -24,7 +25,7 @@ export class ExplorerItemBase extends vscode.TreeItem {
 	}
 
 	public getChildren(): Promise<ExplorerItemBase[]> {
-		throw new Error("Not implemented.");
+		return Promise.resolve([]);
 	}
 
 	contextValue = 'base';

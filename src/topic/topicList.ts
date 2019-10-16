@@ -14,7 +14,7 @@ export class TopicList extends ExplorerItemBase {
 
 	constructor(
 		public readonly itemData: IItemData,
-		public readonly collapsibleState: TreeItemCollapsibleState,
+		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed,
 		public readonly topicCount: number = 0,
 		public readonly command?: Command
 	) {
@@ -27,18 +27,26 @@ export class TopicList extends ExplorerItemBase {
 	}
 
 	public async getChildren(): Promise<ExplorerItemBase[]> {
+		this.children = [];
+		
 		if (this.itemData.clientInstance) {
-			let topicDetails = await this.itemData.clientInstance.getTopics();			
-			let topics:ExplorerItemBase[] = [];
+			let topicDetails = await this.itemData.clientInstance.getTopics();
+			let topics: ExplorerItemBase[] = [];
 
-			for(var i = 0; i < topicDetails.length; i++) {
-				var subscriptions:ISubscription[] =	await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
-				topics.push(new Topic(this.itemData, topicDetails[i].title, TreeItemCollapsibleState.Collapsed, subscriptions.length));
+			for (var i = 0; i < topicDetails.length; i++) {
+				var subscriptions: ISubscription[] = await this.itemData.clientInstance.getSubscriptions(topicDetails[i].title || '');
+				topics.push(new Topic(this.itemData, topicDetails[i].title, this, this.collapsibleState, subscriptions.length));
 			}
 
-			return topics;
-		} else {
-			return [];
+			this.children = topics;
+		}
+
+		return Promise.resolve(this.children);
+	}
+
+	public createTopic = async (newTopicName: string) => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.createTopic(newTopicName);
 		}
 	}
 

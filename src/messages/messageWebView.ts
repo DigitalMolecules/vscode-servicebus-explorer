@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import { Subscription } from '../topic/subscription';
+import { Subscription } from '../subscription/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import { MessageStoreInstance } from '../common/global';
 import { ReceivedMessageInfo } from '@azure/service-bus';

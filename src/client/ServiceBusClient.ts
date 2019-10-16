@@ -60,6 +60,33 @@ export default class ServiceBusClient implements IServiceBusClient {
         return result.entry;
     }
 
+    public deleteSubscription = async (topic: string, subscription: string): Promise<ISubscription> => {
+        const result = await this.sendRequest('DELETE', `${topic}/subscriptions/${subscription}`);
+        return result.entry;
+    }
+
+    public createTopic = async (topic: string): Promise<ITopic> => {
+        const bodyContent = '<?xml version="1.0" encoding="utf-8" ?><entry xmlns="http://www.w3.org/2005/Atom"><content type="application/xml"><TopicDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect"/></content></entry>';
+        const result = await this.sendRequest('PUT', `${topic}`, bodyContent);
+        return result.entry;
+    }
+
+    public deleteTopic = async (topic: string): Promise<ITopic> => {
+        const result = await this.sendRequest('DELETE', `${topic}`);
+        return result.entry;
+    }
+
+    public createQueue = async (queue: string): Promise<IQueue> => {
+        const bodyContent = '<?xml version="1.0" encoding="utf-8" ?><entry xmlns="http://www.w3.org/2005/Atom"><content type="application/xml"><QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect"/></content></entry>';
+        const result = await this.sendRequest('PUT', `${queue}`, bodyContent);
+        return result.entry;
+    }
+
+    public deleteQueue = async (queue: string): Promise<IQueue> => {
+        const result = await this.sendRequest('DELETE', `${queue}`);
+        return result.entry;
+    }
+
     public getMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
@@ -160,7 +187,6 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-    
     public async sendMessage(topic: string, body: any, contentType: string): Promise<void> {
         let client;
 
@@ -185,5 +211,4 @@ export default class ServiceBusClient implements IServiceBusClient {
             }
         }
     }
-
 }

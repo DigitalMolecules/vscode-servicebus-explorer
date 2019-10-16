@@ -1,4 +1,4 @@
-import { ExtensionContext, window, QuickPickItem } from "vscode";
+import { ExtensionContext, window, QuickPickItem, TreeItemCollapsibleState } from "vscode";
 import { MultiStepInput } from "../common/multiStepInput";
 import { NAMESPACE_CONNECTIONS } from "../common/global";
 import ServiceBusClient from "../client/ServiceBusClient";
@@ -13,6 +13,7 @@ interface IState {
     connectionString: string;
     name: string;
     runtime: QuickPickItem;
+    collapsibleState: TreeItemCollapsibleState;
 }
 
 export class NameSpace {
@@ -31,7 +32,7 @@ export class NameSpace {
         this.node = null;
 
         const state = {} as IState;
-
+        state.collapsibleState = TreeItemCollapsibleState.Collapsed;
         await MultiStepInput.run(input => this.inputConnnectionString(input, state));
 
         window.showInformationMessage(`Adding Namespace  '${state.name}'`);
@@ -44,22 +45,27 @@ export class NameSpace {
         this.node = node;
 
         const state = {} as IState;
+        state.collapsibleState = node.collapsibleState;
         await MultiStepInput.run(input => this.inputConnnectionString(input, state));
         window.showInformationMessage(`Editing Namespace  '${state.name}'`);
         return state;
     }
 
-    private shouldResume() {
-        // Could show a notification with the option to resume.
-        return new Promise<boolean>((resolve, reject) => {
+    private shouldResume(): Promise<boolean> {
 
+        return new Promise<boolean>((resolve, reject) => {
         });
     }
 
     private validateConnectionString = async (name: string): Promise<string | undefined> => {
-        // ...validate...
         if (name.trim() === '') {
             return 'Connection string must be filled in';
+        }
+
+        var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+
+        if ((this.node === null || this.node.data.connection !== name.trim()) && items.find(p => p.connection === name.trim())) {
+             return 'Connection string already exists';
         }
     }
 
@@ -82,7 +88,6 @@ export class NameSpace {
         let name = '';
 
         if (this.node === null) {
-            // Default to host name
             const serviceBusClient = new ServiceBusClient(state.connectionString || '') as IServiceBusClient;
             name = serviceBusClient.hostName;
         } else {
@@ -95,21 +100,20 @@ export class NameSpace {
             totalSteps: 2,
             value: name,
             prompt: 'Choose a name for the namespace',
-            validate: this.validateNameIsUnique,
+            validate: this.validateName,
             shouldResume: this.shouldResume
         });
     }
 
-    private validateNameIsUnique = async (name: string) => {
+    private validateName = async (name: string): Promise<string | undefined> => {
         if (name.trim() === '') {
             return 'Name must be filled in';
         }
-        else {
-            var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
 
-            if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
-                return 'Name not unique';
-            }
+        var items = this.context.globalState.get<IItemData[]>(NAMESPACE_CONNECTIONS, []);
+
+        if ((this.node === null || this.node.data.name !== name.trim()) && items.find(p => p.name === name.trim())) {
+            return 'Name already exists';
         }
     }
 }
