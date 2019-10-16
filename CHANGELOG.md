@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.3] (Preview)
+- UI Improvements (Using a dialog to confirm deletions)
+
 ## [0.1.2] (Preview)
 - On Delete and Add or Topic/Subscription/Queue, the number at list level needs to be refreshed #18
 - UI Improvements
