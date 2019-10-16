@@ -200,15 +200,36 @@ export default class ServiceBusClient implements IServiceBusClient {
                 body: body,
                 contentType: contentType
             });
-            
+
 
             await client.close();
-           
+
         } catch{
 
             if (client) {
                 await client.close();
             }
+        }
+    }
+
+    public async deleteMessage(topic: string, subscription: string, messageId: string): Promise<void> {
+        const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+        const subscriptionClient = client.createSubscriptionClient(topic, subscription);
+
+        let receiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
+        try {
+            const messages = await receiver.receiveMessages(1000, 10);
+            messages.forEach(async (msg: SBC.ServiceBusMessage) => {
+                if (msg.messageId === messageId) {
+                    await msg.complete();
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            await receiver.close();
         }
     }
 }

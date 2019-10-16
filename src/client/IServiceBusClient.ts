@@ -36,4 +36,7 @@ export interface IServiceBusClient {
     deleteQueue(queue:string) : Promise<IQueue>;
 
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
+
+    deleteMessage(topic: string, subscription: string, messageId: string): Promise<void>;
+
 }

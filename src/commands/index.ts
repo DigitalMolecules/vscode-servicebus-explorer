@@ -17,19 +17,19 @@ import { withUsernamePasswordWithAuthResponse } from "@azure/ms-rest-nodeauth/di
 import { confirmDialog } from "../common/global";
 
 export default function registerCommands(
-	context: ExtensionContext, 
-	serviceBusProvider: ServiceBusProvider, 
-	nameSpace: NameSpace, 
-	subscriptionUI: SubscriptionUI, 
+	context: ExtensionContext,
+	serviceBusProvider: ServiceBusProvider,
+	nameSpace: NameSpace,
+	subscriptionUI: SubscriptionUI,
 	topicUI: TopicUI,
-	queueUI: QueueUI, 
+	queueUI: QueueUI,
 	sendToBus: SendToBus): IDisposable[] {
 	return [
 		commands.registerCommand('serviceBusExplorer.refreshEntry', () => serviceBusProvider.reBuildTree()),
 
 		commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-		    await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString, collapsibleState: TreeItemCollapsibleState.Collapsed });
+			await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString, collapsibleState: TreeItemCollapsibleState.Collapsed });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
@@ -44,7 +44,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getMessages(context)),
-		
+
 		commands.registerCommand('serviceBusExplorer.getQueueMessages', async (node: Queue) => await node.getMessages(context)),
 
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
@@ -57,6 +57,8 @@ export default function registerCommands(
 			let doc = await workspace.openTextDocument(uri); // calls back into the provider
 			await window.showTextDocument(doc, { preview: false });
 		}),
+
+		commands.registerCommand('serviceBusExplorer.deleteMessage', async (node: Subscription, messageId: string) => await node.deleteMessage(messageId)),
 
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {

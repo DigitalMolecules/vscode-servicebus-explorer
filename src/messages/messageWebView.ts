@@ -9,7 +9,8 @@ export class MessageWebView {
     private panel: vscode.WebviewPanel | undefined;
 
     constructor(
-        private client: IServiceBusClient) {
+        private client: IServiceBusClient,
+        private caller: Subscription) {
     }
 
     async getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
@@ -44,6 +45,9 @@ export class MessageWebView {
                         </td>
                         <td>
                             <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
+                        </td>
+                        <td>
+                            <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${x.messageId}')">Delete</button>
                         </td>
                     </tr>
                 `;
@@ -105,6 +109,15 @@ export class MessageWebView {
                     <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
+                        function deleteMessage(topic, subscription, messageId){
+                            vscode.postMessage({
+                                command: 'serviceBusExplorer.deleteMessage',
+                                topic: topic,
+                                subscription: subscription,
+                                messageId: messageId
+                            })
+                        }
+
                         function showMessage(topic, subscription, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
@@ -158,6 +171,8 @@ export class MessageWebView {
                                 </th>
                                 <th>
                                 </th>
+                                <th>
+                                </th>
                             </tr>
                             <tr>
                                 <th style="text-align:left">
@@ -167,7 +182,13 @@ export class MessageWebView {
                                     <input id="filter_contentType" class="input" onchange="filter()" /> 
                                 </th>
                                 <th style="text-align:left">
-                                    
+                                    <input id="filter_label" class="input" onchange="filter()" /> 
+                                </th>
+                                <th>
+                                </th>
+                                <th>
+                                </th>
+                                <th>
                                 </th>
                                 <th>
                                 </th>
@@ -199,9 +220,13 @@ export class MessageWebView {
         this.panel.webview.onDidReceiveMessage(
             message => {
                 var msg = messages.find(x => x.messageId === message.messageId);
+
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
+                        return;
+                    case 'serviceBusExplorer.deleteMessage':
+                        vscode.commands.executeCommand('serviceBusExplorer.deleteMessage', this.caller, message.messageId);
                         return;
                 }
             },
