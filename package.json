@@ -108,6 +108,14 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.getQueueMessages",
+				"title": "View",
+				"icon": {
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.searchMessage",
 				"title": "Search Messages",
 				"icon": {
@@ -209,6 +217,11 @@
 				{
 					"command": "serviceBusExplorer.getSubscriptionMessages",
 					"when": "view == servicebus-namespaces && viewItem == subscription",
+					"group": "inline"
+				},
+				{
+					"command": "serviceBusExplorer.getQueueMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue",
 					"group": "inline"
 				},
 				{

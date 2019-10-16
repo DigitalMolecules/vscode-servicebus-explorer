@@ -1,7 +1,8 @@
-import { TreeItemCollapsibleState, Command } from "vscode";
+import { TreeItemCollapsibleState, Command, ExtensionContext } from "vscode";
 import { ExplorerItemBase, IItemData } from "../common/explorerItemBase";
 import path from 'path';
 import { QueueList } from "./queueList";
+import { MessageWebView } from "../messages/messageWebView";
 
 export class Queue extends ExplorerItemBase {
 
@@ -31,6 +32,15 @@ export class Queue extends ExplorerItemBase {
 		if (this.itemData.clientInstance && this.label) {
 			await this.itemData.clientInstance.deleteQueue(this.label);
 		}
+	}
+
+	public getMessages = async (context: ExtensionContext): Promise<void> => {
+		if (!this.itemData.clientInstance) {
+			throw new Error("Node without client??!>!!!?!?!?!");
+		}
+
+		//await new MessageWebView(this.itemData.clientInstance).open(context, this, null);		
+		throw new Error('Not implemented');
 	}
 
 	contextValue = 'queue';

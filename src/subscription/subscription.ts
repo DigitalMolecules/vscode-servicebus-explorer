@@ -37,7 +37,7 @@ export class Subscription extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
-	public getSubscriptionMessages = async (context: ExtensionContext): Promise<void> => {
+	public getMessages = async (context: ExtensionContext): Promise<void> => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}

@@ -43,8 +43,10 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
-		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
+		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getMessages(context)),
 		
+		commands.registerCommand('serviceBusExplorer.getQueueMessages', async (node: Queue) => await node.getMessages(context)),
+
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
 			var state = await subscriptionUI.searchMessages();
 			await node.searchMessages(context, state.searchArguments);
