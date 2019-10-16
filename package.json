@@ -2,7 +2,7 @@
 	"name": "service-bus-explorer",
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
-	"icon": "https://raw.githubusercontent.com/DigitalMolecules/vscode-servicebus-explorer/master/resources/icon.png",
+	"icon": "resources/icon.png",
 	"version": "0.1.0",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
@@ -298,13 +298,13 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"publish": "vsce publish"
+		"publish": "vsce publish -p $VSCE_TOKEN"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.7.12",
-		"@types/vscode": "^1.39.0",
+		"@types/vscode": "^1.38.0",
 		"@types/crypto-js": "^3.1.43",
 		"@types/node-fetch": "^2.5.2",
 		"glob": "^7.1.4",
