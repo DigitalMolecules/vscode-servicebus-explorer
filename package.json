@@ -129,7 +129,11 @@
 			},
 			{
 				"command": "serviceBusExplorer.deleteSubscription",
-				"title": "Delete Subscription"
+				"title": "Delete Subscription",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
 			},
 			{
 				"command": "serviceBusExplorer.createTopic",
@@ -141,7 +145,11 @@
 			},
 			{
 				"command": "serviceBusExplorer.deleteTopic",
-				"title": "Delete Topic"
+				"title": "Delete Topic",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
 			}
 			,
 			{
@@ -154,7 +162,11 @@
 			},
 			{
 				"command": "serviceBusExplorer.deleteQueue",
-				"title": "Delete Queue"
+				"title": "Delete Queue",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
 			}
 		],
 		"menus": {
@@ -218,6 +230,11 @@
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
+					"command": "serviceBusExplorer.deleteSubscription",
+					"when": "view == servicebus-namespaces && viewItem == subscription",
+					"group": "inline"
+				},
+				{
 					"command": "serviceBusExplorer.createTopic",
 					"when": "view == servicebus-namespaces && viewItem == topiclist",
 					"group": "inline"
@@ -231,6 +248,11 @@
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
+					"command": "serviceBusExplorer.deleteTopic",
+					"when": "view == servicebus-namespaces && viewItem == topic",
+					"group": "inline"
+				},
+				{
 					"command": "serviceBusExplorer.createQueue",
 					"when": "view == servicebus-namespaces && viewItem == queuelist",
 					"group": "inline"
@@ -242,6 +264,11 @@
 				{
 					"command": "serviceBusExplorer.deleteQueue",
 					"when": "view == servicebus-namespaces && viewItem == queue"
+				},
+				{
+					"command": "serviceBusExplorer.deleteQueue",
+					"when": "view == servicebus-namespaces && viewItem == queue",
+					"group": "inline"
 				}
 			],
 			"commandPalette": [
