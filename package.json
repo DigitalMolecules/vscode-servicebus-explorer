@@ -283,7 +283,7 @@
 				{
 					"command": "serviceBusExplorer.sendToBus",
 					"group": "Service Bus Explorer",
-					"when": "editorLangId == json"
+					"when": "resourceExtname == .json"
 				}
 			]
 		}
