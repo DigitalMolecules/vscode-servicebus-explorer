@@ -61,7 +61,7 @@ export class Topic extends ExplorerItemBase {
 		}
 	}
 
-	public deleteTopic = async () => {
+	public delete = async () => {
 		if (this.itemData.clientInstance && this.label) {
 			await this.itemData.clientInstance.deleteTopic(this.label);
 		}

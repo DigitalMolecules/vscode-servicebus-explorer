@@ -27,7 +27,7 @@ export class Queue extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLettetCount.toLocaleString()})`;
 	}
 
-	public deleteQueue = async () => {
+	public delete = async () => {
 		if (this.itemData.clientInstance && this.label) {
 			await this.itemData.clientInstance.deleteQueue(this.label);
 		}

@@ -23,7 +23,7 @@ export class Subscription extends ExplorerItemBase {
 		public readonly itemData: IItemData,
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
-		public readonly parent: Topic,
+		public readonly parent: ExplorerItemBase,
 		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
@@ -52,7 +52,7 @@ export class Subscription extends ExplorerItemBase {
 		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
 	}
 
-	public deleteSubscription = async () => {
+	public delete = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.deleteSubscription(this.topicName, this.label);
 		}

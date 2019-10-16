@@ -77,7 +77,7 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
 			if ((await confirmDialog())) {
-				await node.deleteSubscription();
+				await node.delete();
 				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
@@ -90,7 +90,7 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
 			if ((await confirmDialog())) {
-				await node.deleteTopic();
+				await node.delete();
 				serviceBusProvider.refresh(node);				
 			}
 		}),
@@ -103,7 +103,7 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
 			if ((await confirmDialog())) {
-				await node.deleteQueue();
+				await node.delete();
 				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
