@@ -212,18 +212,20 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-    public async deleteMessage(topic: string, subscription: string, messageId: string): Promise<void> {
+    public async purgeMessages(topic: string, subscription: string): Promise<void> {
         const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
         const subscriptionClient = client.createSubscriptionClient(topic, subscription);
 
-        let receiver = subscriptionClient.createReceiver(SBC.ReceiveMode.peekLock);
+        const receiver = subscriptionClient.createReceiver(SBC.ReceiveMode.receiveAndDelete);
         try {
-            const messages = await receiver.receiveMessages(1000, 10);
-            messages.forEach(async (msg: SBC.ServiceBusMessage) => {
-                if (msg.messageId === messageId) {
-                    await msg.complete();
+            while(true)
+            {
+                const messages = await receiver.receiveMessages(100, 10);
+                if(messages.length == 0)
+                {
+                    break;
                 }
-            });
+            }
         }
         catch (err) {
             console.log(err);

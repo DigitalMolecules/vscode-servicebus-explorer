@@ -124,6 +124,14 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.purgeMessages",
+				"title": "Purge Messages",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.sendToBus",
 				"title": "Service Bus Explorer: Send to Bus"
 			},
@@ -225,6 +233,10 @@
 				},
 				{
 					"command": "serviceBusExplorer.searchMessage",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.purgeMessages",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{

@@ -58,7 +58,11 @@ export default function registerCommands(
 			await window.showTextDocument(doc, { preview: false });
 		}),
 
-		commands.registerCommand('serviceBusExplorer.deleteMessage', async (node: Subscription, messageId: string) => await node.deleteMessage(messageId)),
+		commands.registerCommand('serviceBusExplorer.purgeMessages', async (node: Subscription) => {
+			if ((await confirmDialog())) {
+				await node.purgeMessages()
+			}
+		}),
 
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {
@@ -71,10 +75,10 @@ export default function registerCommands(
 				window.showErrorMessage('Only implemented for active document');
 			}
 
-		}),		
-		
+		}),
+
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
-			var state  = await  subscriptionUI.createSubscription();
+			var state = await subscriptionUI.createSubscription();
 			await node.createSubscription(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -82,12 +86,12 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node.parent);				
+				serviceBusProvider.refresh(node.parent);
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createTopic', async (node: TopicList) => {
-			var state  = await  topicUI.createTopic();
+			var state = await topicUI.createTopic();
 			await node.createTopic(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -95,12 +99,12 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node);				
+				serviceBusProvider.refresh(node);
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createQueue', async (node: QueueList) => {
-			var state  = await  queueUI.createQueue();
+			var state = await queueUI.createQueue();
 			await node.createQueue(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -108,7 +112,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node.parent);				
+				serviceBusProvider.refresh(node.parent);
 			}
 		}),
 

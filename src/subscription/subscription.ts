@@ -58,9 +58,9 @@ export class Subscription extends ExplorerItemBase {
 		}
 	}
 
-	public deleteMessage = async (messageId: string) => {
+	public purgeMessages = async () => {
 		if (this.itemData.clientInstance) {
-			await this.itemData.clientInstance.deleteMessage(this.topicName, this.label, messageId);
+			await this.itemData.clientInstance.purgeMessages(this.topicName, this.label);
 		}
 	}
 }

@@ -46,9 +46,6 @@ export class MessageWebView {
                         <td>
                             <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
                         </td>
-                        <td>
-                            <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${x.messageId}')">Delete</button>
-                        </td>
                     </tr>
                 `;
                 })
@@ -109,15 +106,6 @@ export class MessageWebView {
                     <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
-                        function deleteMessage(topic, subscription, messageId){
-                            vscode.postMessage({
-                                command: 'serviceBusExplorer.deleteMessage',
-                                topic: topic,
-                                subscription: subscription,
-                                messageId: messageId
-                            })
-                        }
-
                         function showMessage(topic, subscription, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
@@ -171,8 +159,6 @@ export class MessageWebView {
                                 </th>
                                 <th>
                                 </th>
-                                <th>
-                                </th>
                             </tr>
                             <tr>
                                 <th style="text-align:left">
@@ -183,8 +169,6 @@ export class MessageWebView {
                                 </th>
                                 <th style="text-align:left">
                                     <input id="filter_label" class="input" onchange="filter()" /> 
-                                </th>
-                                <th>
                                 </th>
                                 <th>
                                 </th>
@@ -224,9 +208,6 @@ export class MessageWebView {
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
-                        return;
-                    case 'serviceBusExplorer.deleteMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.deleteMessage', this.caller, message.messageId);
                         return;
                 }
             },
