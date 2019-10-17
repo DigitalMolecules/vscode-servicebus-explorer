@@ -17,19 +17,19 @@ import { withUsernamePasswordWithAuthResponse } from "@azure/ms-rest-nodeauth/di
 import { confirmDialog } from "../common/global";
 
 export default function registerCommands(
-	context: ExtensionContext, 
-	serviceBusProvider: ServiceBusProvider, 
-	nameSpace: NameSpace, 
-	subscriptionUI: SubscriptionUI, 
+	context: ExtensionContext,
+	serviceBusProvider: ServiceBusProvider,
+	nameSpace: NameSpace,
+	subscriptionUI: SubscriptionUI,
 	topicUI: TopicUI,
-	queueUI: QueueUI, 
+	queueUI: QueueUI,
 	sendToBus: SendToBus): IDisposable[] {
 	return [
 		commands.registerCommand('serviceBusExplorer.refreshEntry', () => serviceBusProvider.reBuildTree()),
 
 		commands.registerCommand('serviceBusExplorer.addEntry', async () => {
 			var state = await nameSpace.addNamespace();
-		    await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString, collapsibleState: TreeItemCollapsibleState.Collapsed });
+			await serviceBusProvider.addNamespace({ name: state.name, connection: state.connectionString, collapsibleState: TreeItemCollapsibleState.Collapsed });
 		}),
 
 		commands.registerCommand('serviceBusExplorer.editEntry', async (node: NameSpaceItem) => {
@@ -44,7 +44,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
 		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getMessages(context)),
-		
+
 		commands.registerCommand('serviceBusExplorer.getQueueMessages', async (node: Queue) => await node.getMessages(context)),
 
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
@@ -58,6 +58,12 @@ export default function registerCommands(
 			await window.showTextDocument(doc, { preview: false });
 		}),
 
+		commands.registerCommand('serviceBusExplorer.purgeMessages', async (node: Subscription) => {
+			if ((await confirmDialog())) {
+				await node.purgeMessages()
+			}
+		}),
+
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {
 				const documentText = window.activeTextEditor.document.getText();
@@ -69,10 +75,10 @@ export default function registerCommands(
 				window.showErrorMessage('Only implemented for active document');
 			}
 
-		}),		
-		
+		}),
+
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
-			var state  = await  subscriptionUI.createSubscription();
+			var state = await subscriptionUI.createSubscription();
 			await node.createSubscription(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -80,12 +86,12 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node.parent);				
+				serviceBusProvider.refresh(node.parent);
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createTopic', async (node: TopicList) => {
-			var state  = await  topicUI.createTopic();
+			var state = await topicUI.createTopic();
 			await node.createTopic(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -93,12 +99,12 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node);				
+				serviceBusProvider.refresh(node);
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createQueue', async (node: QueueList) => {
-			var state  = await  queueUI.createQueue();
+			var state = await queueUI.createQueue();
 			await node.createQueue(state.name);
 			serviceBusProvider.refresh(node);
 		}),
@@ -106,7 +112,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
 			if ((await confirmDialog())) {
 				await node.delete();
-				serviceBusProvider.refresh(node.parent);				
+				serviceBusProvider.refresh(node.parent);
 			}
 		}),
 
