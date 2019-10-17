@@ -150,8 +150,7 @@
 					"light": "resources/light/delete.svg",
 					"dark": "resources/dark/delete.svg"
 				}
-			}
-			,
+			},
 			{
 				"command": "serviceBusExplorer.createQueue",
 				"title": "Create Queue",
@@ -318,6 +317,7 @@
 		"@azure/service-bus": "^1.1.0",
 		"crypto-js": "^3.1.9-1",
 		"fast-xml-parser": "^3.13.0",
-		"node-fetch": "^2.6.0"
+		"node-fetch": "^2.6.0",
+		"nyc": "^14.1.1"
 	}
 }
