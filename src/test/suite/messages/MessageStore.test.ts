@@ -9,9 +9,9 @@ suite('MessageStore Test Suite', () => {
 	});
 
 	test('Test set message and get message', () => {
-		let messageStore=new MessageStore();
+		let messageStore = new MessageStore();
 				
-		messageStore.setMessage("TestMessageId","TestMessage");
+		messageStore.setMessage("TestMessageId", "TestMessage");
 		let result = messageStore.getMessage("TestMessageId");
 			
 		assert.equal(result, "TestMessage");

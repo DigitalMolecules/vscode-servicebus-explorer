@@ -1,5 +1,23 @@
 # Change Log
 
+## [0.1.3] (Preview)
+- UI Improvements (Using a dialog to confirm deletions)
+
+## [0.1.2] (Preview)
+- On Delete and Add or Topic/Subscription/Queue, the number at list level needs to be refreshed #18
+- UI Improvements
+
+## [0.1.1] (Preview)
+- Bug Fixes
+
+## [0.1.0] (Preview)
+- Delete Subscription #11
+- Create/Delete Topic #12
+- Add icon to queue (same as subscription) #14
+- Adding a expand/collapse all function for all the namespaces #15
+- Make a new icon for the service bus #16 
+- Create/Delete Queue #17
+
 ## [0.0.7] (Preview)
 - Send a message from anywhere in vscode using the document as body #8
 - Include TimeStamp as a Column on the list of messages #9

@@ -13,6 +13,8 @@ import { ExplorerItemBase } from "../common/explorerItemBase";
 import { TopicUI } from "../topic/TopicUI";
 import { Queue } from "../queue/queue";
 import { QueueUI } from "../queue/QueueUI";
+import { withUsernamePasswordWithAuthResponse } from "@azure/ms-rest-nodeauth/dist/lib/login";
+import { confirmDialog } from "../common/global";
 
 export default function registerCommands(
 	context: ExtensionContext, 
@@ -41,8 +43,10 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.refreshQueueList', (node: QueueList) => serviceBusProvider.reBuildTree(node)),
 
-		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getSubscriptionMessages(context)),
+		commands.registerCommand('serviceBusExplorer.getSubscriptionMessages', async (node: Subscription) => await node.getMessages(context)),
 		
+		commands.registerCommand('serviceBusExplorer.getQueueMessages', async (node: Queue) => await node.getMessages(context)),
+
 		commands.registerCommand('serviceBusExplorer.searchMessage', async (node: Subscription) => {
 			var state = await subscriptionUI.searchMessages();
 			await node.searchMessages(context, state.searchArguments);
@@ -70,63 +74,43 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
 			var state  = await  subscriptionUI.createSubscription();
 			await node.createSubscription(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {
-			var state  = await subscriptionUI.deleteSubscription();
-
-			if (state.confirm.toUpperCase() === "YES") {
-				await node.deleteSubscription();
-				serviceBusProvider.reBuildTree(node.parent);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+			if ((await confirmDialog())) {
+				await node.delete();
+				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createTopic', async (node: TopicList) => {
 			var state  = await  topicUI.createTopic();
 			await node.createTopic(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteTopic', async (node: Topic) => {
-			var state  = await topicUI.deleteTopic();
-
-			if (state.confirm.toUpperCase() === "YES") {
-				await node.deleteTopic();
-				serviceBusProvider.reBuildTree(node.parent);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+			if ((await confirmDialog())) {
+				await node.delete();
+				serviceBusProvider.refresh(node);				
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createQueue', async (node: QueueList) => {
 			var state  = await  queueUI.createQueue();
 			await node.createQueue(state.name);
-			serviceBusProvider.reBuildTree(node);
+			serviceBusProvider.refresh(node);
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteQueue', async (node: Queue) => {
-			var state  = await queueUI.deleteQueue();
-
-			if (state.confirm.toUpperCase() === "YES") {
-				await node.deleteQueue();
-				serviceBusProvider.reBuildTree(node.parent);
-			}
-			else {
-				window.showErrorMessage('Deletion has not been confirmed as "Yes" was not typed');
+			if ((await confirmDialog())) {
+				await node.delete();
+				serviceBusProvider.refresh(node.parent);				
 			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.toggleCollapseAll', async (node: NameSpaceItem) => {
-			//node.collapse();
-			//node.itemData.collapsibleState = TreeItemCollapsibleState.Expanded;
-
-			//serviceBusProvider.refresh(node);
-
 			await serviceBusProvider.toggleCollapse(node, node.itemData);
 		})
 	];

@@ -23,7 +23,7 @@ export class Subscription extends ExplorerItemBase {
 		public readonly itemData: IItemData,
 		public readonly subscription: ISubscription,
 		public readonly topicName: string,
-		public readonly parent: Topic,
+		public readonly parent: ExplorerItemBase,
 		public readonly collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.None,
 		public readonly command?: Command
 	) {
@@ -37,22 +37,22 @@ export class Subscription extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
-	public getSubscriptionMessages = async (context: ExtensionContext): Promise<void> => {
+	public getMessages = async (context: ExtensionContext): Promise<void> => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, null);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);
 	}
 
 	public searchMessages = async (context: ExtensionContext, searchArguments: string) => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, searchArguments);
 	}
 
-	public deleteSubscription = async () => {
+	public delete = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.deleteSubscription(this.topicName, this.label);
 		}

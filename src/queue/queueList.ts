@@ -30,7 +30,7 @@ export class QueueList extends ExplorerItemBase {
 		if (this.itemData.clientInstance) {
 			let queues = (await this.itemData.clientInstance.getQueues())
 				.map(y =>
-					new Queue(this.itemData, y.title, this, this.collapsibleState)
+					new Queue(this.itemData, y.title, this)
 				);
 
 			this.children = queues;
