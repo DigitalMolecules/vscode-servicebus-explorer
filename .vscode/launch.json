@@ -21,6 +21,7 @@
 			"name": "Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",
+			"preLaunchTask": "compile",
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--disable-extensions",
