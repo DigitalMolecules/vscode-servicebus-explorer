@@ -42,14 +42,14 @@ export class Subscription extends ExplorerItemBase {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, null);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);
 	}
 
 	public searchMessages = async (context: ExtensionContext, searchArguments: string) => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, searchArguments);
 	}
 
 	public delete = async () => {

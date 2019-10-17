@@ -9,7 +9,8 @@ export class MessageWebView {
     private panel: vscode.WebviewPanel | undefined;
 
     constructor(
-        private client: IServiceBusClient) {
+        private client: IServiceBusClient,
+        public readonly node: Subscription) {
     }
 
     async getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
@@ -183,13 +184,13 @@ export class MessageWebView {
 
     }
 
-    async open(context: vscode.ExtensionContext, node: Subscription, searchArguments: string | null): Promise<void> {
+    async open(context: vscode.ExtensionContext, searchArguments: string | null): Promise<void> {
 
-        const messages = await this.getMessages(node.topicName, node.label, searchArguments);
+        const messages = await this.getMessages(this.node.topicName, this.node.label, searchArguments);
 
         this.panel = vscode.window.createWebviewPanel(
             'messagelist', // Identifies the type of the webview. Used internally
-            `${node.topicName} - (${node.label})`, // Title of the panel displayed to the user
+            `${this.node.topicName} - (${this.node.label})`, // Title of the panel displayed to the user
             vscode.ViewColumn.One, // Editor column to show the new webview panel in.
             {
                 enableScripts: true
@@ -209,7 +210,7 @@ export class MessageWebView {
             context.subscriptions
         );
 
-        await this.renderMessages(node.topicName, node.label, messages);
+        await this.renderMessages(this.node.topicName, this.node.label, messages);
 
         this.panel.onDidDispose(() => {
 
