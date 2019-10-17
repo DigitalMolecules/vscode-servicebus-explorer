@@ -8,7 +8,7 @@ suite('MessageStore Test Suite', () => {
 		vscode.window.showInformationMessage('Start all tests.');
 	});
 
-	test('Test set message and get message', () => {
+	test('Should set message and get message', () => {
 		let messageStore = new MessageStore();
 				
 		messageStore.setMessage("TestMessageId", "TestMessage");
