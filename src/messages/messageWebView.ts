@@ -168,7 +168,11 @@ export class MessageWebView {
                                     <input id="filter_contentType" class="input" onchange="filter()" /> 
                                 </th>
                                 <th style="text-align:left">
-                                    
+                                    <input id="filter_label" class="input" onchange="filter()" /> 
+                                </th>
+                                <th>
+                                </th>
+                                <th>
                                 </th>
                                 <th>
                                 </th>
@@ -200,6 +204,7 @@ export class MessageWebView {
         this.panel.webview.onDidReceiveMessage(
             message => {
                 var msg = messages.find(x => x.messageId === message.messageId);
+
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);

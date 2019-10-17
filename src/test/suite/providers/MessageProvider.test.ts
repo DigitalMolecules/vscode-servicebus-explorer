@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { before } from 'mocha';
 import * as vscode from 'vscode';
-import { MessageProvider } from  "../../../providers/MessageProvider";
+import { MessageProvider } from  "../../../providers/messageProvider";
 import { MessageStore } from  "../../../messages/MessageStore";
 import { MessageStoreInstance } from '../../../common/global';
 
