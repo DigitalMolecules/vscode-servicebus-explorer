@@ -20,7 +20,7 @@ None at the moment.
 
 ## Known Issues
 
-- We are not hable to peek the DLQ without locking it. REST API limitation.
+- We are not able to peek the DLQ without locking it. REST API limitation.
 
 ## Release Notes
 
