@@ -20,7 +20,7 @@ None at the moment.
 
 ## Known Issues
 
-- Message count includes DLQ items
+- We are not hable to peek the DLQ without locking it. REST API limitation.
 
 ## Release Notes
 
