@@ -24,7 +24,7 @@ export class MessageWebView {
         return await this.client.getQueueMessages(queue, searchArguments);
     }
 
-    async renderMessages(topic: string, subscription: string, messages: any[]): Promise<void> {
+    async renderMessages(topic: string | null, subscription: string  | null, queue: string  | null, messages: any[]): Promise<void> {
         if (!this.panel) {
             return;
         }
@@ -51,7 +51,7 @@ export class MessageWebView {
                             ${ x.enqueuedTimeUtc.toLocaleString() || ''}
                         </td>
                         <td>
-                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
+                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
                 `;
@@ -113,11 +113,12 @@ export class MessageWebView {
                     <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
-                        function showMessage(topic, subscription, messageId){
+                        function showMessage(topic, subscription, queue, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
                                 topic: topic,
                                 subscription: subscription,
+                                queue: queue,
                                 messageId: messageId
                             })
                         }
@@ -198,72 +199,77 @@ export class MessageWebView {
     async open(context: vscode.ExtensionContext, searchArguments: string | null): Promise<void> {
 
         let messages: ReceivedMessageInfo[] = [];
+        let title = "";
 
         if (this.node instanceof Subscription) {
             const subscription: Subscription = this.node;
-
-            let title = `${subscription.topicName} - (${subscription.label})`;
-
             messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments);
-
-            this.panel = vscode.window.createWebviewPanel(
-                'messagelist', // Identifies the type of the webview. Used internally
-                `${this.node.topicName} - (${this.node.label})`, // Title of the panel displayed to the user
-                vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-                {
-                    enableScripts: true
-                }
-            );
-
-            this.panel.webview.onDidReceiveMessage(
-                message => {
-                    var msg = messages.find(x => x.messageId === message.messageId);
-
-                    switch (message.command) {
-                        case 'serviceBusExplorer.showMessage':
-                            vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
-                            return;
-                    }
-                },
-                undefined,
-                context.subscriptions
-            );
-
-            this.panel = vscode.window.createWebviewPanel(
-                'messagelist', // Identifies the type of the webview. Used internally
-                title, // Title of the panel displayed to the user
-                vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-                {
-                    enableScripts: true
-                }
-            );
-
-            this.panel.webview.onDidReceiveMessage(
-                message => {
-                    var msg = messages.find(x => x.messageId === message.messageId);
-                    switch (message.command) {
-                        case 'serviceBusExplorer.showMessage':
-                            vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
-                            return;
-                    }
-                },
-                undefined,
-                context.subscriptions
-            );
-
-            await this.renderMessages(subscription.topicName, subscription.label, messages);
-
-            this.panel.onDidDispose(() => {
-            }, null, context.subscriptions);
+            title = `${subscription.topicName} - (${subscription.label})`;
         }
         else if (this.node instanceof Queue) {
             const queue: Queue = this.node;
             messages = await this.getQueueMessages(queue.title, searchArguments);
-            let title = `(${queue.label})`;
-
-            throw new Error("Not Implemented");
+            title = `(${queue.label})`;
         }
 
+        this.panel = vscode.window.createWebviewPanel(
+            'messagelist', // Identifies the type of the webview. Used internally
+            title, // Title of the panel displayed to the user
+            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+            {
+                enableScripts: true
+            }
+        );
 
+        this.panel.webview.onDidReceiveMessage(
+            message => {
+                var msg = messages.find(x => x.messageId === message.messageId);
+
+                switch (message.command) {
+                    case 'serviceBusExplorer.showMessage':
+                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
+                        return;
+                }
+            },
+            undefined,
+            context.subscriptions
+        );
+
+        this.panel = vscode.window.createWebviewPanel(
+            'messagelist', // Identifies the type of the webview. Used internally
+            title, // Title of the panel displayed to the user
+            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+            {
+                enableScripts: true
+            }
+        );
+
+        this.panel.webview.onDidReceiveMessage(
+            message => {
+                var msg = messages.find(x => x.messageId === message.messageId);
+                switch (message.command) {
+                    case 'serviceBusExplorer.showMessage':
+                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
+                        return;
+                }
+            },
+            undefined,
+            context.subscriptions
+        );
+
+        if (this.node instanceof Subscription)
+        {
+            let subscription : Subscription = this.node;
+            await this.renderMessages(subscription.topicName, subscription.label, null, messages);
+        }
+
+        if (this.node instanceof Queue)
+        {
+            let queue : Queue = this.node;
+            await this.renderMessages(null, null, queue.title, messages);
+        }
+
+        this.panel.onDidDispose(() => {
+        }, null, context.subscriptions);
     }
 }

@@ -52,15 +52,29 @@ export default function registerCommands(
 			await node.searchMessages(context, state.searchArguments);
 		}),
 
-		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string, subscription: string, message: any) => {
-			let uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
-			let doc = await workspace.openTextDocument(uri); // calls back into the provider
-			await window.showTextDocument(doc, { preview: false });
+		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
+			var uri;
+
+			if (topic && subscription) {
+				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
+			}
+
+			if (queue) {
+				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?queue=${queue}&messageid=${message.messageId}`);
+			}
+
+			if (uri) {
+				let doc = await workspace.openTextDocument(uri); // calls back into the provider
+				await window.showTextDocument(doc, { preview: false });
+			}
+			else {
+				throw new Error("No subscription or queue defined");
+			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.purgeMessages', async (node: Subscription) => {
 			if ((await confirmDialog())) {
-				await node.purgeMessages()
+				await node.purgeMessages();
 			}
 		}),
 
