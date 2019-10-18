@@ -7,6 +7,7 @@ import { ITopic } from './models/ITopicDetails';
 import { IQueue } from './models/IQueueDetails';
 import ServiceBusAuth, { IServiceBusAuthHeader } from '../common/serviceBusAuth';
 import Long from 'long';
+import { ClientHttp2Session } from 'http2';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -86,20 +87,31 @@ export default class ServiceBusClient implements IServiceBusClient {
         const result = await this.sendRequest('DELETE', `${queue}`);
         return result.entry;
     }
-    public getQueueMessages = async (queue: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
-        throw new Error("Not Implemented");
-    }
 
-    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+    public getMessages = async (topic: string | null, subscription: string | null, queue: string | null, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
 
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
-            const subscriptionClient = client.createSubscriptionClient(topic, subscription);
-            const messages = await subscriptionClient.peekBySequenceNumber(Long.MIN_VALUE, subscriptionClient === null ? 10 : 1000);
+            var messageClient = null;
 
-            await subscriptionClient.close();
+            if (queue){
+                messageClient = client.createQueueClient(queue);
+            }
+
+            if (subscription && topic)
+            {
+                messageClient = client.createSubscriptionClient(topic, subscription);
+            }
+
+            var messages : SBC.ReceivedMessageInfo[] = [];
+
+            if (messageClient){
+                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, messageClient === null ? 10 : 1000);
+
+                await messageClient.close();
+            }
 
             await client.close();
             if (searchArguments) {
@@ -116,6 +128,13 @@ export default class ServiceBusClient implements IServiceBusClient {
 
             return [];
         }
+    }
+    public getQueueMessages = async (queue: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(null, null, queue, searchArguments);
+    }
+
+    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(topic, subscription, null, searchArguments);
     }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {
@@ -222,7 +241,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             while(true)
             {
                 const messages = await receiver.receiveMessages(100, 10);
-                if(messages.length == 0)
+                if(messages.length === 0)
                 {
                     break;
                 }
