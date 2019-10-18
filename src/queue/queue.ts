@@ -39,8 +39,7 @@ export class Queue extends ExplorerItemBase {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		//await new MessageWebView(this.itemData.clientInstance).open(context, this, null);		
-		throw new Error('Not implemented');
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);		
 	}
 
 	contextValue = 'queue';

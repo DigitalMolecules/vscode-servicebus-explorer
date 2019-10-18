@@ -43,11 +43,11 @@ export default class ServiceBusClient implements IServiceBusClient {
 
     public getSubscriptionDetails = async (topic: string, subscription: string): Promise<ISubscription> => {
         const subDetail = await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
-        
+
         // Strip out the d3p1: from CountDetails members
         var leObject = subDetail.content.SubscriptionDescription.CountDetails as any;
-        Object.keys(subDetail.content.SubscriptionDescription.CountDetails).map(x=>{
-            leObject[x.substring(5)]= leObject[x];
+        Object.keys(subDetail.content.SubscriptionDescription.CountDetails).map(x => {
+            leObject[x.substring(5)] = leObject[x];
         });
         //
 
@@ -86,8 +86,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         const result = await this.sendRequest('DELETE', `${queue}`);
         return result.entry;
     }
+    public getQueueMessages = async (queue: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+        throw new Error("Not Implemented");
+    }
 
-    public getMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
 
@@ -95,8 +98,6 @@ export default class ServiceBusClient implements IServiceBusClient {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
             const subscriptionClient = client.createSubscriptionClient(topic, subscription);
             const messages = await subscriptionClient.peekBySequenceNumber(Long.MIN_VALUE, subscriptionClient === null ? 10 : 1000);
-
-
 
             await subscriptionClient.close();
 
@@ -200,10 +201,10 @@ export default class ServiceBusClient implements IServiceBusClient {
                 body: body,
                 contentType: contentType
             });
-            
+
 
             await client.close();
-           
+
         } catch{
 
             if (client) {

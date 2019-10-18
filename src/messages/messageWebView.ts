@@ -3,6 +3,9 @@ import { Subscription } from '../subscription/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import { MessageStoreInstance } from '../common/global';
 import { ReceivedMessageInfo } from '@azure/service-bus';
+import { ExplorerItemBase } from '../common/explorerItemBase';
+import { Queue } from '../queue/queue';
+import { stringify } from 'querystring';
 
 export class MessageWebView {
 
@@ -10,11 +13,15 @@ export class MessageWebView {
 
     constructor(
         private client: IServiceBusClient,
-        public readonly node: Subscription) {
+        public readonly node: ExplorerItemBase) {
     }
 
-    async getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getMessages(topic, subscription, searchArguments);
+    async getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getSubscriptionMessages(topic, subscription, searchArguments);
+    }
+
+    async getQueueMessages(queue: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getQueueMessages(queue, searchArguments);
     }
 
     async renderMessages(topic: string, subscription: string, messages: any[]): Promise<void> {
@@ -186,34 +193,48 @@ export class MessageWebView {
 
     async open(context: vscode.ExtensionContext, searchArguments: string | null): Promise<void> {
 
-        const messages = await this.getMessages(this.node.topicName, this.node.label, searchArguments);
+        let messages : ReceivedMessageInfo[] = [];                
 
-        this.panel = vscode.window.createWebviewPanel(
-            'messagelist', // Identifies the type of the webview. Used internally
-            `${this.node.topicName} - (${this.node.label})`, // Title of the panel displayed to the user
-            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-            {
-                enableScripts: true
-            }
-        );
+        if (this.node instanceof Subscription){
+            const subscription : Subscription = this.node;
+            messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments);
+            let title = `${subscription.topicName} - (${subscription.label})`;
 
-        this.panel.webview.onDidReceiveMessage(
-            message => {
-                var msg = messages.find(x => x.messageId === message.messageId);
-                switch (message.command) {
-                    case 'serviceBusExplorer.showMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
-                        return;
+            this.panel = vscode.window.createWebviewPanel(
+                'messagelist', // Identifies the type of the webview. Used internally
+                title, // Title of the panel displayed to the user
+                vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+                {
+                    enableScripts: true
                 }
-            },
-            undefined,
-            context.subscriptions
-        );
+            );
+            
+            this.panel.webview.onDidReceiveMessage(
+                message => {
+                    var msg = messages.find(x => x.messageId === message.messageId);
+                    switch (message.command) {
+                        case 'serviceBusExplorer.showMessage':
+                            vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
+                            return;
+                    }
+                },
+                undefined,
+                context.subscriptions
+            );
+    
+            await this.renderMessages(subscription.topicName, subscription.label, messages);
+    
+            this.panel.onDidDispose(() => {
+            }, null, context.subscriptions);
+        }
+        else if (this.node instanceof Queue){
+            const queue : Queue = this.node;
+            messages = await this.getQueueMessages(queue.title, searchArguments);
+            let title = `(${queue.label})`;
 
-        await this.renderMessages(this.node.topicName, this.node.label, messages);
+            throw new Error("Not Implemented");
+        }
 
-        this.panel.onDidDispose(() => {
-
-        }, null, context.subscriptions);
+        
     }
 }
