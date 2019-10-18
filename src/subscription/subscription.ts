@@ -60,7 +60,7 @@ export class Subscription extends ExplorerItemBase {
 
 	public purgeMessages = async () => {
 		if (this.itemData.clientInstance) {
-			await this.itemData.clientInstance.purgeMessages(this.topicName, this.label);
+			await this.itemData.clientInstance.purgeSubscriptionMessages(this.topicName, this.label);
 		}
 	}
 }

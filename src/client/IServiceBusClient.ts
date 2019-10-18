@@ -37,6 +37,8 @@ export interface IServiceBusClient {
 
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
 
-    purgeMessages(topic: string, subscription: string): Promise<void>;
+    purgeSubscriptionMessages(topic: string, subscription: string): Promise<void>;
+
+    purgeQueueMessages(queue: string): Promise<void>;
 
 }

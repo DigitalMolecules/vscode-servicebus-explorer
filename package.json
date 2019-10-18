@@ -124,7 +124,15 @@
 				}
 			},
 			{
-				"command": "serviceBusExplorer.purgeMessages",
+				"command": "serviceBusExplorer.purgeSubscriptionMessages",
+				"title": "Purge Messages",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.purgeQueueMessages",
 				"title": "Purge Messages",
 				"icon": {
 					"light": "resources/light/delete.svg",
@@ -236,8 +244,12 @@
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
-					"command": "serviceBusExplorer.purgeMessages",
+					"command": "serviceBusExplorer.purgeSubscriptionMessages",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.purgeQueueMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
 				{
 					"command": "serviceBusExplorer.createSubscription",

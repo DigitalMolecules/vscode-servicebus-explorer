@@ -42,5 +42,11 @@ export class Queue extends ExplorerItemBase {
 		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);		
 	}
 
+	public purgeMessages = async () => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.purgeQueueMessages(this.title);
+		}
+	}
+
 	contextValue = 'queue';
 }

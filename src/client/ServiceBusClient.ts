@@ -96,18 +96,17 @@ export default class ServiceBusClient implements IServiceBusClient {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
             var messageClient = null;
 
-            if (queue){
+            if (queue) {
                 messageClient = client.createQueueClient(queue);
             }
 
-            if (subscription && topic)
-            {
+            if (subscription && topic) {
                 messageClient = client.createSubscriptionClient(topic, subscription);
             }
 
-            var messages : SBC.ReceivedMessageInfo[] = [];
+            var messages: SBC.ReceivedMessageInfo[] = [];
 
-            if (messageClient){
+            if (messageClient) {
                 messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, messageClient === null ? 10 : 1000);
 
                 await messageClient.close();
@@ -232,26 +231,41 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-    public async purgeMessages(topic: string, subscription: string): Promise<void> {
+    public async purgeMessages(topic: string | null, subscription: string | null, queue: string | null): Promise<void> {
         const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
-        const subscriptionClient = client.createSubscriptionClient(topic, subscription);
+        var purgeClient = null;
 
-        const receiver = subscriptionClient.createReceiver(SBC.ReceiveMode.receiveAndDelete);
-        try {
-            while(true)
-            {
-                const messages = await receiver.receiveMessages(100, 10);
-                if(messages.length === 0)
-                {
-                    break;
+        if (topic && subscription) {
+            purgeClient = client.createSubscriptionClient(topic, subscription);
+        }
+        else if (queue) {
+            purgeClient = client.createQueueClient(queue);
+        }
+
+        if (purgeClient){
+            const receiver = purgeClient.createReceiver(SBC.ReceiveMode.receiveAndDelete);
+            try {
+                while (true) {
+                    const messages = await receiver.receiveMessages(100, 10);
+                    if (messages.length === 0) {
+                        break;
+                    }
                 }
             }
-        }
-        catch (err) {
-            console.log(err);
-        }
-        finally {
-            await receiver.close();
-        }
+            catch (err) {
+                console.log(err);
+            }
+            finally {
+                await receiver.close();
+            }
+        }   
+    }
+
+    public async purgeSubscriptionMessages(topic: string, subscription: string): Promise<void> {
+        this.purgeMessages(topic, subscription, null);
+    }
+
+    public async purgeQueueMessages(queue: string): Promise<void> {
+        this.purgeMessages(null, null, queue);
     }
 }
