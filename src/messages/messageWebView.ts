@@ -3,20 +3,27 @@ import { Subscription } from '../subscription/subscription';
 import { IServiceBusClient } from '../client/IServiceBusClient';
 import { MessageStoreInstance } from '../common/global';
 import { ReceivedMessageInfo } from '@azure/service-bus';
+import { ExplorerItemBase } from '../common/explorerItemBase';
+import { Queue } from '../queue/queue';
 
 export class MessageWebView {
 
     private panel: vscode.WebviewPanel | undefined;
 
     constructor(
-        private client: IServiceBusClient) {
+        private client: IServiceBusClient,
+        public readonly node: ExplorerItemBase) {
     }
 
-    async getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getMessages(topic, subscription, searchArguments);
+    async getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getSubscriptionMessages(topic, subscription, searchArguments, deadLetter);
     }
 
-    async renderMessages(topic: string, subscription: string, messages: any[]): Promise<void> {
+    async getQueueMessages(queue: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getQueueMessages(queue, searchArguments, deadLetter);
+    }
+
+    async renderMessages(topic: string | null, subscription: string  | null, queue: string  | null, messages: any[]): Promise<void> {
         if (!this.panel) {
             return;
         }
@@ -33,11 +40,17 @@ export class MessageWebView {
                         <td data-content-type="${x.contentType || ''}">
                             ${x.contentType || ''}
                         </td>
+                        <td data-content-type="${x.label || ''}">
+                            ${x.label || ''}
+                        </td>
+                        <td data-content-type="${x.enqueuedSequenceNumber || ''}">
+                            ${x.enqueuedSequenceNumber || ''}
+                        </td>
                         <td>
                             ${ x.enqueuedTimeUtc.toLocaleString() || ''}
                         </td>
                         <td>
-                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${x.messageId}')">Open</button>
+                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Open</button>
                         </td>
                     </tr>
                 `;
@@ -61,7 +74,7 @@ export class MessageWebView {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Cat Coding</title>
+                <title>Message List</title>
                 <style>
 
                     input {
@@ -99,11 +112,12 @@ export class MessageWebView {
                     <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
-                        function showMessage(topic, subscription, messageId){
+                        function showMessage(topic, subscription, queue, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
                                 topic: topic,
                                 subscription: subscription,
+                                queue: queue,
                                 messageId: messageId
                             })
                         }
@@ -142,6 +156,12 @@ export class MessageWebView {
                                     Content Type
                                 </th>
                                 <th style="text-align:left">
+                                    Label
+                                </th>
+                                <th style="text-align:left">
+                                    Enqueued Sequencenumber
+                                </th>
+                                <th style="text-align:left">
                                     TimeStamp
                                 </th>
                                 <th>
@@ -155,7 +175,11 @@ export class MessageWebView {
                                     <input id="filter_contentType" class="input" onchange="filter()" /> 
                                 </th>
                                 <th style="text-align:left">
-                                    
+                                    <input id="filter_label" class="input" onchange="filter()" /> 
+                                </th>
+                                <th>
+                                </th>
+                                <th>
                                 </th>
                                 <th>
                                 </th>
@@ -171,13 +195,25 @@ export class MessageWebView {
 
     }
 
-    async open(context: vscode.ExtensionContext, node: Subscription, searchArguments: string | null): Promise<void> {
+    async open(context: vscode.ExtensionContext, searchArguments: string | null, deadLetter: boolean = false): Promise<void> {
 
-        const messages = await this.getMessages(node.topicName, node.label, searchArguments);
+        let messages: ReceivedMessageInfo[] = [];
+        let title = "";
+
+        if (this.node instanceof Subscription) {
+            const subscription: Subscription = this.node;
+            messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments, deadLetter);
+            title = `${subscription.topicName} - (${subscription.label})`;
+        }
+        else if (this.node instanceof Queue) {
+            const queue: Queue = this.node;
+            messages = await this.getQueueMessages(queue.title, searchArguments, deadLetter);
+            title = `(${queue.label})`;
+        }
 
         this.panel = vscode.window.createWebviewPanel(
             'messagelist', // Identifies the type of the webview. Used internally
-            `${node.topicName} - (${node.label})`, // Title of the panel displayed to the user
+            title, // Title of the panel displayed to the user
             vscode.ViewColumn.One, // Editor column to show the new webview panel in.
             {
                 enableScripts: true
@@ -187,9 +223,10 @@ export class MessageWebView {
         this.panel.webview.onDidReceiveMessage(
             message => {
                 var msg = messages.find(x => x.messageId === message.messageId);
+
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, msg);
+                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
                         return;
                 }
             },
@@ -197,10 +234,19 @@ export class MessageWebView {
             context.subscriptions
         );
 
-        await this.renderMessages(node.topicName, node.label, messages);
+        if (this.node instanceof Subscription)
+        {
+            let subscription : Subscription = this.node;
+            await this.renderMessages(subscription.topicName, subscription.label, null, messages);
+        }
+
+        if (this.node instanceof Queue)
+        {
+            let queue : Queue = this.node;
+            await this.renderMessages(null, null, queue.title, messages);
+        }
 
         this.panel.onDidDispose(() => {
-
         }, null, context.subscriptions);
     }
 }

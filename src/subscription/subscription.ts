@@ -37,24 +37,30 @@ export class Subscription extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
-	public getSubscriptionMessages = async (context: ExtensionContext): Promise<void> => {
+	public getMessages = async (context: ExtensionContext, deadLetter: boolean = false): Promise<void> => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, null);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null, deadLetter);
 	}
 
 	public searchMessages = async (context: ExtensionContext, searchArguments: string) => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
-		await new MessageWebView(this.itemData.clientInstance).open(context, this, searchArguments);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, searchArguments);
 	}
 
 	public delete = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.deleteSubscription(this.topicName, this.label);
+		}
+	}
+
+	public purgeMessages = async () => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.purgeSubscriptionMessages(this.topicName, this.label);
 		}
 	}
 }

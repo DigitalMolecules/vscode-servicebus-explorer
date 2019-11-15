@@ -42,7 +42,11 @@
 			"servicebus-explorer": [
 				{
 					"id": "servicebus-namespaces",
-					"name": ""
+					"name": "Azure"
+				},
+				{
+					"id": "rabbitmq-namespace",
+					"name": "RabbitMQ"
 				}
 			]
 		},
@@ -108,11 +112,43 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.getQueueMessages",
+				"title": "View",
+				"icon": {
+					"light": "resources/light/selection.svg",
+					"dark": "resources/dark/selection.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.searchMessage",
 				"title": "Search Messages",
 				"icon": {
 					"light": "resources/light/selection.svg",
 					"dark": "resources/dark/selection.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.getSubscriptionDeadLetterMessages",
+				"title": "Dead Letter"
+			},
+			{
+				"command": "serviceBusExplorer.getQueueDeadLetterMessages",
+				"title": "Dead Letter"
+			},
+			{
+				"command": "serviceBusExplorer.purgeSubscriptionMessages",
+				"title": "Purge Messages",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.purgeQueueMessages",
+				"title": "Purge Messages",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
 				}
 			},
 			{
@@ -150,8 +186,7 @@
 					"light": "resources/light/delete.svg",
 					"dark": "resources/dark/delete.svg"
 				}
-			}
-			,
+			},
 			{
 				"command": "serviceBusExplorer.createQueue",
 				"title": "Create Queue",
@@ -212,8 +247,29 @@
 					"group": "inline"
 				},
 				{
+					"command": "serviceBusExplorer.getQueueMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue",
+					"group": "inline"
+				},
+				{
 					"command": "serviceBusExplorer.searchMessage",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.getSubscriptionDeadLetterMessages",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.getQueueDeadLetterMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue"
+				},
+				{
+					"command": "serviceBusExplorer.purgeSubscriptionMessages",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.purgeQueueMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
 				{
 					"command": "serviceBusExplorer.createSubscription",
@@ -271,7 +327,7 @@
 				{
 					"command": "serviceBusExplorer.sendToBus",
 					"group": "Service Bus Explorer",
-					"when": "editorLangId == json"
+					"when": "resourceExtname == .json"
 				}
 			]
 		}
@@ -285,23 +341,25 @@
 		"publish": "vsce publish -p $VSCE_TOKEN"
 	},
 	"devDependencies": {
+		"@types/crypto-js": "^3.1.43",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.7.12",
-		"@types/vscode": "^1.38.0",
-		"@types/crypto-js": "^3.1.43",
-		"@types/node-fetch": "^2.5.2",
-		"glob": "^7.1.4",
-		"mocha": "^6.2.1",
-		"tslint": "^5.20.0",
-		"typescript": "^3.6.4",
-		"vscode-test": "^1.2.0",
-		"vsce": "^1.67.1"
+		"@types/node": "^12.12.7",
+		"@types/node-fetch": "^2.5.3",
+		"@types/vscode": "^1.40.0",
+		"glob": "^7.1.6",
+		"mocha": "^6.2.2",
+		"tslint": "^5.20.1",
+		"typescript": "^3.7.2",
+		"vsce": "^1.69.0",
+		"vscode-test": "^1.2.3"
 	},
 	"dependencies": {
 		"@azure/service-bus": "^1.1.0",
 		"crypto-js": "^3.1.9-1",
-		"fast-xml-parser": "^3.13.0",
-		"node-fetch": "^2.6.0"
+		"fast-xml-parser": "^3.14.0",
+		"node-fetch": "^2.6.0",
+		"nyc": "^14.1.1",
+		"ms": "^2.1.2"
 	}
 }

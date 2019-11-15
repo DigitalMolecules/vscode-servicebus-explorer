@@ -43,11 +43,11 @@ export default class ServiceBusClient implements IServiceBusClient {
 
     public getSubscriptionDetails = async (topic: string, subscription: string): Promise<ISubscription> => {
         const subDetail = await this.getEntity<ISubscription>('GET', `${topic}/subscriptions/${subscription}`);
-        
+
         // Strip out the d3p1: from CountDetails members
         var leObject = subDetail.content.SubscriptionDescription.CountDetails as any;
-        Object.keys(subDetail.content.SubscriptionDescription.CountDetails).map(x=>{
-            leObject[x.substring(5)]= leObject[x];
+        Object.keys(subDetail.content.SubscriptionDescription.CountDetails).map(x => {
+            leObject[x.substring(5)] = leObject[x];
         });
         //
 
@@ -87,20 +87,43 @@ export default class ServiceBusClient implements IServiceBusClient {
         return result.entry;
     }
 
-    public getMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+    private getMessages = async (topic: string | null, subscription: string | null, queue: string | null, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
 
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
-            const subscriptionClient = client.createSubscriptionClient(topic, subscription);
-            const messages = await subscriptionClient.peekBySequenceNumber(Long.MIN_VALUE, subscriptionClient === null ? 10 : 1000);
+            let deadLetterQueueName: string = '';
 
+            var messageClient = null;
 
+            if (queue) {
+                if (deadLetter) {
+                    deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
+                    messageClient = client.createQueueClient(deadLetterQueueName);
+                } else {
+                    messageClient = client.createQueueClient(queue);                    
+                }
+            }
 
-            await subscriptionClient.close();
+            if (subscription && topic) {
+                if (deadLetter) {
+                    deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription);
+                    messageClient = client.createQueueClient(deadLetterQueueName);
+                } else {
+                    messageClient = client.createSubscriptionClient(topic, subscription);
+                }
+            }
+
+            var messages: SBC.ReceivedMessageInfo[] = [];
+
+            if (messageClient) {
+                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, messageClient === null ? 10 : 1000);
+                await messageClient.close();
+            }
 
             await client.close();
+
             if (searchArguments) {
                 return messages.filter(x => x.messageId && x.messageId.toString().indexOf(searchArguments) >= 0);
             }
@@ -115,6 +138,14 @@ export default class ServiceBusClient implements IServiceBusClient {
 
             return [];
         }
+    }
+
+    public getQueueMessages = async (queue: string, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(null, null, queue, searchArguments, deadLetter);
+    }
+
+    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(topic, subscription, null, searchArguments, deadLetter);
     }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {
@@ -200,15 +231,53 @@ export default class ServiceBusClient implements IServiceBusClient {
                 body: body,
                 contentType: contentType
             });
-            
+
 
             await client.close();
-           
+
         } catch{
 
             if (client) {
                 await client.close();
             }
         }
+    }
+
+    public async purgeMessages(topic: string | null, subscription: string | null, queue: string | null): Promise<void> {
+        const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+        var purgeClient = null;
+
+        if (topic && subscription) {
+            purgeClient = client.createSubscriptionClient(topic, subscription);
+        }
+        else if (queue) {
+            purgeClient = client.createQueueClient(queue);
+        }
+
+        if (purgeClient){
+            const receiver = purgeClient.createReceiver(SBC.ReceiveMode.receiveAndDelete);
+            try {
+                while (true) {
+                    const messages = await receiver.receiveMessages(100, 10);
+                    if (messages.length === 0) {
+                        break;
+                    }
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+            finally {
+                await receiver.close();
+            }
+        }   
+    }
+
+    public async purgeSubscriptionMessages(topic: string, subscription: string): Promise<void> {
+        this.purgeMessages(topic, subscription, null);
+    }
+
+    public async purgeQueueMessages(queue: string): Promise<void> {
+        this.purgeMessages(null, null, queue);
     }
 }

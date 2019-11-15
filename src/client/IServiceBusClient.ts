@@ -19,9 +19,9 @@ export interface IServiceBusClient {
 
     getSubscriptionDetails(topic: string, subscription: string): Promise<ISubscription>;
 
-    getMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]>;
+    getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean): Promise<ReceivedMessageInfo[]>;
 
-    getMessages(topic:string, subscription: string, searchArguments: string | null) : Promise<ReceivedMessageInfo[]>;
+    getQueueMessages(queue: string, searchArguments: string | null, deadLetter: boolean): Promise<ReceivedMessageInfo[]>;
 
     createSubscription(topic:string, subscription: string) : Promise<ISubscription>;
 
@@ -36,4 +36,9 @@ export interface IServiceBusClient {
     deleteQueue(queue:string) : Promise<IQueue>;
 
     sendMessage(topic: string, body: any, contentType: string): Promise<void>;
+
+    purgeSubscriptionMessages(topic: string, subscription: string): Promise<void>;
+
+    purgeQueueMessages(queue: string): Promise<void>;
+
 }
