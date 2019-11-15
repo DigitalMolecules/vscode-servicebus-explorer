@@ -52,6 +52,10 @@ export default function registerCommands(
 			await node.searchMessages(context, state.searchArguments);
 		}),
 
+		commands.registerCommand('serviceBusExplorer.getSubscriptionDeadLetterMessages', async (node: Subscription) => node.getMessages(context, true)),
+
+		commands.registerCommand('serviceBusExplorer.getQueueDeadLetterMessages', async (node: Queue) => node.getMessages(context, true)),
+
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
 			var uri;
 

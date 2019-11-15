@@ -34,12 +34,12 @@ export class Queue extends ExplorerItemBase {
 		}
 	}
 
-	public getMessages = async (context: ExtensionContext): Promise<void> => {
+	public getMessages = async (context: ExtensionContext, deadLetter: boolean = false): Promise<void> => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);		
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null, deadLetter);		
 	}
 
 	public purgeMessages = async () => {

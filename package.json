@@ -42,7 +42,11 @@
 			"servicebus-explorer": [
 				{
 					"id": "servicebus-namespaces",
-					"name": ""
+					"name": "Azure"
+				},
+				{
+					"id": "rabbitmq-namespace",
+					"name": "RabbitMQ"					
 				}
 			]
 		},
@@ -123,6 +127,14 @@
 					"dark": "resources/dark/selection.svg"
 				}
 			},
+			{
+				"command": "serviceBusExplorer.getSubscriptionDeadLetterMessages",
+				"title": "Dead Letter"
+			},
+			{
+				"command": "serviceBusExplorer.getQueueDeadLetterMessages",
+				"title": "Dead Letter"
+			},				
 			{
 				"command": "serviceBusExplorer.purgeSubscriptionMessages",
 				"title": "Purge Messages",
@@ -242,6 +254,14 @@
 				{
 					"command": "serviceBusExplorer.searchMessage",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.getSubscriptionDeadLetterMessages",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
+					"command": "serviceBusExplorer.getQueueDeadLetterMessages",
+					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
 				{
 					"command": "serviceBusExplorer.purgeSubscriptionMessages",

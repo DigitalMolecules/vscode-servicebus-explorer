@@ -1,10 +1,8 @@
 import * as assert from 'assert';
 import { before } from 'mocha';
 import * as vscode from 'vscode';
-import { MessageProvider } from  "../../../providers/MessageProvider";
-import { MessageStore } from  "../../../messages/MessageStore";
+import { MessageProvider } from  "../../../providers/messageProvider";
 import { MessageStoreInstance } from '../../../common/global';
-
 
 suite('MessageProvider Test Suite', () => {
 	const body = { root: { "node": "data" } };

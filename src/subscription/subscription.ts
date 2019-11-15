@@ -37,12 +37,12 @@ export class Subscription extends ExplorerItemBase {
 		return `(${this.messageCount.toLocaleString()}) (${this.deadLetterCount.toLocaleString()})`;
 	}
 
-	public getMessages = async (context: ExtensionContext): Promise<void> => {
+	public getMessages = async (context: ExtensionContext, deadLetter: boolean = false): Promise<void> => {
 		if (!this.itemData.clientInstance) {
 			throw new Error("Node without client??!>!!!?!?!?!");
 		}
 
-		await new MessageWebView(this.itemData.clientInstance, this).open(context, null);
+		await new MessageWebView(this.itemData.clientInstance, this).open(context, null, deadLetter);
 	}
 
 	public searchMessages = async (context: ExtensionContext, searchArguments: string) => {

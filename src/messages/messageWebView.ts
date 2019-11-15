@@ -5,7 +5,6 @@ import { MessageStoreInstance } from '../common/global';
 import { ReceivedMessageInfo } from '@azure/service-bus';
 import { ExplorerItemBase } from '../common/explorerItemBase';
 import { Queue } from '../queue/queue';
-import { stringify } from 'querystring';
 
 export class MessageWebView {
 
@@ -16,12 +15,12 @@ export class MessageWebView {
         public readonly node: ExplorerItemBase) {
     }
 
-    async getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getSubscriptionMessages(topic, subscription, searchArguments);
+    async getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getSubscriptionMessages(topic, subscription, searchArguments, deadLetter);
     }
 
-    async getQueueMessages(queue: string, searchArguments: string | null): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getQueueMessages(queue, searchArguments);
+    async getQueueMessages(queue: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
+        return await this.client.getQueueMessages(queue, searchArguments, deadLetter);
     }
 
     async renderMessages(topic: string | null, subscription: string  | null, queue: string  | null, messages: any[]): Promise<void> {
@@ -196,19 +195,19 @@ export class MessageWebView {
 
     }
 
-    async open(context: vscode.ExtensionContext, searchArguments: string | null): Promise<void> {
+    async open(context: vscode.ExtensionContext, searchArguments: string | null, deadLetter: boolean = false): Promise<void> {
 
         let messages: ReceivedMessageInfo[] = [];
         let title = "";
 
         if (this.node instanceof Subscription) {
             const subscription: Subscription = this.node;
-            messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments);
+            messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments, deadLetter);
             title = `${subscription.topicName} - (${subscription.label})`;
         }
         else if (this.node instanceof Queue) {
             const queue: Queue = this.node;
-            messages = await this.getQueueMessages(queue.title, searchArguments);
+            messages = await this.getQueueMessages(queue.title, searchArguments, deadLetter);
             title = `(${queue.label})`;
         }
 
@@ -225,28 +224,6 @@ export class MessageWebView {
             message => {
                 var msg = messages.find(x => x.messageId === message.messageId);
 
-                switch (message.command) {
-                    case 'serviceBusExplorer.showMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
-                        return;
-                }
-            },
-            undefined,
-            context.subscriptions
-        );
-
-        this.panel = vscode.window.createWebviewPanel(
-            'messagelist', // Identifies the type of the webview. Used internally
-            title, // Title of the panel displayed to the user
-            vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-            {
-                enableScripts: true
-            }
-        );
-
-        this.panel.webview.onDidReceiveMessage(
-            message => {
-                var msg = messages.find(x => x.messageId === message.messageId);
                 switch (message.command) {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);

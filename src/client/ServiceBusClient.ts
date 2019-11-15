@@ -7,7 +7,6 @@ import { ITopic } from './models/ITopicDetails';
 import { IQueue } from './models/IQueueDetails';
 import ServiceBusAuth, { IServiceBusAuthHeader } from '../common/serviceBusAuth';
 import Long from 'long';
-import { ClientHttp2Session } from 'http2';
 
 export default class ServiceBusClient implements IServiceBusClient {
 
@@ -88,31 +87,43 @@ export default class ServiceBusClient implements IServiceBusClient {
         return result.entry;
     }
 
-    public getMessages = async (topic: string | null, subscription: string | null, queue: string | null, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
+    private getMessages = async (topic: string | null, subscription: string | null, queue: string | null, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
         let messageReceiver;
         let client;
 
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+            let deadLetterQueueName: string = '';
+
             var messageClient = null;
 
             if (queue) {
-                messageClient = client.createQueueClient(queue);
+                if (deadLetter) {
+                    deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
+                    messageClient = client.createQueueClient(deadLetterQueueName);
+                } else {
+                    messageClient = client.createQueueClient(queue);                    
+                }
             }
 
             if (subscription && topic) {
-                messageClient = client.createSubscriptionClient(topic, subscription);
+                if (deadLetter) {
+                    deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription);
+                    messageClient = client.createQueueClient(deadLetterQueueName);
+                } else {
+                    messageClient = client.createSubscriptionClient(topic, subscription);
+                }
             }
 
             var messages: SBC.ReceivedMessageInfo[] = [];
 
             if (messageClient) {
                 messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, messageClient === null ? 10 : 1000);
-
                 await messageClient.close();
             }
 
             await client.close();
+
             if (searchArguments) {
                 return messages.filter(x => x.messageId && x.messageId.toString().indexOf(searchArguments) >= 0);
             }
@@ -128,12 +139,13 @@ export default class ServiceBusClient implements IServiceBusClient {
             return [];
         }
     }
-    public getQueueMessages = async (queue: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
-        return this.getMessages(null, null, queue, searchArguments);
+
+    public getQueueMessages = async (queue: string, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(null, null, queue, searchArguments, deadLetter);
     }
 
-    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null): Promise<SBC.ReceivedMessageInfo[]> => {
-        return this.getMessages(topic, subscription, null, searchArguments);
+    public getSubscriptionMessages = async (topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
+        return this.getMessages(topic, subscription, null, searchArguments, deadLetter);
     }
 
     private async getEntity<T>(method: string, path: string): Promise<T> {
