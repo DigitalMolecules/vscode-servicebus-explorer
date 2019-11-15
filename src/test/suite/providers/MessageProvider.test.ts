@@ -8,6 +8,7 @@ suite('MessageProvider Test Suite', () => {
 	const body = { root: { "node": "data" } };
 	const messageid="TestMessageId";
 	var messageProvider=new MessageProvider();
+	
 	before(() => {
 		vscode.window.showInformationMessage('Start all tests.');
 		var testmsg: any={};

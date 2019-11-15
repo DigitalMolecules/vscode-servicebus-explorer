@@ -7,6 +7,7 @@ import * as vscode from 'vscode';
 // import * as myExtension from '../extension';
 
 suite('Extension Test Suite', () => {
+	
 	before(() => {
 		vscode.window.showInformationMessage('Start all tests.');
 	});
