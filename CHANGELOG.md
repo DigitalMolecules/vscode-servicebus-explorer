@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.4] (Preview)
+- Dead Letter support
+- Read messages form queue
+- Purge messages from subscription & queue
+
 ## [0.1.3] (Preview)
 - UI Improvements (Using a dialog to confirm deletions)
 
