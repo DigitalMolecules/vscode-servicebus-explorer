@@ -88,7 +88,6 @@ export default class ServiceBusClient implements IServiceBusClient {
     }
 
     private getMessages = async (topic: string | null, subscription: string | null, queue: string | null, searchArguments: string | null, deadLetter: boolean = false): Promise<SBC.ReceivedMessageInfo[]> => {
-        let messageReceiver;
         let client;
 
         try {
@@ -118,7 +117,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             var messages: SBC.ReceivedMessageInfo[] = [];
 
             if (messageClient) {
-                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, messageClient === null ? 10 : 1000);
+                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, 1000);
                 await messageClient.close();
             }
 
