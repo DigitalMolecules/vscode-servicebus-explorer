@@ -141,7 +141,9 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.toggleCollapseAll', async (node: NameSpaceItem) => {
-			await serviceBusProvider.toggleCollapse(node, node.itemData);
+			if (node && node.itemData) {			
+				await serviceBusProvider.toggleCollapse(node, node.itemData);
+			}
 		})
 	];
 }
