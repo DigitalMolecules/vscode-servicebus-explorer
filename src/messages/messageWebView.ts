@@ -15,14 +15,6 @@ export class MessageWebView {
         public readonly node: ExplorerItemBase) {
     }
 
-    async getSubscriptionMessages(topic: string, subscription: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getSubscriptionMessages(topic, subscription, searchArguments, deadLetter);
-    }
-
-    async getQueueMessages(queue: string, searchArguments: string | null, deadLetter: boolean = false): Promise<ReceivedMessageInfo[]> {
-        return await this.client.getQueueMessages(queue, searchArguments, deadLetter);
-    }
-
     async renderMessages(topic: string | null, subscription: string  | null, queue: string  | null, messages: any[]): Promise<void> {
         if (!this.panel) {
             return;
@@ -65,8 +57,6 @@ export class MessageWebView {
                 </tr>
                 `
             ;
-
-
 
         this.panel.webview.html = `
             <!DOCTYPE html>
@@ -189,10 +179,8 @@ export class MessageWebView {
                             ${messageTable}
                         </tbody>
                     </table>
-                </body>
-                
+                </body>      
         `;
-
     }
 
     async open(context: vscode.ExtensionContext, searchArguments: string | null, deadLetter: boolean = false): Promise<void> {
@@ -202,12 +190,12 @@ export class MessageWebView {
 
         if (this.node instanceof Subscription) {
             const subscription: Subscription = this.node;
-            messages = await this.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments, deadLetter);
+            messages = await this.client.getSubscriptionMessages(subscription.topicName, subscription.label, searchArguments, deadLetter);
             title = `${subscription.topicName} - (${subscription.label})`;
         }
         else if (this.node instanceof Queue) {
             const queue: Queue = this.node;
-            messages = await this.getQueueMessages(queue.title, searchArguments, deadLetter);
+            messages = await this.client.getQueueMessages(queue.title, searchArguments, deadLetter);
             title = `(${queue.label})`;
         }
 

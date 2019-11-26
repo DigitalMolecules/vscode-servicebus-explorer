@@ -1,5 +1,4 @@
 import { IMessageStore } from "./IMessageStore";
-import { format } from './formatter';
 
 export class MessageStore implements IMessageStore {
     

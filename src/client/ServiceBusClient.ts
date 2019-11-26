@@ -117,7 +117,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             var messages: SBC.ReceivedMessageInfo[] = [];
 
             if (messageClient) {
-                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, 1000);
+                messages = await messageClient.peekBySequenceNumber(Long.MIN_VALUE, 10000);
                 await messageClient.close();
             }
 
