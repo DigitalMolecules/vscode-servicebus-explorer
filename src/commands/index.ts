@@ -76,6 +76,12 @@ export default function registerCommands(
 			}
 		}),
 
+		commands.registerCommand('serviceBusExplorer.deleteMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
+			if ((await confirmDialog())) {
+				// TODO : implement
+			}		
+		}),
+
 		commands.registerCommand('serviceBusExplorer.purgeSubscriptionMessages', async (node: Subscription) => {
 			if ((await confirmDialog())) {
 				await node.purgeMessages();

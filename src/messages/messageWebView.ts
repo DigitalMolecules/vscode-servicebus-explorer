@@ -44,6 +44,9 @@ export class MessageWebView {
                         <td>
                             <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Open</button>
                         </td>
+                        <td>
+                            <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Delete</button>
+                        </td>                        
                     </tr>
                 `;
                 })
@@ -74,7 +77,7 @@ export class MessageWebView {
                     .button{
                         color: var(--vscode-button-foreground);
                         background-color: var(--vscode-button-background);
-                        padding: 1rem 2rem 1rem 2rem;
+                        padding: 0.3rem 1rem 0.3rem 1rem;
                         border: none;
                     }
 
@@ -105,6 +108,16 @@ export class MessageWebView {
                         function showMessage(topic, subscription, queue, messageId){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
+                                topic: topic,
+                                subscription: subscription,
+                                queue: queue,
+                                messageId: messageId
+                            })
+                        }
+
+                        function deleteMessage(topic, subscription, queue, messageId){
+                            vscode.postMessage({
+                                command: 'serviceBusExplorer.deleteMessage',
                                 topic: topic,
                                 subscription: subscription,
                                 queue: queue,
@@ -173,6 +186,8 @@ export class MessageWebView {
                                 </th>
                                 <th>
                                 </th>
+                                <th>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,6 +231,10 @@ export class MessageWebView {
                     case 'serviceBusExplorer.showMessage':
                         vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
                         return;
+
+                    case 'serviceBusExplorer.deleteMessage':
+                        vscode.commands.executeCommand('serviceBusExplorer.deleteMessage', message.topic, message.subscription, message.queue, msg);
+                        return;                        
                 }
             },
             undefined,
