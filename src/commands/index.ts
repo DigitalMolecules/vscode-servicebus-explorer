@@ -9,12 +9,11 @@ import { Subscription } from "../subscription/subscription";
 import { SubscriptionUI } from "../subscription/SubscriptionUI";
 import { SendToBus } from "../messages/sendToBus";
 import { Topic } from "../topic/topic";
-import { ExplorerItemBase } from "../common/explorerItemBase";
 import { TopicUI } from "../topic/TopicUI";
 import { Queue } from "../queue/queue";
 import { QueueUI } from "../queue/QueueUI";
-import { withUsernamePasswordWithAuthResponse } from "@azure/ms-rest-nodeauth/dist/lib/login";
 import { confirmDialog } from "../common/global";
+import { ReceivedMessageInfo } from "@azure/service-bus";
 
 export default function registerCommands(
 	context: ExtensionContext,
@@ -57,14 +56,14 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.getQueueDeadLetterMessages', async (node: Queue) => node.getMessages(context, true)),
 
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
-			var uri;
+			var uri;		
 
 			if (topic && subscription) {
-				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}`);
+				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}&enqueuedSequenceNumber=${message.enqueuedSequenceNumber}`);
 			}
 
 			if (queue) {
-				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?queue=${queue}&messageid=${message.messageId}`);
+				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?queue=${queue}&messageid=${message.messageId}&enqueuedSequenceNumber=${message.enqueuedSequenceNumber}`);
 			}
 
 			if (uri) {
@@ -76,10 +75,14 @@ export default function registerCommands(
 			}
 		}),
 
-		commands.registerCommand('serviceBusExplorer.deleteMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
-			if ((await confirmDialog())) {
-				// TODO : implement
-			}		
+		commands.registerCommand('serviceBusExplorer.deleteMessage', async (node: Subscription | Queue, message: ReceivedMessageInfo, deadLetter: boolean = false) => {
+			if (node)  {
+				if ((await confirmDialog())) {
+					await node.deleteMessage(message.messageId as string, deadLetter, message.enqueuedSequenceNumber, message.sessionId);
+					window.showInformationMessage("Message has been deleted", `Id: ${message.messageId}, Enqueued Sequence Number: ${message.enqueuedSequenceNumber?.toString()}`);
+					serviceBusProvider.refresh(node.parent);
+				}
+			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.purgeSubscriptionMessages', async (node: Subscription) => {
@@ -108,9 +111,11 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {
-			var state = await subscriptionUI.createSubscription();
-			await node.createSubscription(state.name);
-			serviceBusProvider.refresh(node);
+			if (node) {
+				var state = await subscriptionUI.createSubscription();
+				await node.createSubscription(state.name);
+				serviceBusProvider.refresh(node);
+			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteSubscription', async (node: Subscription) => {

@@ -42,6 +42,12 @@ export class Queue extends ExplorerItemBase {
 		await new MessageWebView(this.itemData.clientInstance, this).open(context, null, deadLetter);		
 	}
 
+	public deleteMessage = async (messageId: string, deadLetter: boolean = false, enqueuedSequencenumber?: number, sessionId?: string) => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.deleteQueueMessage(this.title, messageId, deadLetter, enqueuedSequencenumber, sessionId );
+		}		
+	}	
+
 	public purgeMessages = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.purgeQueueMessages(this.title);

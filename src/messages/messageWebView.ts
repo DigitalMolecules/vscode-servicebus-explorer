@@ -15,7 +15,7 @@ export class MessageWebView {
         public readonly node: ExplorerItemBase) {
     }
 
-    async renderMessages(topic: string | null, subscription: string  | null, queue: string  | null, messages: any[]): Promise<void> {
+    async renderMessages(topic: string | null, subscription: string | null, queue: string | null, messages: any[]): Promise<void> {
         if (!this.panel) {
             return;
         }
@@ -28,7 +28,7 @@ export class MessageWebView {
                     <tr>
                         <td data-message-id="${x.messageId}">
                             ${x.messageId}
-                        </td>
+                        </td>f
                         <td data-content-type="${x.contentType || ''}">
                             ${x.contentType || ''}
                         </td>
@@ -42,10 +42,10 @@ export class MessageWebView {
                             ${ x.enqueuedTimeUtc.toLocaleString() || ''}
                         </td>
                         <td>
-                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Open</button>
+                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')">Open</button>
                         </td>
                         <td>
-                            <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}')">Delete</button>
+                            <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')">Delete</button>
                         </td>                        
                     </tr>
                 `;
@@ -105,23 +105,25 @@ export class MessageWebView {
                     <h1>Messages (${subscription})</h1>
                     <script >
                         const vscode = acquireVsCodeApi();
-                        function showMessage(topic, subscription, queue, messageId){
+                        function showMessage(topic, subscription, queue, messageId, enqueuedSequenceNumber){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
                                 topic: topic,
                                 subscription: subscription,
                                 queue: queue,
-                                messageId: messageId
+                                messageId: messageId,
+                                enqueuedSequenceNumber: enqueuedSequenceNumber
                             })
                         }
 
-                        function deleteMessage(topic, subscription, queue, messageId){
+                        function deleteMessage(topic, subscription, queue, messageId, enqueuedSequenceNumber){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.deleteMessage',
                                 topic: topic,
                                 subscription: subscription,
                                 queue: queue,
-                                messageId: messageId
+                                messageId: messageId,
+                                enqueuedSequenceNumber: enqueuedSequenceNumber
                             })
                         }
 
@@ -225,31 +227,48 @@ export class MessageWebView {
 
         this.panel.webview.onDidReceiveMessage(
             message => {
-                var msg = messages.find(x => x.messageId === message.messageId);
+                // Find message by id and sequence number
+                var msg = messages.find(x => x.messageId === message.messageId && x.enqueuedSequenceNumber?.toString() === message.enqueuedSequenceNumber);
+                
+                if (msg) {
+                    switch (message.command) {
+                        case 'serviceBusExplorer.showMessage':
+                            vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
+                            return;
 
-                switch (message.command) {
-                    case 'serviceBusExplorer.showMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
-                        return;
-
-                    case 'serviceBusExplorer.deleteMessage':
-                        vscode.commands.executeCommand('serviceBusExplorer.deleteMessage', message.topic, message.subscription, message.queue, msg);
-                        return;                        
+                        case 'serviceBusExplorer.deleteMessage':
+                            vscode.commands.executeCommand('serviceBusExplorer.deleteMessage', this.node, msg, deadLetter)
+                                .then(() => {
+                                    if (msg) {
+                                        // Remove the message from the list of messages.
+                                        const index = messages.indexOf(msg);
+                                        messages.splice(index, 1);
+                                        if (this.node instanceof Subscription) {
+                                            let subscription: Subscription = this.node;
+                                            this.renderMessages(subscription.topicName, subscription.label, null, messages);
+                                        }
+                                
+                                        if (this.node instanceof Queue) {
+                                            let queue: Queue = this.node;
+                                            this.renderMessages(null, null, queue.title, messages);
+                                        }
+                                    }
+                                });
+                            return;
+                    }
                 }
             },
             undefined,
             context.subscriptions
         );
 
-        if (this.node instanceof Subscription)
-        {
-            let subscription : Subscription = this.node;
+        if (this.node instanceof Subscription) {
+            let subscription: Subscription = this.node;
             await this.renderMessages(subscription.topicName, subscription.label, null, messages);
         }
 
-        if (this.node instanceof Queue)
-        {
-            let queue : Queue = this.node;
+        if (this.node instanceof Queue) {
+            let queue: Queue = this.node;
             await this.renderMessages(null, null, queue.title, messages);
         }
 

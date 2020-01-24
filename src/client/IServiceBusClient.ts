@@ -23,6 +23,10 @@ export interface IServiceBusClient {
 
     getQueueMessages(queue: string, searchArguments: string | null, deadLetter: boolean): Promise<ReceivedMessageInfo[]>;
 
+    deleteSubscriptionMessage(topic: string, subscription: string, messageId: string, deadLetter: boolean, enqueuedSequencenumber?: number, sessionId?: string): Promise<void>;
+
+    deleteQueueMessage(queue: string, messageId: string, deadLetter: boolean, enqueuedSequencenumber?: number, sessionId?: string): Promise<void>;
+
     createSubscription(topic:string, subscription: string) : Promise<ISubscription>;
 
     deleteSubscription(topic:string, subscription: string) : Promise<ISubscription>;

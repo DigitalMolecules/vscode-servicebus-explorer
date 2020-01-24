@@ -147,6 +147,60 @@ export default class ServiceBusClient implements IServiceBusClient {
         return this.getMessages(topic, subscription, null, searchArguments, deadLetter);
     }
 
+    public async deleteSubscriptionMessage(topic: string, subscription: string, messageId: string, deadLetter: boolean = false, enqueuedSequencenumber?: number, sessionId?: string): Promise<void> {
+        const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+        let deadLetterQueueName: string = '';
+        let messageClient = null;
+        let receiver = null;
+
+        if (deadLetter) {
+            deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription);
+            messageClient = client.createQueueClient(deadLetterQueueName);
+        } else {
+            messageClient = client.createSubscriptionClient(topic, subscription);
+        }        
+
+        if (sessionId)  {
+            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
+        } else {
+            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
+        }
+        
+        for await (let message of receiver.getMessageIterator()) {
+            if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
+                await message.complete();
+                return;
+            }
+        }
+    }
+
+    public async deleteQueueMessage(queue: string, messageId: string, deadLetter: boolean, enqueuedSequencenumber?: number, sessionId?: string): Promise<void> {
+        const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+        let deadLetterQueueName: string = '';
+        let messageClient = null;
+        let receiver = null;
+
+        if (deadLetter) {
+            deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
+            messageClient = client.createQueueClient(deadLetterQueueName);
+        } else {
+            messageClient = client.createQueueClient(queue);                    
+        }
+
+        if (sessionId)  {
+            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
+        } else {
+            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
+        }
+
+        for await (let message of receiver.getMessageIterator()) {
+            if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
+                await message.complete();
+                return;
+            }
+        }
+    }
+    
     private async getEntity<T>(method: string, path: string): Promise<T> {
         const result = await this.sendRequest(method, path);
         return result.entry;
