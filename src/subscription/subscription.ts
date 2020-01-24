@@ -58,6 +58,12 @@ export class Subscription extends ExplorerItemBase {
 		}
 	}
 
+	public deleteMessage = async (messageId: string, deadLetter: boolean = false, enqueuedSequencenumber?: number, sessionId?: string) => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.deleteSubscriptionMessage(this.topicName, this.label, messageId, deadLetter, enqueuedSequencenumber, sessionId );
+		}		
+	}
+
 	public purgeMessages = async () => {
 		if (this.itemData.clientInstance) {
 			await this.itemData.clientInstance.purgeSubscriptionMessages(this.topicName, this.label);
