@@ -56,7 +56,7 @@ export default function registerCommands(
 		commands.registerCommand('serviceBusExplorer.getQueueDeadLetterMessages', async (node: Queue) => node.getMessages(context, true)),
 
 		commands.registerCommand('serviceBusExplorer.showMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
-			var uri;		
+			var uri;
 
 			if (topic && subscription) {
 				uri = Uri.parse(`servicebusmessage:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}&enqueuedSequenceNumber=${message.enqueuedSequenceNumber}`);
@@ -76,11 +76,15 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.deleteMessage', async (node: Subscription | Queue, message: ReceivedMessageInfo, deadLetter: boolean = false) => {
-			if (node)  {
+			if (node) {
 				if ((await confirmDialog())) {
-					await node.deleteMessage(message.messageId as string, deadLetter, message.enqueuedSequenceNumber, message.sessionId);
-					window.showInformationMessage("Message has been deleted", `Id: ${message.messageId}, Enqueued Sequence Number: ${message.enqueuedSequenceNumber?.toString()}`);
-					serviceBusProvider.refresh(node.parent);
+					if (message.enqueuedSequenceNumber) {
+						await node.deleteMessage(message.messageId as string, deadLetter, message.enqueuedSequenceNumber, message.sessionId);
+						window.showInformationMessage("Message has been deleted", `Id: ${message.messageId}, Enqueued Sequence Number: ${message.enqueuedSequenceNumber.toString()}`);
+						serviceBusProvider.refresh(node.parent);
+					} else {
+						window.showErrorMessage('enqueuedSequenceNumber is empty');
+					}
 				}
 			}
 		}),
@@ -160,7 +164,7 @@ export default function registerCommands(
 		}),
 
 		commands.registerCommand('serviceBusExplorer.toggleCollapseAll', async (node: NameSpaceItem) => {
-			if (node && node.itemData) {			
+			if (node && node.itemData) {
 				await serviceBusProvider.toggleCollapse(node, node.itemData);
 			}
 		})
