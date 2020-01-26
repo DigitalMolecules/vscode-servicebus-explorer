@@ -101,8 +101,16 @@ export default function registerCommands(
 			if (window.activeTextEditor) {
 				const documentText = window.activeTextEditor.document.getText();
 				var destination = await sendToBus.sendToBus();
-				await destination.client.sendMessage(destination.selectedTopic.title, documentText, 'application/json');
-				window.showInformationMessage('Message sent successfully');
+
+				if (destination.selectedTopic) {
+					await destination.client.sendTopicMessage(destination.selectedTopic.title, documentText, 'application/json');
+					window.showInformationMessage('Message sent successfully');
+				}
+
+				if (destination.selectedQueue) {
+					await destination.client.sendQueueMessage(destination.selectedQueue.title, documentText, 'application/json');
+					window.showInformationMessage('Message sent successfully');
+				}
 			}
 			else {
 				window.showErrorMessage('Only implemented for active document');
