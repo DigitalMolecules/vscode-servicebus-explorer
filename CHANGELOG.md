@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.5] (Preview)
+- Delete a single message #37
+- Send to bus does not allow queue selection #38
+- Bugfixes
+
 ## [0.1.4] (Preview)
 - Dead Letter support
 - Read messages form queue
