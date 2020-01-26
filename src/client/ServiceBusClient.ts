@@ -286,7 +286,7 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-    public async sendMessage(topic: string, body: any, contentType: string): Promise<void> {
+    public async sendTopicMessage(topic: string, body: any, contentType: string): Promise<void> {
         let client;
 
         try {
@@ -301,6 +301,30 @@ export default class ServiceBusClient implements IServiceBusClient {
 
             await sender.close();
             await topicClient.close();
+            await client.close();
+
+        } catch{
+            if (client) {
+                await client.close();
+            }
+        }
+    }
+
+    public async sendQueueMessage(queue: string, body: any, contentType: string): Promise<void> {
+        let client;
+
+        try {
+            client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
+            const queueClient = client.createQueueClient(queue);
+            const sender = queueClient.createSender();
+
+            sender.send({
+                body: body,
+                contentType: contentType
+            });
+
+            await sender.close();
+            await queueClient.close();
             await client.close();
 
         } catch{

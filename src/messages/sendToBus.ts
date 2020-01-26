@@ -7,6 +7,8 @@ import { IItemData } from "../common/explorerItemBase";
 import { strictEqual } from "assert";
 import * as vscode from 'vscode';
 import { ITopic } from "../client/models/ITopicDetails";
+import { IQueue } from "../client/models/IQueueDetails";
+import { Queue } from "../queue/queue";
 
 interface ISendToBusState {
     title: string;
@@ -14,6 +16,7 @@ interface ISendToBusState {
     totalSteps: number;
     selectedNamespace: ISelectedNamespaceItem;
     selectedTopic: ITopic;
+    selectedQueue: IQueue;
     client: IServiceBusClient;
 }
 
@@ -24,6 +27,10 @@ interface ISelectedNamespaceItem extends QuickPickItem {
 
 interface ISelectedTopicItem extends QuickPickItem {
     topic: ITopic;
+}
+
+interface ISelectedQueueItem extends QuickPickItem {
+    queue: IQueue;
 }
 
 export class SendToBus {
@@ -87,7 +94,7 @@ export class SendToBus {
             }
         ];
 
-        const selectedItem = await input.showQuickPick({
+        const selectedItem: { name: string, label: string } = await input.showQuickPick({
             title: 'Select Namespace',
             items: items.map(x => ({ ...x, label: x.name })),
             step: 1,
@@ -96,16 +103,23 @@ export class SendToBus {
             placeholder: ''
         });
 
-        //TODO: choose
+        if (selectedItem.name === "Queues") {
+            return (input: MultiStepInput) => this.selectQueue(input, state);
+        }
+
         return (input: MultiStepInput) => this.selectTopic(input, state);
     }
+
     private selectTopic = async (input: MultiStepInput, state: Partial<ISendToBusState>) => {
 
         let name = '';
+
         if (!state.selectedNamespace) {
             throw new Error("state.selectedNamespace is null");
         }
+
         var namespaceClient = new ServiceBusClient(state.selectedNamespace.itemData.connection);
+
         let items = await namespaceClient.getTopics();
 
         const selectedItem = await input.showQuickPick<ISelectedTopicItem, IQuickPickParameters<ISelectedTopicItem>>({
@@ -120,6 +134,31 @@ export class SendToBus {
         state.client = namespaceClient;
         state.selectedTopic = selectedItem.topic;
 
+    }
+
+    private selectQueue = async (input: MultiStepInput, state: Partial<ISendToBusState>) => {
+
+        let name = '';
+
+        if (!state.selectedNamespace) {
+            throw new Error("state.selectedNamespace is null");
+        }
+
+        var namespaceClient = new ServiceBusClient(state.selectedNamespace.itemData.connection);
+
+        let items = await namespaceClient.getQueues();
+
+        const selectedItem = await input.showQuickPick<ISelectedQueueItem, IQuickPickParameters<ISelectedQueueItem>>({
+            title: 'Select Namespace',
+            items: items.map(x => ({ queue: x, label: x.title } as ISelectedQueueItem)),
+            step: 1,
+            totalSteps: 4,
+            shouldResume: this.shouldResume,
+            placeholder: ''
+        });
+        
+        state.client = namespaceClient;
+        state.selectedQueue = selectedItem.queue;
     }
 
     private validateNameIsUnique = async (name: string) => {
