@@ -101,7 +101,7 @@ export default class ServiceBusClient implements IServiceBusClient {
                     deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
                     messageClient = client.createQueueClient(deadLetterQueueName);
                 } else {
-                    messageClient = client.createQueueClient(queue);                    
+                    messageClient = client.createQueueClient(queue);
                 }
             }
 
@@ -121,7 +121,6 @@ export default class ServiceBusClient implements IServiceBusClient {
                 await messageClient.close();
             }
 
-            await messageClient?.close();
             await client.close();
 
             if (searchArguments) {
@@ -131,7 +130,6 @@ export default class ServiceBusClient implements IServiceBusClient {
                 return messages;
             }
         } catch{
-
             if (client) {
                 await client.close();
             }
@@ -154,29 +152,33 @@ export default class ServiceBusClient implements IServiceBusClient {
         let messageClient = null;
         let receiver = null;
 
-        if (deadLetter) {
-            deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription);
-            messageClient = client.createQueueClient(deadLetterQueueName);
-        } else {
-            messageClient = client.createSubscriptionClient(topic, subscription);
-        }        
-
-        if (sessionId)  {
-            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
-        } else {
-            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
-        }
-        
-        for await (let message of receiver.getMessageIterator()) {
-            if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
-                await message.complete();
-                break;
+        try {
+            if (deadLetter) {
+                deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription);
+                messageClient = client.createQueueClient(deadLetterQueueName);
+            } else {
+                messageClient = client.createSubscriptionClient(topic, subscription);
             }
-        }
 
-        await receiver.close();
-        await messageClient.close();
-        await client.close();
+            if (sessionId) {
+                receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
+            } else {
+                receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
+            }
+
+            for await (let message of receiver.getMessageIterator()) {
+                if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
+                    await message.complete();
+                    break;
+                }
+            }
+
+            await receiver.close();
+            await messageClient.close();
+            await client.close();
+        } catch {
+            await client.close();
+        }
     }
 
     public async deleteQueueMessage(queue: string, messageId: string, deadLetter: boolean, enqueuedSequencenumber?: number, sessionId?: string): Promise<void> {
@@ -185,31 +187,35 @@ export default class ServiceBusClient implements IServiceBusClient {
         let messageClient = null;
         let receiver = null;
 
-        if (deadLetter) {
-            deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
-            messageClient = client.createQueueClient(deadLetterQueueName);
-        } else {
-            messageClient = client.createQueueClient(queue);                    
-        }
-
-        if (sessionId)  {
-            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
-        } else {
-            receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
-        }
-
-        for await (let message of receiver.getMessageIterator()) {
-            if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
-                await message.complete();
-                break;
+        try {
+            if (deadLetter) {
+                deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue);
+                messageClient = client.createQueueClient(deadLetterQueueName);
+            } else {
+                messageClient = client.createQueueClient(queue);
             }
-        }
 
-        await receiver.close();
-        await messageClient.close();
-        await client.close();
+            if (sessionId) {
+                receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock, { sessionId: sessionId });
+            } else {
+                receiver = messageClient.createReceiver(SBC.ReceiveMode.peekLock);
+            }
+
+            for await (let message of receiver.getMessageIterator()) {
+                if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
+                    await message.complete();
+                    break;
+                }
+            }
+
+            await receiver.close();
+            await messageClient.close();
+            await client.close();
+        } catch {
+            await client.close();
+        }
     }
-    
+
     private async getEntity<T>(method: string, path: string): Promise<T> {
         const result = await this.sendRequest(method, path);
         return result.entry;
@@ -286,7 +292,6 @@ export default class ServiceBusClient implements IServiceBusClient {
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString);
             const topicClient = client.createTopicClient(topic);
-
             const sender = topicClient.createSender();
 
             sender.send({
@@ -316,7 +321,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             purgeClient = client.createQueueClient(queue);
         }
 
-        if (purgeClient){
+        if (purgeClient) {
             const receiver = purgeClient.createReceiver(SBC.ReceiveMode.receiveAndDelete);
             try {
                 while (true) {
@@ -327,13 +332,19 @@ export default class ServiceBusClient implements IServiceBusClient {
                 }
             }
             catch (err) {
-                console.log(err);
+                if (receiver) {
+                    await receiver.close();
+                }
+
+                await purgeClient.close();
             }
-            finally {
+            finally {                
                 await receiver.close();
-                await client.close();
+                await purgeClient.close();
             }
-        }   
+        }
+
+        await client.close();
     }
 
     public async purgeSubscriptionMessages(topic: string, subscription: string): Promise<void> {
