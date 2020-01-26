@@ -28,7 +28,7 @@ export class MessageWebView {
                     <tr>
                         <td data-message-id="${x.messageId}">
                             ${x.messageId}
-                        </td>f
+                        </td>
                         <td data-content-type="${x.contentType || ''}">
                             ${x.contentType || ''}
                         </td>
