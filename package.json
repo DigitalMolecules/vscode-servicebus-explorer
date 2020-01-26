@@ -43,10 +43,6 @@
 				{
 					"id": "servicebus-namespaces",
 					"name": "Azure"
-				},
-				{
-					"id": "rabbitmq-namespace",
-					"name": "RabbitMQ"
 				}
 			]
 		},

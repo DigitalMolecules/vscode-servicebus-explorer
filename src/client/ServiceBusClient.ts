@@ -121,6 +121,7 @@ export default class ServiceBusClient implements IServiceBusClient {
                 await messageClient.close();
             }
 
+            await messageClient?.close();
             await client.close();
 
             if (searchArguments) {
@@ -169,9 +170,13 @@ export default class ServiceBusClient implements IServiceBusClient {
         for await (let message of receiver.getMessageIterator()) {
             if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
                 await message.complete();
-                return;
+                break;
             }
         }
+
+        await receiver.close();
+        await messageClient.close();
+        await client.close();
     }
 
     public async deleteQueueMessage(queue: string, messageId: string, deadLetter: boolean, enqueuedSequencenumber?: number, sessionId?: string): Promise<void> {
@@ -196,9 +201,13 @@ export default class ServiceBusClient implements IServiceBusClient {
         for await (let message of receiver.getMessageIterator()) {
             if (message && message.messageId === messageId && message.enqueuedSequenceNumber === enqueuedSequencenumber) {
                 await message.complete();
-                return;
+                break;
             }
         }
+
+        await receiver.close();
+        await messageClient.close();
+        await client.close();
     }
     
     private async getEntity<T>(method: string, path: string): Promise<T> {
@@ -285,11 +294,11 @@ export default class ServiceBusClient implements IServiceBusClient {
                 contentType: contentType
             });
 
-
+            await sender.close();
+            await topicClient.close();
             await client.close();
 
         } catch{
-
             if (client) {
                 await client.close();
             }
@@ -322,6 +331,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             }
             finally {
                 await receiver.close();
+                await client.close();
             }
         }   
     }
