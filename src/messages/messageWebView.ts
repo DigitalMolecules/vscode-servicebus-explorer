@@ -228,7 +228,7 @@ export class MessageWebView {
         this.panel.webview.onDidReceiveMessage(
             message => {
                 // Find message by id and sequence number
-                var msg = messages.find(x => x.messageId === message.messageId && x.enqueuedSequenceNumber?.toString() === message.enqueuedSequenceNumber);
+                var msg = messages.find(x => x.messageId === message.messageId && x.enqueuedSequenceNumber && x.enqueuedSequenceNumber.toString() === message.enqueuedSequenceNumber);
                 
                 if (msg) {
                     switch (message.command) {
