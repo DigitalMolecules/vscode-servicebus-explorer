@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.6] (Preview)
+- Open and Delete message not working when viewing from a Queue #41
+
 ## [0.1.5] (Preview)
 - Delete a single message #37
 - Send to bus does not allow queue selection #38

@@ -85,6 +85,8 @@ export default function registerCommands(
 					} else {
 						window.showErrorMessage('enqueuedSequenceNumber is empty');
 					}
+				} else {
+					return Promise.reject();
 				}
 			}
 		}),
