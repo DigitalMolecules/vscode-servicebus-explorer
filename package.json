@@ -152,6 +152,10 @@
 				"title": "Service Bus Explorer: Send to Bus"
 			},
 			{
+				"command": "serviceBusExplorer.unzip",
+				"title": "Service Bus Explorer: Unzip message"
+			},
+			{
 				"command": "serviceBusExplorer.createSubscription",
 				"title": "Create Subscription",
 				"icon": {
@@ -322,6 +326,11 @@
 				},
 				{
 					"command": "serviceBusExplorer.sendToBus",
+					"group": "Service Bus Explorer",
+					"when": "resourceExtname == .json"
+				},
+				{
+					"command": "serviceBusExplorer.unzip",
 					"group": "Service Bus Explorer",
 					"when": "resourceExtname == .json"
 				}

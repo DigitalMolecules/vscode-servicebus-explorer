@@ -22,7 +22,7 @@ export class MessageWebView {
 
         const messageTable: string =
             messages.length > 0 ?
-                messages.map(x => {
+                messages.map((x) => {
                     MessageStoreInstance.setMessage(x.messageId, x);
                     return `
                     <tr>
@@ -42,7 +42,19 @@ export class MessageWebView {
                             ${ x.enqueuedTimeUtc.toLocaleString() || ''}
                         </td>
                         <td>
-                            <button class="button" onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')">Open</button>
+                            <div class="dropdown">
+                                <button class="button">Open &#x25bc;</button>
+                                <div class="dropdown-content">
+                                    <ul>
+                                        <li>
+                                            <a onclick="showMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')" title="Open raw message">Open raw</a>
+                                        </li>
+                                        <li>
+                                            <a onclick="showZippedMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')" title="Unzip and open message">Open zipped</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div> 
                         </td>
                         <td>
                             <button class="button" onclick="deleteMessage('${topic}', '${subscription}', '${queue}', '${x.messageId}', '${x.enqueuedSequenceNumber}')">Delete</button>
@@ -79,10 +91,46 @@ export class MessageWebView {
                         background-color: var(--vscode-button-background);
                         padding: 0.3rem 1rem 0.3rem 1rem;
                         border: none;
+                        text-decoration: none;
                     }
 
                     .button:hover:{
                         background-color: var(--vscode-button-hoverBackground);
+                    }
+
+                    .dropdown {
+                        position: relative;
+                        display: block;
+                        white-space: no-wrap;
+                    }
+
+                    .dropdown ul {
+                        list-style-type: none;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .dropdown li {
+                        margin: 0.5rem 0;
+                    }
+
+                    .dropdown a {
+                        cursor: pointer;
+                    }
+ 
+                    .dropdown-content {
+                        display: none;
+                        position: absolute;
+                        background-color: var(--vscode-input-background);
+                        color: var(--vscode-input-foreground);
+                        box-shadow: 0px 05rem 1rem 0px rgba(0,0,0,0.2);
+                        min-width: 5rem;
+                        padding: 0.5rem 1rem;
+                        z-index: 1;
+                    }
+
+                    .dropdown:hover .dropdown-content {
+                        display: block;
                     }
 
                     .input{
@@ -107,6 +155,17 @@ export class MessageWebView {
                         function showMessage(topic, subscription, queue, messageId, enqueuedSequenceNumber){
                             vscode.postMessage({
                                 command: 'serviceBusExplorer.showMessage',
+                                topic: topic,
+                                subscription: subscription,
+                                queue: queue,
+                                messageId: messageId,
+                                enqueuedSequenceNumber: enqueuedSequenceNumber
+                            })
+                        }
+
+                        function showZippedMessage(topic, subscription, queue, messageId, enqueuedSequenceNumber) {
+                            vscode.postMessage({
+                                command: 'serviceBusExplorer.showZippedMessage',
                                 topic: topic,
                                 subscription: subscription,
                                 queue: queue,
@@ -233,6 +292,10 @@ export class MessageWebView {
                     switch (message.command) {
                         case 'serviceBusExplorer.showMessage':
                             vscode.commands.executeCommand('serviceBusExplorer.showMessage', message.topic, message.subscription, message.queue, msg);
+                            return;
+
+                        case 'serviceBusExplorer.showZippedMessage':
+                            vscode.commands.executeCommand('serviceBusExplorer.showZippedMessage', message.topic, message.subscription, message.queue, msg);
                             return;
 
                         case 'serviceBusExplorer.deleteMessage':
