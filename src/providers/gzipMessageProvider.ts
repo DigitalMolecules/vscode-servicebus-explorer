@@ -32,14 +32,16 @@ export class GzipMessageProvider implements vscode.TextDocumentContentProvider {
                         }
                     })
                     .catch((err: Error) => {
-                        window.showErrorMessage(err.message);
-                        return Promise.resolve('Could not parse message.');
+                        window.showErrorMessage('Error: Could not parse message.');
+                        return Promise.resolve('');
                     });
             } else {
-                return Promise.resolve('Message body is not a buffer.');
+                window.showErrorMessage('Error: Message body is not a buffer.');
+                return Promise.resolve('');
             }
         } else {
-            return Promise.resolve('Could not find message.');
+            window.showErrorMessage('Error: Could not find message.');
+            return Promise.resolve('');
         }
     }
 }
