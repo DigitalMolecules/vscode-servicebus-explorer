@@ -3,6 +3,7 @@
 import { ServiceBusProvider } from './providers/serviceBusProvider';
 import { NameSpace } from './namespace/namespace';
 import { MessageProvider } from './providers/messageProvider';
+import { GzipMessageProvider } from './providers/gzipMessageProvider';
 import registerCommands from './commands';
 import { IDisposable } from './disposable';
 import { ExtensionContext, window, workspace } from 'vscode';
@@ -20,11 +21,13 @@ export function activate(context: ExtensionContext) {
 	const topicUI = new TopicUI(context);
 	const queueUI = new QueueUI(context);
 	const messageProvider = new MessageProvider();
+	const gzipMessageProvider = new GzipMessageProvider();
 
 	const disposables: IDisposable[] = [];
 	
 	disposables.push(window.registerTreeDataProvider('servicebus-namespaces', serviceBusProvider));
 	disposables.push(workspace.registerTextDocumentContentProvider('servicebusmessage', messageProvider));
+	disposables.push(workspace.registerTextDocumentContentProvider('servicebusmessagegzip', gzipMessageProvider));
 	disposables.push(...registerCommands(context, serviceBusProvider, nameSpace, subscriptionUI, topicUI, queueUI, sendToBus));	
 
 	context.subscriptions.push(...disposables);
