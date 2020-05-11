@@ -82,23 +82,40 @@ export class MessageWebView {
                 <title>Message List</title>
                 <style>
 
-                    input {
-                        box-sizing: border-box;
+                    body {
+                        color: var(--vscode-editor-foreground);
+                        background-color: var(--vscode-editor-background);
+                        font-family: var(--vscode-font-family);
+                        font-weight: var(--vscode-font-weight);
+                        font-size: var(--vscode-font-size);
+                    }
+
+                    th, td {
+                        padding-bottom: 4px;
+                        text-align: left;
                     }
 
                     .button{
                         color: var(--vscode-button-foreground);
                         background-color: var(--vscode-button-background);
                         padding: 0.3rem 1rem 0.3rem 1rem;
+                        cursor: pointer;
+                        border-radius: 4px;
+                        opacity: 0.6;
+                        transition: 0.3s;
                         border: none;
                         text-decoration: none;
                     }
 
                     .button:hover:{
-                        background-color: var(--vscode-button-hoverBackground);
+                        opacity: 0.1;
+                        color: var(--vscode-button-hoverBackground);
                     }
 
                     .dropdown {
+                        background-color: var(--vscode-dropdown-background);
+                        border: var(--vscode-dropdown-border);
+                        color: var(--vscode-dropdown-foreground);
                         position: relative;
                         display: block;
                         white-space: no-wrap;
@@ -123,7 +140,7 @@ export class MessageWebView {
                         position: absolute;
                         background-color: var(--vscode-input-background);
                         color: var(--vscode-input-foreground);
-                        box-shadow: 0px 05rem 1rem 0px rgba(0,0,0,0.2);
+                        border: var(--vscode-inputOption-activeBorder);
                         min-width: 5rem;
                         padding: 0.5rem 1rem;
                         z-index: 1;
@@ -133,6 +150,10 @@ export class MessageWebView {
                         display: block;
                     }
 
+                    input {
+                        box-sizing: border-box;
+                    }
+                    
                     .input{
                         background-color: var(--vscode-input-background);
                         border: var(--vscode-input-border);
@@ -140,6 +161,11 @@ export class MessageWebView {
                         width: calc(100% - 2rem);
                         padding: 0.5rem 0.8rem 0.5rem 0.8rem;
                         margin: 0px;
+                    }
+
+                    .input:active {
+                        background-color: var(--vscode-inputOption-activeBackground);
+                        border: var(--vscode-inputOption-activeBorder);
                     }
 
                     .hidden{
@@ -227,8 +253,7 @@ export class MessageWebView {
                                 <th style="text-align:left">
                                     TimeStamp
                                 </th>
-                                <th>
-                                </th>
+                                <th/>
                             </tr>
                             <tr>
                                 <th style="text-align:left">
@@ -240,14 +265,7 @@ export class MessageWebView {
                                 <th style="text-align:left">
                                     <input id="filter_label" class="input" onchange="filter()" /> 
                                 </th>
-                                <th>
-                                </th>
-                                <th>
-                                </th>
-                                <th>
-                                </th>
-                                <th>
-                                </th>
+                                <th colspan=4/>
                             </tr>
                         </thead>
                         <tbody>
