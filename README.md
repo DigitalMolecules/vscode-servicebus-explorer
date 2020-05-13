@@ -31,3 +31,5 @@ See [CHANGELOG.md](https://github.com/DigitalMolecules/vscode-servicebus-explore
 - Project's logo designed by [Maaike Min](https://www.linkedin.com/in/maaike-min "Maaike Min")
 
 - App's Icons made by [Smashicons](https://www.flaticon.com/authors/smashicons "Smashicons") from [www.flaticon.com](https://www.flaticon.com/ "Flaticon")
+
+- Our first community PR by [Daniel Kvist](https://github.com/span)
