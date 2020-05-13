@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.7] (Preview)
+- Feature request: Support opening gzipped messages #44
+
 ## [0.1.6] (Preview)
 - Open and Delete message not working when viewing from a Queue #41
 
