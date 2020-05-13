@@ -1,0 +1,39 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.112.0/containers/typescript-node-12
+{
+	"name": "Node.js 12 & TypeScript",
+	"dockerFile": "Dockerfile",
+
+	// Use 'appPort' to create a container with published ports. If the port isn't working, be sure
+    // your server accepts connections from all interfaces (0.0.0.0 or '*'), not just localhost.
+    // "appPort": [3000],
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"ms-vscode.vscode-typescript-tslint-plugin",
+		"streetsidesoftware.code-spell-checker",
+		"eg2.vscode-npm-script",
+        "christian-kohler.npm-intellisense"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "yarn install",
+
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "node",
+
+	"mounts": [
+        "source=bashhistory,target=/commandhistory,type=volume",
+        "source=extensions,target=/home/node/.vscode-server/extensions,type=volume",
+        "source=extensions-insiders,target=/home/node/.vscode-server-insiders/extensions,type=volume",        
+    ]
+}

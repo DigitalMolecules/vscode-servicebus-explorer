@@ -152,6 +152,10 @@
 				"title": "Service Bus Explorer: Send to Bus"
 			},
 			{
+				"command": "serviceBusExplorer.unzip",
+				"title": "Service Bus Explorer: Unzip message"
+			},
+			{
 				"command": "serviceBusExplorer.createSubscription",
 				"title": "Create Subscription",
 				"icon": {
@@ -216,6 +220,7 @@
 			"view/item/context": [
 				{
 					"command": "serviceBusExplorer.editEntry",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == namespace"
 				},
 				{
@@ -225,6 +230,7 @@
 				},
 				{
 					"command": "serviceBusExplorer.deleteEntry",
+					"group": "grp3",
 					"when": "view == servicebus-namespaces && viewItem == namespace"
 				},
 				{
@@ -249,22 +255,27 @@
 				},
 				{
 					"command": "serviceBusExplorer.searchMessage",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
 					"command": "serviceBusExplorer.getSubscriptionDeadLetterMessages",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
 					"command": "serviceBusExplorer.getQueueDeadLetterMessages",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
 				{
 					"command": "serviceBusExplorer.purgeSubscriptionMessages",
+					"group": "grp2",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
 					"command": "serviceBusExplorer.purgeQueueMessages",
+					"group": "grp2",
 					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
 				{
@@ -274,10 +285,12 @@
 				},
 				{
 					"command": "serviceBusExplorer.createSubscription",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
 					"command": "serviceBusExplorer.deleteSubscription",
+					"group": "grp3",
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
@@ -287,10 +300,12 @@
 				},
 				{
 					"command": "serviceBusExplorer.createTopic",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == topiclist"
 				},
 				{
 					"command": "serviceBusExplorer.deleteTopic",
+					"group": "grp3",
 					"when": "view == servicebus-namespaces && viewItem == topic"
 				},
 				{
@@ -300,10 +315,12 @@
 				},
 				{
 					"command": "serviceBusExplorer.createQueue",
+					"group": "grp1",
 					"when": "view == servicebus-namespaces && viewItem == queuelist"
 				},
 				{
 					"command": "serviceBusExplorer.deleteQueue",
+					"group": "grp3",
 					"when": "view == servicebus-namespaces && viewItem == queue"
 				}
 			],
@@ -322,6 +339,11 @@
 				},
 				{
 					"command": "serviceBusExplorer.sendToBus",
+					"group": "Service Bus Explorer",
+					"when": "resourceExtname == .json"
+				},
+				{
+					"command": "serviceBusExplorer.unzip",
 					"group": "Service Bus Explorer",
 					"when": "resourceExtname == .json"
 				}
@@ -351,11 +373,12 @@
 		"vscode-test": "^1.2.3"
 	},
 	"dependencies": {
-		"@azure/service-bus": "^1.1.0",
+		"@azure/service-bus": "^1.1.6",
 		"crypto-js": "^3.1.9-1",
 		"fast-xml-parser": "^3.14.0",
 		"node-fetch": "^2.6.0",
 		"nyc": "^14.1.1",
-		"ms": "^2.1.2"
+		"ms": "^2.1.2",
+		"minimist": "^1.2.5"
 	}
 }

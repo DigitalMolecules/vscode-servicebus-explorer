@@ -68,6 +68,28 @@ export default function registerCommands(
 
 			if (uri) {
 				let doc = await workspace.openTextDocument(uri); // calls back into the provider
+
+				await window.showTextDocument(doc, { preview: false });
+			}
+			else {
+				throw new Error("No subscription or queue defined");
+			}
+		}),
+
+		commands.registerCommand('serviceBusExplorer.showZippedMessage', async (topic: string | null, subscription: string | null, queue: string | null, message: any) => {
+			var uri;
+
+			if (topic && subscription) {
+				uri = Uri.parse(`servicebusmessagegzip:message_${message.messageId}.json?topic=${topic}&subscription=${subscription}&messageid=${message.messageId}&enqueuedSequenceNumber=${message.enqueuedSequenceNumber}`);
+			}
+
+			if (queue) {
+				uri = Uri.parse(`servicebusmessagegzip:message_${message.messageId}.json?queue=${queue}&messageid=${message.messageId}&enqueuedSequenceNumber=${message.enqueuedSequenceNumber}`);
+			}
+
+			if (uri) {
+				let doc = await workspace.openTextDocument(uri);
+
 				await window.showTextDocument(doc, { preview: false });
 			}
 			else {
@@ -122,6 +144,20 @@ export default function registerCommands(
 				window.showErrorMessage('Only implemented for active document');
 			}
 
+		}),
+
+		commands.registerCommand('serviceBusExplorer.unzip', async () => {
+			if (window.activeTextEditor) {
+				const messageUri = window.activeTextEditor.document.uri;
+				const zipedMessageUri = 'servicebusmessagegzip:' + messageUri.path + '?' + messageUri.query;
+				const zipUri = Uri.parse(zipedMessageUri, true);
+				const doc = await workspace.openTextDocument(zipUri);
+
+				await window.showTextDocument(doc, { preview: false });
+			}
+			else {
+				window.showErrorMessage('Only implemented for active document');
+			}
 		}),
 
 		commands.registerCommand('serviceBusExplorer.createSubscription', async (node: Topic) => {

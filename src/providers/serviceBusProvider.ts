@@ -54,7 +54,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 	}
 
 	public refresh(node?: ExplorerItemBase | undefined): void {
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	private async buildTreeItem(item: IItemData): Promise<void> {
@@ -76,7 +76,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		items.push(item);
 
 		await this.state.update(NAMESPACE_CONNECTIONS, items);
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	public async toggleCollapse(node: NameSpaceItem, item: IItemData): Promise<void> {
@@ -101,7 +101,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		});
 
 		await this.state.update(NAMESPACE_CONNECTIONS, items);
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	public async editNamespace(node: NameSpaceItem, item: IItemData): Promise<void> {
@@ -115,7 +115,7 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		});
 
 		await this.state.update(NAMESPACE_CONNECTIONS, items);
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	public deleteNamespace(node: NameSpaceItem) {
@@ -123,6 +123,6 @@ export class ServiceBusProvider implements vscode.TreeDataProvider<ExplorerItemB
 		items = items.filter(p => p.name !== node.data.name);
 
 		this.state.update(NAMESPACE_CONNECTIONS, items);
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 }
