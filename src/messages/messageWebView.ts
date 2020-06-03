@@ -43,7 +43,7 @@ export class MessageWebView {
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="button">Open &#x25bc;</button>
+                                <button class="button">Open &hellip;</button>
                                 <div class="dropdown-content">
                                     <ul>
                                         <li>
@@ -113,7 +113,7 @@ export class MessageWebView {
                     }
 
                     .dropdown {
-                        background-color: var(--vscode-dropdown-background);
+                        background-color: var(--vscode-editor-background);
                         border: var(--vscode-dropdown-border);
                         color: var(--vscode-dropdown-foreground);
                         position: relative;
@@ -144,6 +144,7 @@ export class MessageWebView {
                         min-width: 5rem;
                         padding: 0.5rem 1rem;
                         z-index: 1;
+                        border-radius: 4px;
                     }
 
                     .dropdown:hover .dropdown-content {
