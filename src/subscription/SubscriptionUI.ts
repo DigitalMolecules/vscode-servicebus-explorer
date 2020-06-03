@@ -34,7 +34,7 @@ export class SubscriptionUI {
     }
 
     public searchMessages = async (): Promise<ISearchMessageState> => {
-        this.title = 'Add Namespace';
+        this.title = 'Search Messages';
         this.node = null;
 
         const state = {} as ISearchMessageState;
@@ -62,12 +62,12 @@ export class SubscriptionUI {
     }
 
     private inputSearchArguments = async (input: MultiStepInput, state: Partial<ISearchMessageState>) => {
-     
-     
+
+
         state.searchArguments = await input.showInputBox({
             title: this.title,
-            step: 2,
-            totalSteps: 2,
+            step: 1,
+            totalSteps: 1,
             value: '',
             prompt: 'Search for messages',
             validate: this.validateNameIsUnique,
@@ -92,8 +92,8 @@ export class SubscriptionUI {
     }
 
     private inputCreateSubscriptionArguments = async (input: MultiStepInput, state: Partial<ICreateSubscriptionState>) => {
-     
-     
+
+
         state.name = await input.showInputBox({
             title: 'Create Subscription',
             step: 1,
@@ -115,8 +115,8 @@ export class SubscriptionUI {
     }
 
     private inputDeleteSubscriptionArguments = async (input: MultiStepInput, state: Partial<IDeleteSubscriptionState>) => {
-     
-     
+
+
         state.confirm = await input.showInputBox({
             title: 'Delete Subscription',
             step: 1,
