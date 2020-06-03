@@ -124,7 +124,9 @@ export default class ServiceBusClient implements IServiceBusClient {
             await client.close();
 
             if (searchArguments) {
-                return messages.filter(x => x.messageId && x.messageId.toString().indexOf(searchArguments) >= 0);
+                // return messages.filter(x => x.messageId && x.messageId.toString().indexOf(searchArguments) >= 0);
+                return messages.filter(x => (x.messageId && x.messageId.toString() === searchArguments)
+                                        || (x.body && JSON.stringify(x.body).search(searchArguments) !== -1));
             }
             else {
                 return messages;
@@ -362,7 +364,7 @@ export default class ServiceBusClient implements IServiceBusClient {
 
                 await purgeClient.close();
             }
-            finally {                
+            finally {
                 await receiver.close();
                 await purgeClient.close();
             }
