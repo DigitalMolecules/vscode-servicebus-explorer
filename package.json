@@ -3,7 +3,7 @@
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"icon": "resources/icon.png",
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"license": "MIT",

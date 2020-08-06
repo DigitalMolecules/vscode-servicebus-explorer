@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.1.8] (Preview)
+- Search/Filter by more content #50
+- Bugfixes
+
 ## [0.1.7] (Preview)
 - Feature request: Support opening gzipped messages #44
 
@@ -31,7 +35,7 @@
 - Create/Delete Topic #12
 - Add icon to queue (same as subscription) #14
 - Adding a expand/collapse all function for all the namespaces #15
-- Make a new icon for the service bus #16 
+- Make a new icon for the service bus #16
 - Create/Delete Queue #17
 
 ## [0.0.7] (Preview)
@@ -51,7 +55,7 @@
 - Using global state to persist namespaces
 
 ## [0.0.3] (Preview)
-- Refinement for VS Marketplace 
+- Refinement for VS Marketplace
 
 ## [0.0.2] (Preview)
 - Our very first release! Only basic functionality. Much more to come.

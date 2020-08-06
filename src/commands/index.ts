@@ -127,8 +127,12 @@ export default function registerCommands(
 
 		commands.registerCommand('serviceBusExplorer.sendToBus', async () => {
 			if (window.activeTextEditor) {
-				const documentText = window.activeTextEditor.document.getText();
+				var documentText = window.activeTextEditor.document.getText();
 				var destination = await sendToBus.sendToBus();
+
+				try {
+					documentText = JSON.parse(documentText);
+				} catch (e) {}
 
 				if (destination.selectedTopic) {
 					await destination.client.sendTopicMessage(destination.selectedTopic.title, documentText, 'application/json');

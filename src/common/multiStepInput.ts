@@ -123,7 +123,7 @@ export class MultiStepInput {
 		try {
 			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
 				const input = window.createInputBox();
-				
+
 				input.title = title;
 				input.step = step;
 				input.totalSteps = totalSteps;
