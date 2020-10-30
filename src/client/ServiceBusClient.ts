@@ -115,9 +115,7 @@ export default class ServiceBusClient implements IServiceBusClient {
                 } else {
                     messageClient = client.createQueueClient(queue)
                 }
-            }
-
-            if (subscription && topic) {
+            } else if (subscription && topic) {
                 if (deadLetter) {
                     deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription)
                     messageClient = client.createQueueClient(deadLetterQueueName)
@@ -403,9 +401,7 @@ export default class ServiceBusClient implements IServiceBusClient {
             } else {
                 purgeClient = client.createQueueClient(queue)
             }
-        }
-
-        if (subscription && topic) {
+        } else if (subscription && topic) {
             if (deadLetter) {
                 let deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription)
                 purgeClient = client.createQueueClient(deadLetterQueueName)
