@@ -54,5 +54,11 @@ export class Queue extends ExplorerItemBase {
 		}
 	}
 
+	public purgeDeadLetter = async () => {
+		if (this.itemData.clientInstance) {
+			await this.itemData.clientInstance.purgeQueueMessages(this.title, true);
+		}
+	}
+
 	contextValue = 'queue';
 }
