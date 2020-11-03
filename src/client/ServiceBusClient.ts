@@ -100,13 +100,13 @@ export default class ServiceBusClient implements IServiceBusClient {
         searchArguments: string | null,
         deadLetter: boolean = false
     ): Promise<SBC.ReceivedMessageInfo[]> => {
-        let client
+        let client: SBC.ServiceBusClient | null = null;
 
         try {
             client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString)
             let deadLetterQueueName: string = ""
 
-            var messageClient = null
+            var messageClient: SBC.QueueClient | SBC.SubscriptionClient | null = null
 
             if (queue) {
                 if (deadLetter) {
@@ -115,9 +115,7 @@ export default class ServiceBusClient implements IServiceBusClient {
                 } else {
                     messageClient = client.createQueueClient(queue)
                 }
-            }
-
-            if (subscription && topic) {
+            } else if (subscription && topic) {
                 if (deadLetter) {
                     deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription)
                     messageClient = client.createQueueClient(deadLetterQueueName)
@@ -388,14 +386,28 @@ export default class ServiceBusClient implements IServiceBusClient {
         }
     }
 
-    public async purgeMessages(topic: string | null, subscription: string | null, queue: string | null): Promise<void> {
+    public async purgeMessages(
+        topic: string | null, 
+        subscription: string | null, 
+        queue: string | null, 
+        deadLetter: boolean = false): Promise<void> {
         const client = SBC.ServiceBusClient.createFromConnectionString(this.connectionString)
-        var purgeClient = null
+        var purgeClient: SBC.SubscriptionClient | SBC.QueueClient | null = null
 
-        if (topic && subscription) {
-            purgeClient = client.createSubscriptionClient(topic, subscription)
-        } else if (queue) {
-            purgeClient = client.createQueueClient(queue)
+        if (queue) {
+            if (deadLetter) {
+                let deadLetterQueueName = SBC.QueueClient.getDeadLetterQueuePath(queue)
+                purgeClient = client.createQueueClient(deadLetterQueueName)
+            } else {
+                purgeClient = client.createQueueClient(queue)
+            }
+        } else if (subscription && topic) {
+            if (deadLetter) {
+                let deadLetterQueueName = SBC.TopicClient.getDeadLetterTopicPath(topic, subscription)
+                purgeClient = client.createQueueClient(deadLetterQueueName)
+            } else {
+                purgeClient = client.createSubscriptionClient(topic, subscription)
+            }
         }
 
         if (purgeClient) {
@@ -422,11 +434,11 @@ export default class ServiceBusClient implements IServiceBusClient {
         await client.close()
     }
 
-    public async purgeSubscriptionMessages(topic: string, subscription: string): Promise<void> {
-        this.purgeMessages(topic, subscription, null)
+    public async purgeSubscriptionMessages(topic: string, subscription: string, deadLetter: boolean = false): Promise<void> {
+        this.purgeMessages(topic, subscription, null, deadLetter)
     }
 
-    public async purgeQueueMessages(queue: string): Promise<void> {
-        this.purgeMessages(null, null, queue)
+    public async purgeQueueMessages(queue: string, deadLetter: boolean = false): Promise<void> {
+        this.purgeMessages(null, null, queue, deadLetter)
     }
 }

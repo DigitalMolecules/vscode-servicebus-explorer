@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.9] (Preview)
+- Added ability to purge dead letter queues of subscriptions and queues.  #61 (Thanks [adamal](https://github.com/adamal))
+
 ## [0.1.8] (Preview)
 - Search/Filter by more content #50
 - Bugfixes

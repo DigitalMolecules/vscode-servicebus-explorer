@@ -119,9 +119,21 @@ export default function registerCommands(
 			}
 		}),
 
+		commands.registerCommand('serviceBusExplorer.purgeSubscriptionDeadLetterQueue', async (node: Subscription) => {
+			if ((await confirmDialog())) {
+				await node.purgeDeadLetter();
+			}
+		}),
+
 		commands.registerCommand('serviceBusExplorer.purgeQueueMessages', async (node: Queue) => {
 			if ((await confirmDialog())) {
 				await node.purgeMessages();
+			}
+		}),
+
+		commands.registerCommand('serviceBusExplorer.purgeQueueDeadLetterQueue', async (node: Queue) => {
+			if ((await confirmDialog())) {
+				await node.purgeDeadLetter();
 			}
 		}),
 

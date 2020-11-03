@@ -3,7 +3,7 @@
 	"displayName": "Service Bus Explorer",
 	"description": "Service Bus Explorer allows users to connect to a Service Bus namespace and administer messaging entities.",
 	"icon": "resources/icon.png",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"publisher": "digital-molecules",
 	"repository": "https://github.com/DigitalMolecules/vscode-servicebus-explorer",
 	"license": "MIT",
@@ -140,8 +140,24 @@
 				}
 			},
 			{
+				"command": "serviceBusExplorer.purgeSubscriptionDeadLetterQueue",
+				"title": "Purge Dead Letter Queue",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
 				"command": "serviceBusExplorer.purgeQueueMessages",
 				"title": "Purge Messages",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
+				"command": "serviceBusExplorer.purgeQueueDeadLetterQueue",
+				"title": "Purge Dead Letter Queue",
 				"icon": {
 					"light": "resources/light/delete.svg",
 					"dark": "resources/dark/delete.svg"
@@ -274,7 +290,17 @@
 					"when": "view == servicebus-namespaces && viewItem == subscription"
 				},
 				{
+					"command": "serviceBusExplorer.purgeSubscriptionDeadLetterQueue",
+					"group": "grp2",
+					"when": "view == servicebus-namespaces && viewItem == subscription"
+				},
+				{
 					"command": "serviceBusExplorer.purgeQueueMessages",
+					"group": "grp2",
+					"when": "view == servicebus-namespaces && viewItem == queue"
+				},
+				{
+					"command": "serviceBusExplorer.purgeQueueDeadLetterQueue",
 					"group": "grp2",
 					"when": "view == servicebus-namespaces && viewItem == queue"
 				},
